@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Inset 使用說明</title>
 <style>
+/* Inside the app the window serves these; opened as a plain file, they are missing and the stack falls back. */
+@font-face { font-family: "Geist"; src: url("fonts/Geist-Regular.ttf") format("truetype"); font-weight: 400; }
+@font-face { font-family: "Geist Mono"; src: url("fonts/GeistMono-Regular.ttf") format("truetype"); font-weight: 400; }
 :root {
   --ground-warm: #FAF6F5; --ground: #F5F4F6; --ground-cool: #EEF3EF; --rail: #EEF3EF;
   --ink: #16181A; --ink-secondary: #5E6166; --ink-muted: #686B71; --inverse-ink: #FAF6F5;
@@ -79,6 +82,10 @@ code { font: 13px var(--mono); }
 footer { margin-top: 72px; padding-top: 14px; border-top: 1px solid var(--hairline); font: 11px/1.9 var(--mono);
   letter-spacing: .08em; color: var(--ink-muted); }
 footer p { margin: 0; }
+::-webkit-scrollbar { width: 9px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--hairline); border: 3px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background: var(--ink-muted); border: 3px solid transparent; background-clip: padding-box; }
 /* figure ink */
 .f-frame { fill: var(--ground); stroke: var(--hairline); }
 .f-rail { fill: var(--rail); }

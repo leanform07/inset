@@ -87,7 +87,7 @@
             <DockPanel Margin="0,26,0,18">
                 <TextBlock DockPanel.Dock="Top" Text="Notebook" Style="{StaticResource Title}" Margin="22,0,22,18" />
                 <Button DockPanel.Dock="Bottom" Content="HOW TO USE" Style="{StaticResource QuietButton}" Margin="22,16,22,0"
-                        HorizontalAlignment="Left" Click="OnHowToUseClick" ToolTip="Open the guide (in Traditional Chinese) in your browser" />
+                        HorizontalAlignment="Left" Click="OnHowToUseClick" ToolTip="Open the guide (in Traditional Chinese)" />
                 <Button DockPanel.Dock="Bottom" Style="{StaticResource SecondaryButton}" Margin="22,12,22,0"
                         HorizontalAlignment="Left" Click="OnNewCategoryClick">
                     <StackPanel Orientation="Horizontal">

@@ -1,16 +1,17 @@
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using LookUp.Settings;
+using System.Windows;
 
 namespace LookUp.UI;
 
 /// <summary>
-/// The how-to guide (Web/guide.html, Traditional Chinese). The same page ships in the release zip,
-/// so it opens in the default browser rather than in a window of the app's own.
+/// The how-to guide (Web/guide.html, Traditional Chinese), shown in <see cref="GuideWindow"/>.
+/// The same page ships in the release zip as a file to open in a browser.
 /// </summary>
 static class UserGuide
 {
+    static GuideWindow? _window;
+
     public static string Html()
     {
         using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("guide.html")
@@ -19,12 +20,16 @@ static class UserGuide
         return reader.ReadToEnd();
     }
 
-    /// <summary>Writes the guide next to the app's other local data (rewritten each time, so it matches this version) and opens it.</summary>
+    /// <summary>Opens the guide, or brings the open one to the front.</summary>
     public static void Open()
     {
-        Directory.CreateDirectory(AppFolders.Local);
-        var path = Path.Combine(AppFolders.Local, "guide.html");
-        File.WriteAllText(path, Html());
-        Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
+        if (_window == null)
+        {
+            _window = new GuideWindow();
+            _window.Closed += (_, _) => _window = null;
+        }
+        _window.Show();
+        if (_window.WindowState == WindowState.Minimized) _window.WindowState = WindowState.Normal;
+        _window.Activate();
     }
 }

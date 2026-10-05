@@ -99,6 +99,7 @@ public sealed class WindowSmokeTests
                 menu.Items.Add(new System.Windows.Controls.MenuItem { Header = "Look up a word…", InputGestureText = "Ctrl+Alt+F" });
                 menu.Items.Add(new System.Windows.Controls.MenuItem { Header = "Notebook", InputGestureText = "Ctrl+Alt+N" });
                 menu.Items.Add(new System.Windows.Controls.Separator());
+                menu.Items.Add(new System.Windows.Controls.MenuItem { Header = "How to use" });
                 menu.Items.Add(new System.Windows.Controls.MenuItem { Header = "Settings…" });
                 menu.Items.Add(new System.Windows.Controls.MenuItem { Header = "Quit Inset" });
                 menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Absolute;
@@ -108,14 +109,43 @@ public sealed class WindowSmokeTests
                 if (Environment.GetEnvironmentVariable("LOOKUP_SNAPSHOT_DIR") is { Length: > 0 } menuDir)
                     SaveElementPng(menu, Path.Combine(menuDir, $"tray-menu-{name}.png"));
                 menu.IsOpen = false;
+
+                // The guide is a WebView page the window serves itself: it must load with no network.
+                var guide = OffScreen(new GuideWindow { UserDataFolder = Path.Combine(dir, "guide-webview2") });
+                Assert.True(Wait(guide.Shown), "the guide page did not load");
+                Assert.Equal("\"Inset 使用說明\"", Wait(guide.Web.CoreWebView2.ExecuteScriptAsync("document.title")));
+                if (Environment.GetEnvironmentVariable("LOOKUP_SNAPSHOT_DIR") is { Length: > 0 } guideDir)
+                {
+                    using var png = File.Create(Path.Combine(guideDir, $"guide-{name}.png"));
+                    Wait(guide.Web.CoreWebView2.CapturePreviewAsync(Microsoft.Web.WebView2.Core.CoreWebView2CapturePreviewImageFormat.Png, png)
+                        .ContinueWith(_ => true));
+                }
+                guide.Close();
             }
             ThemeService.Apply(AppTheme.Light);
         }
         finally
         {
-            if (Directory.Exists(dir)) Directory.Delete(dir, recursive: true);
+            // The guide's WebView2 browser can outlive its window for a moment and hold its profile open.
+            try { if (Directory.Exists(dir)) Directory.Delete(dir, recursive: true); }
+            catch (IOException) { }
+            catch (UnauthorizedAccessException) { }
         }
     });
+
+    /// <summary>Keeps the dispatcher running (WebView2 needs it) until the task finishes or times out.</summary>
+    static T Wait<T>(Task<T> task, int seconds = 30)
+    {
+        var frame = new System.Windows.Threading.DispatcherFrame();
+        var timeout = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromSeconds(seconds) };
+        timeout.Tick += (_, _) => frame.Continue = false;
+        task.ContinueWith(_ => frame.Continue = false, TaskScheduler.Default);
+        timeout.Start();
+        System.Windows.Threading.Dispatcher.PushFrame(frame);
+        timeout.Stop();
+        Assert.True(task.IsCompletedSuccessfully, $"timed out after {seconds}s");
+        return task.Result;
+    }
 
     static void Seed(NotebookStore store)
     {
