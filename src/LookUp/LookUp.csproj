@@ -27,6 +27,9 @@
     <Using Remove="System.Windows.Forms" />
     <Using Remove="System.Drawing" />
     <Resource Include="Assets\LookUp.ico" />
+    <Resource Include="Assets\Fonts\*.ttf" />
+    <!-- Geist is SIL OFL 1.1: the licence travels with the fonts. -->
+    <None Include="Assets\Fonts\Geist-OFL.txt" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

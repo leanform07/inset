@@ -4,3 +4,8 @@ obj/
 .vs/
 wv2-profile/
 out/
+
+# impeccable design skill: review screenshots, downloaded reference images, decision-server state
+.impeccable/review/
+.impeccable/reference/
+.impeccable/questions/

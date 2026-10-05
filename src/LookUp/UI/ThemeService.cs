@@ -41,10 +41,15 @@ static class ThemeService
         {
             Source = new Uri($"pack://application:,,,/LookUp;component/Themes/{(dark ? "Dark" : "Light")}.xaml"),
         };
+        // Ours go last: later merged dictionaries win, and the palette overrides some Fluent keys
+        // (corner radii, accent and field colours). Shared styles follow the palette they read.
         var dictionaries = app.Resources.MergedDictionaries;
         var current = dictionaries.FirstOrDefault(IsPalette);
-        if (current != null) dictionaries[dictionaries.IndexOf(current)] = palette;
-        else dictionaries.Add(palette);
+        var shared = dictionaries.FirstOrDefault(d => d.Source?.OriginalString.EndsWith("Themes/Shared.xaml", StringComparison.Ordinal) == true);
+        if (current != null) dictionaries.Remove(current);
+        if (shared != null) dictionaries.Remove(shared);
+        dictionaries.Add(palette);
+        if (shared != null) dictionaries.Add(shared);
 
         if (dark == IsDark && current != null) return;
         IsDark = dark;

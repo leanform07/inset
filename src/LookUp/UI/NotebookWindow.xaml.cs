@@ -68,7 +68,7 @@ public partial class NotebookWindow : Window
     {
         if (_kind == Kind.Uncategorized && word.Category.Length > 0) return false;
         if (_kind == Kind.Category && word.Category != _categoryName) return false;
-        if (StatusFilter.SelectedIndex > 0 && word.Status != (Familiarity)(StatusFilter.SelectedIndex - 1)) return false;
+        if (StatusFilterValue() is { } status && word.Status != status) return false;
 
         var text = FilterBox.Text.Trim();
         return text.Length == 0 ||
@@ -77,6 +77,12 @@ public partial class NotebookWindow : Window
                word.Definition.Contains(text, StringComparison.OrdinalIgnoreCase) ||
                word.Note.Contains(text, StringComparison.OrdinalIgnoreCase);
     }
+
+    Familiarity? StatusFilterValue() =>
+        FilterNew.IsChecked == true ? Familiarity.New
+        : FilterLearning.IsChecked == true ? Familiarity.Learning
+        : FilterKnown.IsChecked == true ? Familiarity.Known
+        : null;
 
     void OnFilterChanged(object sender, EventArgs e)
     {
@@ -96,16 +102,20 @@ public partial class NotebookWindow : Window
             _view.Refresh();
             RebuildCategories();
             UpdateCounts();
-            if (_selected != null) LookupInfo.Text = DescribeHistory(_selected);
+            if (_selected != null)
+            {
+                LookupInfo.Text = DescribeHistory(_selected);
+                UpdateSeal(_selected);
+            }
         }, DispatcherPriority.Background);
     }
 
     void UpdateCounts()
     {
         var shown = _view.Cast<object>().Count();
-        CountText.Text = shown == 1 ? "1 word" : $"{shown} words";
+        CountText.Text = shown == 1 ? "1 WORD" : $"{shown} WORDS";
         EmptyText.Text = _store.Words.Count == 0
-            ? "Your notebook is empty.\nLook up a word, then choose ☆ Add to notebook (Ctrl+S)."
+            ? "Your notebook is empty.\nLook up a word, then press Ctrl+S to add it here."
             : "No words match.";
         EmptyText.Visibility = shown == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
@@ -145,14 +155,14 @@ public partial class NotebookWindow : Window
 
     void OnNewCategoryClick(object sender, RoutedEventArgs e)
     {
-        if (PromptWindow.Ask(this, "New category") is { } name && !_store.AddCategory(name))
+        if (PromptWindow.Ask(this, "New category", action: "Create") is { } name && !_store.AddCategory(name))
             MessageBox.Show(this, $"There is already a category called “{name}”.", "Notebook");
     }
 
     void OnRenameCategoryClick(object sender, RoutedEventArgs e)
     {
         if (_menuCategory is not { } item) return;
-        if (PromptWindow.Ask(this, "Rename category", item.Name) is not { } name) return;
+        if (PromptWindow.Ask(this, "Rename category", item.Name, "Rename") is not { } name) return;
 
         if (!_store.RenameCategory(item.Name, name))
             MessageBox.Show(this, $"There is already a category called “{name}”.", "Notebook");
@@ -179,6 +189,13 @@ public partial class NotebookWindow : Window
     // ── Word list ─────────────────────────────────────────────
 
     List<WordNote> SelectedWords() => WordList.SelectedItems.Cast<WordNote>().ToList();
+
+    /// <summary>WORD takes whatever width the fixed columns leave, so nothing scrolls sideways or truncates.</summary>
+    void OnWordListSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        const double fixedColumns = 116 + 74 + 60, scrollbarAndPadding = 28;
+        WordColumn.Width = Math.Max(120, e.NewSize.Width - fixedColumns - scrollbarAndPadding);
+    }
 
     void OnWordSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -209,7 +226,7 @@ public partial class NotebookWindow : Window
         var create = new MenuItem { Header = "New category…" };
         create.Click += (_, _) =>
         {
-            if (PromptWindow.Ask(this, "New category") is { } name) MoveSelectedTo(name);
+            if (PromptWindow.Ask(this, "New category", action: "Create") is { } name) MoveSelectedTo(name);
         };
         MoveToMenu.Items.Add(create);
     }
@@ -269,19 +286,28 @@ public partial class NotebookWindow : Window
         StatusLearning.IsChecked = _selected.Status == Familiarity.Learning;
         StatusKnown.IsChecked = _selected.Status == Familiarity.Known;
         ExampleBlock.Visibility = _selected.Example.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
+        PosText.Text = _selected.PartOfSpeech.ToUpperInvariant();
         LookupInfo.Text = DescribeHistory(_selected);
+        UpdateSeal(_selected);
         _loadingDetail = false;
     }
 
     static string DescribeHistory(WordNote word)
     {
-        var text = "Added " + word.AddedAt.ToString("MMM d, yyyy", English);
+        var text = "ADDED " + word.AddedAt.ToString("yyyy.MM.dd", English);
         if (word.Lookups is { } stat)
-        {
-            text += stat.Count == 1 ? " · looked up once" : $" · looked up {stat.Count} times";
-            text += ", last on " + stat.Last.ToString("MMM d, yyyy", English);
-        }
+            text += $"\nLOOKED UP {stat.Count:00}   LAST {stat.Last.ToString("yyyy.MM.dd", English)}";
         return text;
+    }
+
+    /// <summary>The same seal the popup stamps: category and date on the ring, lookup count in the middle.</summary>
+    void UpdateSeal(WordNote word)
+    {
+        var category = word.Category.Length == 0 ? "Uncategorized"
+                     : word.Category.Length > 14 ? word.Category[..13] + "…"
+                     : word.Category;
+        DetailSeal.RingText = $"Notebook · {category} · {word.AddedAt.ToString("yyyy.MM.dd", English)} · ";
+        DetailSeal.CenterText = Math.Max(word.LookupCount, 1).ToString("00");
     }
 
     /// <summary>Saves the note and category being edited; text boxes only commit on focus loss otherwise.</summary>

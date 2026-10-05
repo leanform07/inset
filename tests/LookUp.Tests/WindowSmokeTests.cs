@@ -35,15 +35,13 @@ public sealed class WindowSmokeTests
             var store = NotebookStore.Load(Path.Combine(dir, "notebook.json"));
             Seed(store);
 
-            _ = new PopupWindow(store);
-            _ = new SearchWindow();
 
             foreach (var theme in new[] { AppTheme.Light, AppTheme.Dark })
             {
                 ThemeService.Apply(theme);
                 var name = theme.ToString().ToLowerInvariant();
 
-                var notebook = OffScreen(new NotebookWindow(store) { Width = 1080, Height = 660 });
+                var notebook = OffScreen(new NotebookWindow(store) { Width = 1120, Height = 700 });
                 notebook.WordList.SelectedIndex = 0;
                 Flush();
                 Assert.Equal(3, notebook.WordList.Items.Count);
@@ -52,11 +50,64 @@ public sealed class WindowSmokeTests
                 Snapshot(notebook, $"notebook-{name}.png");
                 notebook.Close();
 
+                var empty = OffScreen(new NotebookWindow(NotebookStore.Load(Path.Combine(dir, $"empty-{name}.json"))) { Width = 1120, Height = 700 });
+                Flush();
+                Assert.Equal(Visibility.Visible, empty.EmptyText.Visibility);
+                Snapshot(empty, $"notebook-empty-{name}.png");
+                empty.Close();
+
                 var settings = OffScreen(new SettingsWindow(null!, new AppSettings()));
                 Flush();
                 Assert.Equal("Ctrl+Alt+D", settings.LookupBox.Text);
                 Snapshot(settings, $"settings-{name}.png");
                 settings.Close();
+
+                var search = OffScreen(new SearchWindow());
+                search.SetShortcuts("Ctrl+Alt+D", "Ctrl+Alt+N");
+                search.Input.Text = "resilience";
+                Flush();
+                Snapshot(search, $"search-{name}.png");
+                search.Close();
+
+                // The popup's own chrome around a no-result message, with the notebook panel open.
+                // (The entry itself is a WebView page; reader.css is checked separately.)
+                var popup = OffScreen(new PopupWindow(store));
+                popup.StatusTitle.Text = "resilense";
+                popup.StatusMessage.Text = "No Cambridge Dictionary entry found.";
+                popup.Suggestions.ItemsSource = new[] { "resilience", "resiliency", "residence" };
+                popup.SuggestionsPanel.Visibility = Visibility.Visible;
+                popup.ActionsPanel.Visibility = Visibility.Visible;
+                popup.NotePanel.Visibility = Visibility.Visible;
+                popup.StatusLearning.IsChecked = true;
+                popup.NotebookButton.Visibility = Visibility.Visible;
+                popup.CountToken.Text = "LOOKED UP 03";
+                popup.UseSize(new Size(PopupWindow.DefaultWidth, PopupWindow.DefaultHeight)); // a remembered size shows "DEFAULT SIZE"
+                Flush();
+                Assert.Equal(Visibility.Visible, popup.ResetSizeButton.Visibility);
+                Snapshot(popup, $"popup-{name}.png");
+                popup.Close();
+
+                var prompt = OffScreen(new PromptWindow());
+                prompt.Input.Text = "Architecture";
+                prompt.ActionButton.Content = "Create";
+                Flush();
+                Snapshot(prompt, $"prompt-{name}.png");
+                prompt.Close();
+
+                // The tray menu is a stock ContextMenu with these items (TrayIcon itself would add a real tray icon).
+                var menu = new System.Windows.Controls.ContextMenu();
+                menu.Items.Add(new System.Windows.Controls.MenuItem { Header = "Look up a word…", InputGestureText = "Ctrl+Alt+F" });
+                menu.Items.Add(new System.Windows.Controls.MenuItem { Header = "Notebook", InputGestureText = "Ctrl+Alt+N" });
+                menu.Items.Add(new System.Windows.Controls.Separator());
+                menu.Items.Add(new System.Windows.Controls.MenuItem { Header = "Settings…" });
+                menu.Items.Add(new System.Windows.Controls.MenuItem { Header = "Quit LookUp" });
+                menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Absolute;
+                menu.HorizontalOffset = -12000;
+                menu.IsOpen = true;
+                Flush();
+                if (Environment.GetEnvironmentVariable("LOOKUP_SNAPSHOT_DIR") is { Length: > 0 } menuDir)
+                    SaveElementPng(menu, Path.Combine(menuDir, $"tray-menu-{name}.png"));
+                menu.IsOpen = false;
             }
             ThemeService.Apply(AppTheme.Light);
         }
@@ -112,25 +163,33 @@ public sealed class WindowSmokeTests
             SavePng(window, Path.Combine(dir, fileName));
     }
 
+    /// <summary>For elements that live in a popup rather than a window, such as a context menu.</summary>
+    static void SaveElementPng(FrameworkElement element, string path)
+    {
+        var dpi = VisualTreeHelper.GetDpi(element);
+        var bitmap = new RenderTargetBitmap(
+            (int)(element.ActualWidth * dpi.DpiScaleX), (int)(element.ActualHeight * dpi.DpiScaleY),
+            dpi.PixelsPerInchX, dpi.PixelsPerInchY, PixelFormats.Pbgra32);
+        bitmap.Render(element);
+        var encoder = new PngBitmapEncoder();
+        encoder.Frames.Add(BitmapFrame.Create(bitmap));
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        using var file = File.Create(path);
+        encoder.Save(file);
+    }
+
     static void Flush() =>
         System.Windows.Threading.Dispatcher.CurrentDispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
 
-    /// <summary>Renders the window's client area, background included (it is not part of Content).</summary>
+    /// <summary>Renders the window's client area as built: background, border, margins and all.</summary>
     static void SavePng(Window window, string path)
     {
-        var content = (FrameworkElement)window.Content;
-        var dpi = VisualTreeHelper.GetDpi(content);
-        var size = new Size(content.ActualWidth, content.ActualHeight);
-        var visual = new DrawingVisual();
-        using (var context = visual.RenderOpen())
-        {
-            context.DrawRectangle(window.Background, null, new Rect(size));
-            context.DrawRectangle(new VisualBrush(content), null, new Rect(size));
-        }
+        var client = (FrameworkElement)VisualTreeHelper.GetChild(window, 0); // the window template's root
+        var dpi = VisualTreeHelper.GetDpi(window);
         var bitmap = new RenderTargetBitmap(
-            (int)(size.Width * dpi.DpiScaleX), (int)(size.Height * dpi.DpiScaleY),
+            (int)(client.ActualWidth * dpi.DpiScaleX), (int)(client.ActualHeight * dpi.DpiScaleY),
             dpi.PixelsPerInchX, dpi.PixelsPerInchY, PixelFormats.Pbgra32);
-        bitmap.Render(visual);
+        bitmap.Render(window);
         var encoder = new PngBitmapEncoder();
         encoder.Frames.Add(BitmapFrame.Create(bitmap));
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);

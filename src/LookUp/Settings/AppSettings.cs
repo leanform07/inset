@@ -99,6 +99,20 @@ sealed class AppSettings
     /// <summary>The tray balloon explaining the hotkeys is shown on first run only.</summary>
     public bool WelcomeShown { get; set; }
 
+    /// <summary>The result window's size in DIPs once the user has resized it; absent means the default.</summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] public double? PopupWidth { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] public double? PopupHeight { get; set; }
+
+    [JsonIgnore] public System.Windows.Size? PopupSize
+    {
+        get => PopupWidth is > 0 && PopupHeight is > 0 ? new(PopupWidth.Value, PopupHeight.Value) : null;
+        set
+        {
+            PopupWidth = value?.Width;
+            PopupHeight = value?.Height;
+        }
+    }
+
     [JsonIgnore] public Hotkey LookupSelection => Parse(LookupSelectionHotkey, DefaultLookupSelection);
     [JsonIgnore] public Hotkey Search => Parse(SearchHotkey, DefaultSearch);
     [JsonIgnore] public Hotkey Notebook => Parse(NotebookHotkey, DefaultNotebook);

@@ -50,6 +50,12 @@ public partial class App : Application
 
         _notebook = NotebookStore.Load(NotebookStore.DefaultPath);
         _popup = new PopupWindow(_notebook);
+        _popup.UseSize(_settings.PopupSize);
+        _popup.SizeChosen += size =>
+        {
+            _settings.PopupSize = size;
+            _settings.Save(AppSettings.DefaultPath);
+        };
         _search = new SearchWindow();
         _search.LookupRequested += (query, anchor) => _popup.ShowLookup(query, anchor);
 

@@ -1,0 +1,129 @@
+{
+  "title": "選擇 LookUp 的視覺世界",
+  "question": "抽籤指定了「注音標註」。可以採用它、改選其他卡，或重新抽。",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "注音標註",
+      "kicker": "THE ROLL",
+      "lineage": "台灣國語課本的注音與 ruby 排版",
+      "thesis": "每一則解釋都像注音一樣，緊貼在它註解的那個字旁邊，位置和比例永遠固定。",
+      "palette": ["#F7F8FA", "#1B2333", "#2F5BD3", "#E6ECF8", "#C8412B"],
+      "materials": ["藍黑墨水內文", "原子筆藍的註解層", "朱筆圈點", "微軟正黑體 + Segoe UI Variable"],
+      "viewport": "查字視窗：詞頭大字，IPA 以一半大小像注音一樣置中在詞頭正上方；每個英文定義下方緊貼一行藍色中文，左側一條細線把兩行綁成一組；淡藍色標題列整片占據頂端。",
+      "risk": "若比例和對齊不夠嚴格，會退化成普通的「英文 + 中文兩行」排版。",
+      "raised": [
+        { "from": "challenger-labanotation", "raise": "數量精確編碼：查詢次數用詞頭下方的著重號表示，查幾次就幾點。" },
+        { "from": "challenger-zoo-map", "raise": "顏色占據整塊區域：標題列與筆記本側欄是整片淡藍底，不是零星點綴色。" },
+        { "from": "challenger-botanical-folio", "raise": "同一基線：載入、詞條、提示、錯誤四種狀態的標題落在完全相同的位置，切換時畫面不跳。" }
+      ]
+    },
+    {
+      "id": "model-pick",
+      "label": "眉批",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "書頁邊緣的旁註與眉批",
+      "thesis": "查字視窗就是寫在書頁邊上的一則眉批：一條細引線把它牽回你正在讀的那個字。",
+      "palette": ["#FFFFFF", "#22252B", "#6B6F78", "#B4462F", "#EEF0F3"],
+      "materials": ["鉛筆灰細線", "紅筆註記", "大量留白", "Segoe UI Variable + 微軟正黑體"],
+      "viewport": "查字視窗靠在選取文字旁，一條細引線從視窗邊緣指向游標位置；內容像旁註一樣左側對齊一條紅色細線，詞頭、中文、定義依序排列。",
+      "risk": "這是這類工具最常落到的方向（tooltip / callout 的延伸），容易顯得熟悉。"
+    },
+    {
+      "id": "challenger-design-annual",
+      "label": "設計年鑑版面",
+      "verdict": "competitive",
+      "lineage": "設計年鑑的作品頁",
+      "thesis": "每個詞條像年鑑裡的一頁作品：近白紙張、細線網格、全程一種字體。",
+      "palette": ["#F5F4F6", "#16181A", "#C9C7C4", "#DCDDF3"],
+      "materials": ["近白微色差紙張", "1px 細線", "等寬小標", "單一淡紫印章"],
+      "viewport": "詞頭以大字號同一字體呈現，等寬大寫小標標出詞性與 UK/US，細線分隔各義項，已存入筆記的字蓋一枚淡紫色圓章。",
+      "case": "套用後清楚度足夠；但這是設計圈的語言，跟繁中讀者的日常沒有連結，認同感輸給指定方向。",
+      "risk": "容易變成冷淡的「設計師作品集」風格，閱讀時缺乏溫度。",
+      "board": "https://impeccable.style/worlds/cards/design-annual-s-plate-section.webp",
+      "hero": "https://impeccable.style/worlds/cards/design-annual-s-plate-section-hero.webp"
+    },
+    {
+      "id": "challenger-split-flap",
+      "label": "翻牌時刻表",
+      "verdict": "competitive",
+      "lineage": "台鐵車站的翻牌式時刻表",
+      "thesis": "每查一個字，詞頭就像車站翻牌一樣一格一格翻出來。",
+      "palette": ["#141414", "#F2F2F2", "#E8A33D", "#2A2D31"],
+      "materials": ["霧黑翻牌", "白色漆字", "琥珀色指示燈", "拉絲金屬框"],
+      "viewport": "查字視窗頂端是一條黑色翻牌列，詞頭逐字翻出；下方內文維持白底好讀；查過多次的字亮起琥珀色燈號。",
+      "case": "台鐵翻牌時刻表有很強的集體記憶，認同感贏；但黑色大面板放在閱讀視窗裡太重，清楚度輸。",
+      "risk": "翻牌動畫看久了會變成噱頭，正好踩到「太花俏」的地雷。",
+      "board": "https://impeccable.style/worlds/cards/signals-instruments-split-flap-concourse.webp",
+      "hero": "https://impeccable.style/worlds/cards/signals-instruments-split-flap-concourse-hero.webp"
+    },
+    {
+      "id": "challenger-labanotation",
+      "label": "舞譜",
+      "verdict": "declined",
+      "lineage": "Labanotation 舞蹈記譜",
+      "thesis": "以符號長度精確記錄時間長度的記譜系統。",
+      "palette": ["#FFFFFF", "#111111", "#D9D9D9"],
+      "materials": ["白色譜紙", "黑色符號塊"],
+      "viewport": "中央垂直譜線，左右對稱的欄位。",
+      "case": "讀者不認得舞譜，套到查字視窗也不會更清楚。",
+      "kept": "長度精確代表數量 → 查詢次數改用著重號，一次一點。",
+      "risk": "對讀者完全陌生。",
+      "hero": "https://impeccable.style/worlds/cards/notation-diagram-systems-labanotation-hero.webp"
+    },
+    {
+      "id": "challenger-zoo-map",
+      "label": "動物園導覽圖",
+      "verdict": "declined",
+      "lineage": "園區導覽地圖",
+      "thesis": "一大片平塗色塊占據畫面，邊界就是分隔。",
+      "palette": ["#8ED462", "#F5F1E4", "#2C2E2A", "#FF705D"],
+      "materials": ["平塗色塊", "膠囊形按鈕"],
+      "viewport": "一個色塊主導整個畫面。",
+      "case": "活潑過頭，和閱讀工具的安靜需求相衝突。",
+      "kept": "顏色整片占據區域 → 標題列和側欄改用整片淡色底。",
+      "risk": "花俏、像網頁。",
+      "hero": "https://impeccable.style/worlds/cards/aww2-zoo-gardens-guide-map-hero.webp"
+    },
+    {
+      "id": "challenger-botanical-folio",
+      "label": "植物圖譜",
+      "verdict": "declined",
+      "lineage": "植物生長階段圖版",
+      "thesis": "同一株植物在固定比例、固定底色上經歷各階段。",
+      "palette": ["#F3EEDF", "#3F6B3A", "#B8322A", "#8C8C8C"],
+      "materials": ["圖版", "細線"],
+      "viewport": "五張圖版排在同一基線上。",
+      "case": "和讀者、和查字都沒有直接關聯。",
+      "kept": "固定比例與基線 → 各種狀態的標題落在同一位置。",
+      "risk": "米色紙張正是要避開的老套。",
+      "hero": "https://impeccable.style/worlds/cards/editorial-sequence-montage-botanical-folio-season-hero.webp"
+    },
+    {
+      "id": "challenger-crouwel",
+      "label": "網格字體海報",
+      "verdict": "declined",
+      "lineage": "Wim Crouwel 的網格字型",
+      "thesis": "字母在可見的網格上一格一格組成。",
+      "palette": ["#FFFFFF", "#1A1A1A", "#9DB7E8", "#E5432E"],
+      "materials": ["可見網格", "巨型網格字"],
+      "viewport": "整面網格，巨大字母由格子組成。",
+      "case": "巨型網格字和小視窗閱讀相反，認同感也低。",
+      "kept": "可見的網格紀律 → 所有元素對齊同一個 4px 基線網格。",
+      "risk": "像海報，不像工具。",
+      "hero": "https://impeccable.style/worlds/cards/crouwel-grid-specimen-hero.webp"
+    }
+  ],
+  "reroll": { "registers": ["safer", "bolder"] },
+  "buildPath": { "value": "code" },
+  "canon": true,
+  "canonCard": {
+    "label": "Windows 11 原生風格",
+    "thesis": "就像 Windows 內建的 App：Fluent 設計、Mica 材質、系統強調色，做到最精緻。",
+    "palette": ["#F3F3F3", "#1A1A1A", "#005FB8", "#FFFFFF"],
+    "materials": ["Mica 半透明材質", "Fluent 圓角", "Segoe UI Variable"],
+    "viewport": "查字視窗像 Windows 的系統浮動面板：Mica 背景、圓角卡片、強調色按鈕。",
+    "risk": "刻意和系統一致，辨識度低；可能又回到你說的「像系統預設」。"
+  },
+  "steer": true
+}

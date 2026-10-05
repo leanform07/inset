@@ -38,7 +38,11 @@ sealed class WordNote : INotifyPropertyChanged
     public string Category { get => _category; set => Set(ref _category, value); }
 
     Familiarity _status;
-    public Familiarity Status { get => _status; set => Set(ref _status, value); }
+    public Familiarity Status { get => _status; set => Set(ref _status, value, notifyAlso: nameof(StatusLabel)); }
+
+    /// <summary>The status as the notebook's mono column shows it.</summary>
+    [JsonIgnore]
+    public string StatusLabel => _status.ToString().ToUpperInvariant();
 
     string _note = "";
     public string Note { get => _note; set => Set(ref _note, value); }

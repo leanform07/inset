@@ -1,30 +1,204 @@
-<!-- Styles and helpers used by every window. Colours come from Light.xaml / Dark.xaml. -->
+<!-- The plate system shared by every window: faces, type, controls, marks.
+     Colours come from Light.xaml / Dark.xaml; everything here uses DynamicResource so themes swap live. -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:ui="clr-namespace:LookUp.UI">
     <ui:EmptyToVisibleConverter x:Key="EmptyToVisible" />
-    <FontFamily x:Key="UiFont">Segoe UI Variable Text, Segoe UI</FontFamily>
 
-    <Style x:Key="FieldLabel" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="12" />
-        <Setter Property="Foreground" Value="{DynamicResource MutedBrush}" />
+    <!-- Faces: one grotesque for all English, its mono for labels and data, JhengHei for Chinese,
+         Segoe UI for IPA (Geist has no IPA glyphs), Segoe Fluent Icons for icons. -->
+    <FontFamily x:Key="UiFont">pack://application:,,,/LookUp;component/Assets/Fonts/#Geist, Microsoft JhengHei UI</FontFamily>
+    <FontFamily x:Key="MonoFont">pack://application:,,,/LookUp;component/Assets/Fonts/#Geist Mono, Consolas</FontFamily>
+    <FontFamily x:Key="CjkFont">Microsoft JhengHei UI</FontFamily>
+    <FontFamily x:Key="IpaFont">Segoe UI</FontFamily>
+    <FontFamily x:Key="IconFont">Segoe Fluent Icons, Segoe MDL2 Assets</FontFamily>
+
+    <!-- ── Type ─────────────────────────────────────────────── -->
+
+    <Style x:Key="Display" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource UiFont}" />
+        <Setter Property="FontSize" Value="34" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Foreground" Value="{DynamicResource InkBrush}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="LineHeight" Value="38" />
+        <Setter Property="LineStackingStrategy" Value="BlockLineHeight" />
+    </Style>
+
+    <Style x:Key="Title" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource UiFont}" />
+        <Setter Property="FontSize" Value="22" />
+        <Setter Property="Foreground" Value="{DynamicResource InkBrush}" />
+    </Style>
+
+    <Style x:Key="Body" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource UiFont}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{DynamicResource InkBrush}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="LineHeight" Value="21" />
+        <Setter Property="LineStackingStrategy" Value="BlockLineHeight" />
+    </Style>
+
+    <Style x:Key="Secondary" TargetType="TextBlock" BasedOn="{StaticResource Body}">
+        <Setter Property="Foreground" Value="{DynamicResource InkSecondaryBrush}" />
+    </Style>
+
+    <Style x:Key="Chinese" TargetType="TextBlock" BasedOn="{StaticResource Body}">
+        <Setter Property="FontFamily" Value="{StaticResource CjkFont}" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="LineHeight" Value="23" />
+    </Style>
+
+    <!-- Mono caps: field labels, tokens and data. Never an eyebrow over a heading. -->
+    <Style x:Key="Label" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Foreground" Value="{DynamicResource InkMutedBrush}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style x:Key="Token" TargetType="TextBlock" BasedOn="{StaticResource Label}">
+        <Setter Property="Foreground" Value="{DynamicResource InkBrush}" />
+    </Style>
+
+    <Style x:Key="Icon" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource IconFont}" />
+        <Setter Property="FontSize" Value="13" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <!-- Grey hint drawn over an empty input; bind Visibility with EmptyToVisible. -->
     <Style x:Key="Placeholder" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource UiFont}" />
         <Setter Property="FontSize" Value="13" />
         <Setter Property="Foreground" Value="{DynamicResource PlaceholderBrush}" />
         <Setter Property="IsHitTestVisible" Value="False" />
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Margin" Value="6,0,0,0" />
+        <Setter Property="Margin" Value="11,0,0,0" />
     </Style>
 
-    <!-- A button that looks like a plain text link. -->
-    <Style x:Key="LinkButton" TargetType="Button">
-        <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+    <!-- Registration crosshair, drawn at plate corners. -->
+    <Style x:Key="Crosshair" TargetType="Path">
+        <Setter Property="Data" Value="M9,0 L9,18 M0,9 L18,9 M13.5,9 A4.5,4.5 0 1 1 4.5,9 A4.5,4.5 0 1 1 13.5,9" />
+        <Setter Property="Stroke" Value="{DynamicResource InkMutedBrush}" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="Width" Value="18" />
+        <Setter Property="Height" Value="18" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+    </Style>
+
+    <Style x:Key="Rule" TargetType="Border">
+        <Setter Property="Height" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource HairlineBrush}" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+    </Style>
+
+    <!-- ── Controls ─────────────────────────────────────────── -->
+
+    <Style x:Key="FocusOutline">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Rectangle Margin="-3" Stroke="{DynamicResource InkBrush}" StrokeThickness="1" SnapsToDevicePixels="True" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Filled ink rectangle: the one primary action in a view. -->
+    <Style x:Key="PrimaryButton" TargetType="Button">
+        <Setter Property="FontFamily" Value="{StaticResource UiFont}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{DynamicResource InverseInkBrush}" />
+        <Setter Property="Background" Value="{DynamicResource InkBrush}" />
+        <Setter Property="Padding" Value="14,7" />
         <Setter Property="Cursor" Value="Hand" />
-        <Setter Property="Focusable" Value="False" />
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusOutline}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Box" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" TextElement.Foreground="{TemplateBinding Foreground}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Box" Property="Background" Value="{DynamicResource InkHoverBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Box" Property="Opacity" Value="0.85" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Box" Property="Opacity" Value="0.4" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- 1px ink outline rectangle. -->
+    <Style x:Key="SecondaryButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+        <Setter Property="Foreground" Value="{DynamicResource InkBrush}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Box" Background="{TemplateBinding Background}" BorderBrush="{DynamicResource InkBrush}"
+                            BorderThickness="1" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" TextElement.Foreground="{TemplateBinding Foreground}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Box" Property="Background" Value="{DynamicResource PressFillBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Box" Property="Opacity" Value="0.8" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Box" Property="Opacity" Value="0.4" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Text-only action: mono caps, underlined on hover. -->
+    <Style x:Key="QuietButton" TargetType="Button">
+        <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Foreground" Value="{DynamicResource InkBrush}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="0,4" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusOutline}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <!-- A 1px rule under the text marks it as an action; it darkens to ink on hover. -->
+                    <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                        <Border x:Name="Rule" BorderBrush="{DynamicResource HairlineBrush}" BorderThickness="0,0,0,1" Padding="0,0,0,2">
+                            <ContentPresenter VerticalAlignment="Center" TextElement.Foreground="{TemplateBinding Foreground}" />
+                        </Border>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Rule" Property="BorderBrush" Value="{DynamicResource InkBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- The link style kept for prose-like actions ("Try again", suggestions). -->
+    <Style x:Key="LinkButton" TargetType="Button">
+        <Setter Property="FontFamily" Value="{StaticResource UiFont}" />
+        <Setter Property="Foreground" Value="{DynamicResource InkBrush}" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusOutline}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -32,6 +206,59 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="Label" Property="TextDecorations" Value="Underline" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- An input with no chrome of its own: the surrounding rule or frame draws the field. -->
+    <Style x:Key="BareTextBox" TargetType="TextBox">
+        <Setter Property="FontFamily" Value="{StaticResource UiFont}" />
+        <Setter Property="Foreground" Value="{DynamicResource InkBrush}" />
+        <Setter Property="CaretBrush" Value="{DynamicResource InkBrush}" />
+        <Setter Property="SelectionBrush" Value="{DynamicResource SelectionBrush}" />
+        <Setter Property="SelectionOpacity" Value="1" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <ScrollViewer x:Name="PART_ContentHost" Background="Transparent" Focusable="False"
+                                  HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Segmented choice: outlined cells sharing borders, the chosen one filled with ink.
+         Replaces radio buttons (Fluent's have a minimum width that clipped them). -->
+    <Style x:Key="Segment" TargetType="RadioButton">
+        <Setter Property="FontFamily" Value="{StaticResource UiFont}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{DynamicResource InkBrush}" />
+        <Setter Property="Padding" Value="12,6" />
+        <Setter Property="Margin" Value="-1,0,0,0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusOutline}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <Border x:Name="Cell" Background="Transparent" BorderBrush="{DynamicResource FieldBorderBrush}" BorderThickness="1"
+                            Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                        <ContentPresenter x:Name="Content" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                          TextElement.Foreground="{TemplateBinding Foreground}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Cell" Property="Background" Value="{DynamicResource PressFillBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Cell" Property="Background" Value="{DynamicResource InkBrush}" />
+                            <Setter TargetName="Cell" Property="BorderBrush" Value="{DynamicResource InkBrush}" />
+                            <Setter TargetName="Content" Property="TextElement.Foreground" Value="{DynamicResource InverseInkBrush}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

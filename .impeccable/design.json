@@ -1,0 +1,795 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-05T15:14:37+00:00",
+  "title": "Design System: LookUp",
+  "extensions": {
+    "colorMeta": {
+      "ground-warm": {
+        "role": "neutral",
+        "displayName": "Warm Stock",
+        "canonical": "#FAF6F5",
+        "oklch": "oklch(97.6% 0.004 34.3)",
+        "tonalRamp": [
+          "#0D0A0A",
+          "#272424",
+          "#444140",
+          "#64605F",
+          "#858180",
+          "#A8A4A3",
+          "#CCC8C7",
+          "#F1EDEC"
+        ]
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Stock",
+        "canonical": "#F5F4F6",
+        "oklch": "oklch(96.8% 0.003 308.4)",
+        "tonalRamp": [
+          "#0B0B0C",
+          "#252526",
+          "#424243",
+          "#626162",
+          "#838284",
+          "#A5A4A6",
+          "#C9C9CA",
+          "#EFEEF0"
+        ]
+      },
+      "ground-cool": {
+        "role": "neutral",
+        "displayName": "Cool Stock",
+        "canonical": "#EEF3EF",
+        "oklch": "oklch(95.9% 0.007 151.9)",
+        "tonalRamp": [
+          "#090C0A",
+          "#222623",
+          "#3F4340",
+          "#5E625F",
+          "#7F8480",
+          "#A2A6A3",
+          "#C6CBC7",
+          "#EBF0EC"
+        ]
+      },
+      "rail": {
+        "role": "neutral",
+        "displayName": "Rail",
+        "canonical": "#EEF3EF",
+        "oklch": "oklch(95.9% 0.007 151.9)",
+        "tonalRamp": [
+          "#090C0A",
+          "#222623",
+          "#3F4340",
+          "#5E625F",
+          "#7F8480",
+          "#A2A6A3",
+          "#C6CBC7",
+          "#EBF0EC"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Graphite Ink",
+        "canonical": "#16181A",
+        "oklch": "oklch(20.8% 0.005 248.1)",
+        "tonalRamp": [
+          "#0A0B0D",
+          "#232527",
+          "#404245",
+          "#5F6164",
+          "#808385",
+          "#A3A5A8",
+          "#C7C9CC",
+          "#ECEFF2"
+        ]
+      },
+      "ink-hover": {
+        "role": "neutral",
+        "displayName": "Graphite Ink Hover",
+        "canonical": "#2E3135",
+        "oklch": "oklch(31.2% 0.008 255.6)",
+        "tonalRamp": [
+          "#090B0F",
+          "#222529",
+          "#3F4246",
+          "#5E6166",
+          "#7F8387",
+          "#A2A5AA",
+          "#C6C9CF",
+          "#EBEFF4"
+        ]
+      },
+      "ink-secondary": {
+        "role": "neutral",
+        "displayName": "Secondary Ink",
+        "canonical": "#5E6166",
+        "oklch": "oklch(49.2% 0.009 260.7)",
+        "tonalRamp": [
+          "#090B0F",
+          "#232529",
+          "#3F4247",
+          "#5E6166",
+          "#7F8288",
+          "#A2A5AB",
+          "#C6C9CF",
+          "#EBEFF5"
+        ]
+      },
+      "ink-muted": {
+        "role": "neutral",
+        "displayName": "Muted Ink",
+        "canonical": "#686B71",
+        "oklch": "oklch(54.8% 0.010 264.5)",
+        "tonalRamp": [
+          "#090B0F",
+          "#23252A",
+          "#3F4247",
+          "#5E6167",
+          "#7F8288",
+          "#A2A5AB",
+          "#C6C9D0",
+          "#EBEFF5"
+        ]
+      },
+      "inverse-ink": {
+        "role": "neutral",
+        "displayName": "Inverse Ink",
+        "canonical": "#FAF6F5",
+        "oklch": "oklch(97.6% 0.004 34.3)",
+        "tonalRamp": [
+          "#0D0A0A",
+          "#272424",
+          "#444140",
+          "#64605F",
+          "#858180",
+          "#A8A4A3",
+          "#CCC8C7",
+          "#F1EDEC"
+        ]
+      },
+      "press-fill": {
+        "role": "neutral",
+        "displayName": "Press Fill",
+        "canonical": "#ECE9E7",
+        "oklch": "oklch(93.6% 0.004 56.4)",
+        "tonalRamp": [
+          "#0D0B09",
+          "#272523",
+          "#444140",
+          "#63615F",
+          "#848280",
+          "#A7A4A2",
+          "#CBC8C6",
+          "#F1EEEC"
+        ]
+      },
+      "hover-fill": {
+        "role": "neutral",
+        "displayName": "Hover Fill",
+        "canonical": "#F2EFED",
+        "oklch": "oklch(95.4% 0.004 56.4)",
+        "tonalRamp": [
+          "#0D0B09",
+          "#272523",
+          "#444140",
+          "#63615F",
+          "#848280",
+          "#A7A4A2",
+          "#CBC8C6",
+          "#F1EEEC"
+        ]
+      },
+      "selection": {
+        "role": "neutral",
+        "displayName": "Selection",
+        "canonical": "#D9D6D3",
+        "oklch": "oklch(87.8% 0.005 67.8)",
+        "tonalRamp": [
+          "#0D0B09",
+          "#272522",
+          "#44413F",
+          "#63615E",
+          "#84827F",
+          "#A7A4A2",
+          "#CBC8C5",
+          "#F1EEEB"
+        ]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#C9C7C4",
+        "oklch": "oklch(83.0% 0.005 78.3)",
+        "tonalRamp": [
+          "#0C0B09",
+          "#262523",
+          "#43423F",
+          "#63615E",
+          "#84827F",
+          "#A7A5A2",
+          "#CBC9C6",
+          "#F0EEEB"
+        ]
+      },
+      "field-border": {
+        "role": "neutral",
+        "displayName": "Field Border",
+        "canonical": "#B5B3B0",
+        "oklch": "oklch(76.8% 0.005 78.3)",
+        "tonalRamp": [
+          "#0C0B09",
+          "#262522",
+          "#43423F",
+          "#63615E",
+          "#84827F",
+          "#A7A5A2",
+          "#CBC9C6",
+          "#F0EEEB"
+        ]
+      },
+      "danger": {
+        "role": "error",
+        "displayName": "Danger",
+        "canonical": "#B3261E",
+        "oklch": "oklch(50.1% 0.178 28.7)",
+        "tonalRamp": [
+          "#3A0000",
+          "#610000",
+          "#880000",
+          "#B0221B",
+          "#D84C3F",
+          "#FF7161",
+          "#FF9784",
+          "#FFBDA8"
+        ]
+      },
+      "seal": {
+        "role": "primary",
+        "displayName": "Seal Periwinkle",
+        "canonical": "#DCDDF3",
+        "oklch": "oklch(90.3% 0.030 283.7)",
+        "tonalRamp": [
+          "#0A0917",
+          "#232333",
+          "#404052",
+          "#5F5F72",
+          "#808094",
+          "#A2A3B8",
+          "#C6C7DD",
+          "#EBECFF"
+        ]
+      },
+      "seal-ink": {
+        "role": "primary",
+        "displayName": "Seal Indigo",
+        "canonical": "#3E4291",
+        "oklch": "oklch(42.0% 0.128 277.2)",
+        "tonalRamp": [
+          "#0A003F",
+          "#1B1461",
+          "#343684",
+          "#5157A8",
+          "#7079CE",
+          "#919CF4",
+          "#B4C1FF",
+          "#D9E7FF"
+        ]
+      },
+      "seal-ink-secondary": {
+        "role": "primary",
+        "displayName": "Seal Slate",
+        "canonical": "#4A4E73",
+        "oklch": "oklch(43.6% 0.061 278.8)",
+        "tonalRamp": [
+          "#070624",
+          "#1F2142",
+          "#3B3E62",
+          "#595E84",
+          "#7A7FA7",
+          "#9CA2CC",
+          "#C0C6F1",
+          "#E5EBFF"
+        ]
+      },
+      "night-ground-warm": {
+        "role": "neutral",
+        "displayName": "Warm Stock (night)",
+        "canonical": "#1B1A1B",
+        "oklch": "oklch(21.9% 0.002 325.7)",
+        "tonalRamp": [
+          "#0C0B0C",
+          "#262526",
+          "#434143",
+          "#626162",
+          "#838283",
+          "#A6A4A6",
+          "#CAC8CA",
+          "#EFEEEF"
+        ]
+      },
+      "night-ground": {
+        "role": "neutral",
+        "displayName": "Stock (night)",
+        "canonical": "#18191B",
+        "oklch": "oklch(21.3% 0.004 264.5)",
+        "tonalRamp": [
+          "#0A0B0D",
+          "#242527",
+          "#414244",
+          "#606164",
+          "#818285",
+          "#A4A5A8",
+          "#C8C9CC",
+          "#EDEEF1"
+        ]
+      },
+      "night-ground-cool": {
+        "role": "neutral",
+        "displayName": "Cool Stock (night)",
+        "canonical": "#161A19",
+        "oklch": "oklch(21.3% 0.006 179.0)",
+        "tonalRamp": [
+          "#080C0B",
+          "#222625",
+          "#3F4342",
+          "#5E6261",
+          "#7E8482",
+          "#A1A6A5",
+          "#C5CAC9",
+          "#EAF0EE"
+        ]
+      },
+      "night-rail": {
+        "role": "neutral",
+        "displayName": "Rail (night)",
+        "canonical": "#1D2120",
+        "oklch": "oklch(24.3% 0.006 179.1)",
+        "tonalRamp": [
+          "#080C0B",
+          "#222625",
+          "#3F4342",
+          "#5E6261",
+          "#7F8482",
+          "#A1A6A5",
+          "#C5CAC9",
+          "#EAF0EE"
+        ]
+      },
+      "night-ink": {
+        "role": "neutral",
+        "displayName": "Graphite Ink (night)",
+        "canonical": "#ECEBE8",
+        "oklch": "oklch(94.0% 0.004 91.4)",
+        "tonalRamp": [
+          "#0C0B09",
+          "#262523",
+          "#43423F",
+          "#62615F",
+          "#83827F",
+          "#A6A5A2",
+          "#CAC9C6",
+          "#EFEEEB"
+        ]
+      },
+      "night-ink-hover": {
+        "role": "neutral",
+        "displayName": "Graphite Ink Hover (night)",
+        "canonical": "#D4D3D0",
+        "oklch": "oklch(86.7% 0.004 91.5)",
+        "tonalRamp": [
+          "#0C0B09",
+          "#262523",
+          "#43423F",
+          "#62615E",
+          "#83827F",
+          "#A6A5A2",
+          "#CAC9C6",
+          "#EFEEEB"
+        ]
+      },
+      "night-ink-secondary": {
+        "role": "neutral",
+        "displayName": "Secondary Ink (night)",
+        "canonical": "#A9ABAF",
+        "oklch": "oklch(74.1% 0.006 264.5)",
+        "tonalRamp": [
+          "#0A0B0E",
+          "#242528",
+          "#404245",
+          "#5F6165",
+          "#808286",
+          "#A3A5A9",
+          "#C7C9CD",
+          "#ECEEF3"
+        ]
+      },
+      "night-ink-muted": {
+        "role": "neutral",
+        "displayName": "Muted Ink (night)",
+        "canonical": "#8C8F94",
+        "oklch": "oklch(64.9% 0.008 260.7)",
+        "tonalRamp": [
+          "#090B0F",
+          "#232529",
+          "#3F4246",
+          "#5F6166",
+          "#7F8287",
+          "#A2A5AA",
+          "#C6C9CF",
+          "#EBEFF4"
+        ]
+      },
+      "night-inverse-ink": {
+        "role": "neutral",
+        "displayName": "Inverse Ink (night)",
+        "canonical": "#17181A",
+        "oklch": "oklch(20.9% 0.004 264.5)",
+        "tonalRamp": [
+          "#0A0B0D",
+          "#242527",
+          "#414244",
+          "#606164",
+          "#818285",
+          "#A4A5A8",
+          "#C8C9CC",
+          "#EDEEF1"
+        ]
+      },
+      "night-press-fill": {
+        "role": "neutral",
+        "displayName": "Press Fill (night)",
+        "canonical": "#26272A",
+        "oklch": "oklch(27.3% 0.006 271.2)",
+        "tonalRamp": [
+          "#0A0B0E",
+          "#242528",
+          "#414245",
+          "#606165",
+          "#818286",
+          "#A4A5A9",
+          "#C8C9CD",
+          "#EDEEF2"
+        ]
+      },
+      "night-hover-fill": {
+        "role": "neutral",
+        "displayName": "Hover Fill (night)",
+        "canonical": "#202124",
+        "oklch": "oklch(24.8% 0.006 271.2)",
+        "tonalRamp": [
+          "#0A0B0E",
+          "#242528",
+          "#414245",
+          "#606165",
+          "#818286",
+          "#A3A5A9",
+          "#C8C9CD",
+          "#EDEEF2"
+        ]
+      },
+      "night-selection": {
+        "role": "neutral",
+        "displayName": "Selection (night)",
+        "canonical": "#3A3B3F",
+        "oklch": "oklch(35.3% 0.007 274.8)",
+        "tonalRamp": [
+          "#0A0B0E",
+          "#242529",
+          "#414246",
+          "#606165",
+          "#818287",
+          "#A3A5A9",
+          "#C8C9CE",
+          "#EDEEF3"
+        ]
+      },
+      "night-hairline": {
+        "role": "neutral",
+        "displayName": "Hairline (night)",
+        "canonical": "#3A3B3F",
+        "oklch": "oklch(35.3% 0.007 274.8)",
+        "tonalRamp": [
+          "#0A0B0E",
+          "#242529",
+          "#414246",
+          "#606165",
+          "#818287",
+          "#A3A5A9",
+          "#C8C9CE",
+          "#EDEEF3"
+        ]
+      },
+      "night-field-border": {
+        "role": "neutral",
+        "displayName": "Field Border (night)",
+        "canonical": "#55575C",
+        "oklch": "oklch(45.7% 0.008 268.5)",
+        "tonalRamp": [
+          "#0A0B0F",
+          "#232529",
+          "#404247",
+          "#5F6166",
+          "#808288",
+          "#A3A5AA",
+          "#C7C9CF",
+          "#ECEEF4"
+        ]
+      },
+      "night-danger": {
+        "role": "error",
+        "displayName": "Danger (night)",
+        "canonical": "#F2B8B5",
+        "oklch": "oklch(83.4% 0.068 22.0)",
+        "tonalRamp": [
+          "#200001",
+          "#401516",
+          "#613231",
+          "#845150",
+          "#A77270",
+          "#CC9592",
+          "#F2B8B5",
+          "#FFDDDA"
+        ]
+      },
+      "night-seal": {
+        "role": "primary",
+        "displayName": "Seal Periwinkle (night)",
+        "canonical": "#33365A",
+        "oklch": "oklch(34.8% 0.063 279.0)",
+        "tonalRamp": [
+          "#070624",
+          "#1F2143",
+          "#3B3E63",
+          "#595E85",
+          "#7A7FA8",
+          "#9CA2CC",
+          "#C0C6F2",
+          "#E5EBFF"
+        ]
+      },
+      "night-seal-ink": {
+        "role": "primary",
+        "displayName": "Seal Indigo (night)",
+        "canonical": "#C3C6F5",
+        "oklch": "oklch(84.0% 0.066 282.0)",
+        "tonalRamp": [
+          "#090525",
+          "#212044",
+          "#3D3D64",
+          "#5B5D86",
+          "#7C7EA9",
+          "#9EA1CE",
+          "#C2C5F4",
+          "#E7EAFF"
+        ]
+      },
+      "night-seal-ink-secondary": {
+        "role": "primary",
+        "displayName": "Seal Slate (night)",
+        "canonical": "#B9BCE6",
+        "oklch": "oklch(80.7% 0.059 281.8)",
+        "tonalRamp": [
+          "#090623",
+          "#212141",
+          "#3D3E61",
+          "#5B5D82",
+          "#7C7EA6",
+          "#9EA1CA",
+          "#C2C5F0",
+          "#E7EBFF"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Headword and status titles on a plate. Geist 400; 30px/34px in the notebook detail plate."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "A window's own name, e.g. 'Notebook' at the head of the rail."
+      },
+      "section": {
+        "displayName": "Section",
+        "purpose": "Group headings inside Settings."
+      },
+      "definition": {
+        "displayName": "Definition",
+        "purpose": "English definition in an entry (14.5px/22px in the notebook detail)."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "General text, navigation items, word rows; examples at 13.5-14px in secondary ink."
+      },
+      "control": {
+        "displayName": "Control",
+        "purpose": "Button, segment, field and context-menu text."
+      },
+      "chinese": {
+        "displayName": "Chinese",
+        "purpose": "Translation under each definition; examples' Chinese at 13-13.5px in muted ink. WPF base style is 15px/23px."
+      },
+      "ipa": {
+        "displayName": "Ipa",
+        "purpose": "Pronunciation only; Geist has no IPA glyphs."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Mono caps for field labels, column heads, part of speech, sense numbers, zero-padded counts, tokens, quiet text actions. Tracking applies on the web only (WPF has no letter-spacing). Never an eyebrow over a heading."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "seal-stamp",
+        "value": "180ms cubic-bezier(0.2, 0.9, 0.3, 1)",
+        "purpose": "The seal's one-time stamp when a word is first saved: scale 1.35 and -16deg to scale 1 and -8deg, opacity 0 to 1. Disabled under prefers-reduced-motion. No other motion in the system."
+      }
+    ],
+    "breakpoints": [],
+    "themes": {
+      "mechanism": "Themes/Light.xaml and Themes/Dark.xaml share one key list; ThemeService sets Fluent ThemeMode, then re-adds the palette and Shared.xaml after Fluent's dictionaries so they win. reader.css mirrors the palette as custom properties and switches on prefers-color-scheme. Night tokens carry the 'night-' prefix.",
+      "fluentOverrides": "ControlCornerRadius, OverlayCornerRadius, PopupCornerRadius = 0; AccentFillColor* and AccentTextFillColorPrimary = ink; ListViewItemPillFill = ink; AccentFillColorSelectedTextBackground = selection; TextControl* and ComboBox* borders = field-border, ink-secondary on hover, ink on focus; backgrounds transparent. ContextMenu style lives in each palette with a literal TextFillColorDisabledBrush override (ink-secondary)."
+    },
+    "focus": {
+      "value": "1px solid ink rectangle, 3px outside the control",
+      "purpose": "FocusVisualStyle on every interactive control; web equivalent outline:1px solid var(--ink); outline-offset:3px."
+    },
+    "fonts": {
+      "Geist": "bundled, SIL OFL (Assets/Fonts, licence included), 400 and 500",
+      "Geist Mono": "bundled, SIL OFL, 400",
+      "Microsoft JhengHei UI": "system, Chinese",
+      "Segoe UI": "system, IPA only",
+      "Segoe Fluent Icons": "system, icons (fallback Segoe MDL2 Assets)"
+    }
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Filled ink rectangle; the one primary action in a view, optionally with a mono shortcut hint.",
+      "html": "<button class=\"ds-btn-primary\">Add to notebook<span class=\"ds-kbd\">CTRL+S</span></button>",
+      "css": ":host{--ground-warm:#FAF6F5;--ground:#F5F4F6;--ground-cool:#EEF3EF;--ink:#16181A;--ink-hover:#2E3135;--ink-2:#5E6166;--muted:#686B71;--inverse:#FAF6F5;--hairline:#C9C7C4;--field:#B5B3B0;--press:#ECE9E7;--hover:#F2EFED;--seal:#DCDDF3;--seal-ink:#3E4291;--sans:'Geist','Microsoft JhengHei UI','Segoe UI',sans-serif;--mono:'Geist Mono',Consolas,monospace;}.ds-btn-primary{background:var(--ink);color:var(--inverse);font:400 13px var(--sans);padding:7px 14px;border:0;border-radius:0;cursor:pointer;}.ds-btn-primary:hover{background:var(--ink-hover);}.ds-btn-primary:active{opacity:.85;}.ds-btn-primary:focus-visible{outline:1px solid var(--ink);outline-offset:3px;}.ds-kbd{font:400 10.5px var(--mono);opacity:.6;margin-left:10px;}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "1px ink-outline rectangle for real secondary actions.",
+      "html": "<button class=\"ds-btn-secondary\">Export CSV</button>",
+      "css": ":host{--ground-warm:#FAF6F5;--ground:#F5F4F6;--ground-cool:#EEF3EF;--ink:#16181A;--ink-hover:#2E3135;--ink-2:#5E6166;--muted:#686B71;--inverse:#FAF6F5;--hairline:#C9C7C4;--field:#B5B3B0;--press:#ECE9E7;--hover:#F2EFED;--seal:#DCDDF3;--seal-ink:#3E4291;--sans:'Geist','Microsoft JhengHei UI','Segoe UI',sans-serif;--mono:'Geist Mono',Consolas,monospace;}.ds-btn-secondary{background:transparent;color:var(--ink);font:400 13px var(--sans);padding:7px 14px;border:1px solid var(--ink);border-radius:0;cursor:pointer;}.ds-btn-secondary:hover{background:var(--press);}.ds-btn-secondary:active{opacity:.8;}.ds-btn-secondary:focus-visible{outline:1px solid var(--ink);outline-offset:3px;}"
+    },
+    {
+      "name": "Text Action",
+      "kind": "button",
+      "refersTo": "button-text-action",
+      "description": "Mono caps on a 1px hairline rule that turns ink on hover.",
+      "html": "<button class=\"ds-btn-text\">CAMBRIDGE <svg width=\"11\" height=\"11\" viewBox=\"0 0 12 12\" fill=\"none\" stroke=\"currentColor\"><path d=\"M5 2H2v8h8V7M7 1.5h3.5V5M10.5 1.5 5.5 6.5\"/></svg></button>",
+      "css": ":host{--ground-warm:#FAF6F5;--ground:#F5F4F6;--ground-cool:#EEF3EF;--ink:#16181A;--ink-hover:#2E3135;--ink-2:#5E6166;--muted:#686B71;--inverse:#FAF6F5;--hairline:#C9C7C4;--field:#B5B3B0;--press:#ECE9E7;--hover:#F2EFED;--seal:#DCDDF3;--seal-ink:#3E4291;--sans:'Geist','Microsoft JhengHei UI','Segoe UI',sans-serif;--mono:'Geist Mono',Consolas,monospace;}.ds-btn-text{background:none;border:0;border-bottom:1px solid var(--hairline);padding:4px 0 2px;color:var(--ink);font:400 11px var(--mono);letter-spacing:.12em;cursor:pointer;display:inline-flex;gap:6px;align-items:center;}.ds-btn-text:hover{border-bottom-color:var(--ink);}.ds-btn-text:focus-visible{outline:1px solid var(--ink);outline-offset:3px;}"
+    },
+    {
+      "name": "Segmented Control",
+      "kind": "chip",
+      "refersTo": "segment",
+      "description": "Outlined cells sharing borders; the chosen cell filled with ink.",
+      "html": "<div class=\"ds-seg\"><button>New</button><button aria-pressed=\"true\">Learning</button><button>Known</button></div>",
+      "css": ":host{--ground-warm:#FAF6F5;--ground:#F5F4F6;--ground-cool:#EEF3EF;--ink:#16181A;--ink-hover:#2E3135;--ink-2:#5E6166;--muted:#686B71;--inverse:#FAF6F5;--hairline:#C9C7C4;--field:#B5B3B0;--press:#ECE9E7;--hover:#F2EFED;--seal:#DCDDF3;--seal-ink:#3E4291;--sans:'Geist','Microsoft JhengHei UI','Segoe UI',sans-serif;--mono:'Geist Mono',Consolas,monospace;}.ds-seg{display:inline-flex;}.ds-seg button{background:transparent;color:var(--ink);font:400 13px var(--sans);padding:6px 12px;border:1px solid var(--field);border-radius:0;margin-left:-1px;cursor:pointer;}.ds-seg button:hover{background:var(--press);}.ds-seg button[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:var(--inverse);position:relative;}.ds-seg button:focus-visible{outline:1px solid var(--ink);outline-offset:3px;position:relative;}"
+    },
+    {
+      "name": "Outlined Field",
+      "kind": "input",
+      "refersTo": "field-outline",
+      "description": "Square 1px field-border frame, transparent; ink border on focus. Mono label 6px above.",
+      "html": "<label class=\"ds-field\"><span>CATEGORY</span><input placeholder=\"Uncategorized\"></label>",
+      "css": ":host{--ground-warm:#FAF6F5;--ground:#F5F4F6;--ground-cool:#EEF3EF;--ink:#16181A;--ink-hover:#2E3135;--ink-2:#5E6166;--muted:#686B71;--inverse:#FAF6F5;--hairline:#C9C7C4;--field:#B5B3B0;--press:#ECE9E7;--hover:#F2EFED;--seal:#DCDDF3;--seal-ink:#3E4291;--sans:'Geist','Microsoft JhengHei UI','Segoe UI',sans-serif;--mono:'Geist Mono',Consolas,monospace;}.ds-field{display:grid;gap:6px;}.ds-field span{font:400 11px var(--mono);letter-spacing:.12em;color:var(--muted);}.ds-field input{height:32px;padding:0 10px;background:transparent;border:1px solid var(--field);border-radius:0;color:var(--ink);font:400 13px var(--sans);}.ds-field input::placeholder{color:var(--muted);}.ds-field input:hover{border-color:var(--ink-2);}.ds-field input:focus-visible{outline:none;border-color:var(--ink);}"
+    },
+    {
+      "name": "Baseline Field",
+      "kind": "input",
+      "description": "Single-line field on a 1px ink baseline with no box (search box, name prompt).",
+      "html": "<input class=\"ds-baseline\" placeholder=\"Look up a word or phrase\">",
+      "css": ":host{--ground-warm:#FAF6F5;--ground:#F5F4F6;--ground-cool:#EEF3EF;--ink:#16181A;--ink-hover:#2E3135;--ink-2:#5E6166;--muted:#686B71;--inverse:#FAF6F5;--hairline:#C9C7C4;--field:#B5B3B0;--press:#ECE9E7;--hover:#F2EFED;--seal:#DCDDF3;--seal-ink:#3E4291;--sans:'Geist','Microsoft JhengHei UI','Segoe UI',sans-serif;--mono:'Geist Mono',Consolas,monospace;}.ds-baseline{width:100%;background:transparent;border:0;border-bottom:1px solid var(--ink);border-radius:0;padding:0 0 12px;font:400 26px var(--sans);color:var(--ink);}.ds-baseline::placeholder{color:var(--muted);}.ds-baseline:focus-visible{outline:none;}"
+    },
+    {
+      "name": "Category Rail",
+      "kind": "nav",
+      "description": "Notebook navigation; the current item marked by a 5px ink dot and ink text, never a filled block.",
+      "html": "<nav class=\"ds-rail\"><a aria-current=\"true\"><i></i>All words<b>03</b></a><a><i></i>Uncategorized<b>02</b></a><a><i></i>Architecture<b>01</b></a></nav>",
+      "css": ":host{--ground-warm:#FAF6F5;--ground:#F5F4F6;--ground-cool:#EEF3EF;--ink:#16181A;--ink-hover:#2E3135;--ink-2:#5E6166;--muted:#686B71;--inverse:#FAF6F5;--hairline:#C9C7C4;--field:#B5B3B0;--press:#ECE9E7;--hover:#F2EFED;--seal:#DCDDF3;--seal-ink:#3E4291;--sans:'Geist','Microsoft JhengHei UI','Segoe UI',sans-serif;--mono:'Geist Mono',Consolas,monospace;}.ds-rail{background:var(--ground-cool);width:220px;padding:8px 0;}.ds-rail a{display:flex;align-items:center;padding:9px 22px 9px 10px;font:400 14px var(--sans);color:var(--ink-2);cursor:pointer;}.ds-rail a i{width:5px;height:5px;border-radius:50%;margin-right:7px;}.ds-rail a b{margin-left:auto;font:400 11px var(--mono);}.ds-rail a:hover{background:var(--hover);}.ds-rail a[aria-current=true]{color:var(--ink);}.ds-rail a[aria-current=true] i{background:var(--ink);}.ds-rail a:focus-visible{outline:1px solid var(--ink);outline-offset:3px;}"
+    },
+    {
+      "name": "Word Rows",
+      "kind": "card",
+      "refersTo": "list-row-selected",
+      "description": "Hairline-ruled rows under mono column heads on an ink rule; selection is press-fill with an ink rule.",
+      "html": "<div class=\"ds-table\"><div class=\"ds-head\"><span>WORD</span><span>STATUS</span><span>LOOKUPS</span></div><div class=\"ds-row ds-sel\"><span>resilience</span><span class=\"m\">LEARNING</span><span class=\"m\">01</span></div><div class=\"ds-row\"><span>charge</span><span class=\"m\">NEW</span><span class=\"m\">01</span></div></div>",
+      "css": ":host{--ground-warm:#FAF6F5;--ground:#F5F4F6;--ground-cool:#EEF3EF;--ink:#16181A;--ink-hover:#2E3135;--ink-2:#5E6166;--muted:#686B71;--inverse:#FAF6F5;--hairline:#C9C7C4;--field:#B5B3B0;--press:#ECE9E7;--hover:#F2EFED;--seal:#DCDDF3;--seal-ink:#3E4291;--sans:'Geist','Microsoft JhengHei UI','Segoe UI',sans-serif;--mono:'Geist Mono',Consolas,monospace;}.ds-table{width:420px;font:400 14px var(--sans);color:var(--ink);}.ds-head,.ds-row{display:grid;grid-template-columns:2fr 1fr 1fr;padding:9px 6px;}.ds-head{border-bottom:1px solid var(--ink);font:400 11px var(--mono);letter-spacing:.12em;color:var(--muted);padding-top:0;}.ds-row{border-bottom:1px solid var(--hairline);}.ds-row:hover{background:var(--hover);}.ds-row.ds-sel{background:var(--press);border-bottom-color:var(--ink);}.ds-row .m{font:400 11px var(--mono);}"
+    },
+    {
+      "name": "Notebook Seal",
+      "kind": "custom",
+      "refersTo": "seal",
+      "description": "The signature mark: an 88px periwinkle disc at -8deg, ring text NOTEBOOK · CATEGORY · DATE, zero-padded count. Stamps once in 180ms.",
+      "html": "<svg class=\"ds-seal\" viewBox=\"0 0 92 92\" width=\"88\" height=\"88\"><circle cx=\"46\" cy=\"46\" r=\"45\"/><path id=\"ds-ring\" d=\"M46 46 m-34 0 a34 34 0 1 1 68 0 a34 34 0 1 1 -68 0\" fill=\"none\"/><text class=\"ring\"><textPath href=\"#ds-ring\" textLength=\"211\" lengthAdjust=\"spacing\">Notebook · Architecture · 2026.10.05 · </textPath></text><text class=\"count\" x=\"46\" y=\"54\">03</text></svg>",
+      "css": ":host{--ground-warm:#FAF6F5;--ground:#F5F4F6;--ground-cool:#EEF3EF;--ink:#16181A;--ink-hover:#2E3135;--ink-2:#5E6166;--muted:#686B71;--inverse:#FAF6F5;--hairline:#C9C7C4;--field:#B5B3B0;--press:#ECE9E7;--hover:#F2EFED;--seal:#DCDDF3;--seal-ink:#3E4291;--sans:'Geist','Microsoft JhengHei UI','Segoe UI',sans-serif;--mono:'Geist Mono',Consolas,monospace;}.ds-seal{transform:rotate(-8deg);animation:ds-stamp 180ms cubic-bezier(.2,.9,.3,1) both;}.ds-seal circle{fill:var(--seal);}.ds-seal .ring{font:400 7.6px var(--mono);letter-spacing:.16em;text-transform:uppercase;fill:var(--seal-ink);}.ds-seal .count{font:400 22px var(--sans);letter-spacing:-.02em;fill:var(--seal-ink);text-anchor:middle;}@keyframes ds-stamp{from{opacity:0;transform:scale(1.35) rotate(-16deg);}to{opacity:1;transform:scale(1) rotate(-8deg);}}@media (prefers-reduced-motion:reduce){.ds-seal{animation:none;}}"
+    },
+    {
+      "name": "Plate with Registration Crosshairs",
+      "kind": "custom",
+      "description": "Gradient stock, 1px hairline edge, 18px crosshairs 10px in from the top corners, headword in Geist 400.",
+      "html": "<div class=\"ds-plate\"><svg class=\"ds-cross l\" viewBox=\"0 0 18 18\"><path d=\"M9 0V18M0 9H18\"/><circle cx=\"9\" cy=\"9\" r=\"4.5\"/></svg><svg class=\"ds-cross r\" viewBox=\"0 0 18 18\"><path d=\"M9 0V18M0 9H18\"/><circle cx=\"9\" cy=\"9\" r=\"4.5\"/></svg><div class=\"hw\">resilience</div><div class=\"pos\">NOUN</div></div>",
+      "css": ":host{--ground-warm:#FAF6F5;--ground:#F5F4F6;--ground-cool:#EEF3EF;--ink:#16181A;--ink-hover:#2E3135;--ink-2:#5E6166;--muted:#686B71;--inverse:#FAF6F5;--hairline:#C9C7C4;--field:#B5B3B0;--press:#ECE9E7;--hover:#F2EFED;--seal:#DCDDF3;--seal-ink:#3E4291;--sans:'Geist','Microsoft JhengHei UI','Segoe UI',sans-serif;--mono:'Geist Mono',Consolas,monospace;}.ds-plate{position:relative;width:380px;padding:30px 28px 28px;background:linear-gradient(160deg,var(--ground-warm),var(--ground) 55%,var(--ground-cool));border:1px solid var(--hairline);}.ds-cross{position:absolute;top:10px;width:18px;height:18px;stroke:var(--muted);stroke-width:1;fill:none;}.ds-cross.l{left:10px;}.ds-cross.r{right:10px;}.ds-plate .hw{font:400 34px/1.12 var(--sans);letter-spacing:-.02em;color:var(--ink);}.ds-plate .pos{margin-top:12px;font:400 11px var(--mono);letter-spacing:.12em;color:var(--ink-2);}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Plate Section",
+    "overview": "Every LookUp window is a plate from a design annual. The stock is an uncoated near-white that drifts warm at the top left to faintly cool at the bottom right; there is one ink, never pure black; one grotesque carries all English, and its mono sets the labels, counts and tokens. Structure comes from 1px hairline rules, not boxes or fills. Registration crosshairs sit at a plate's top corners, the way they would on a printed proof. The dictionary entry is the plate; the notebook reads like the annual's index of plates.\n\nColour is withheld so it can mean something. The single periwinkle accent exists for the notebook seal (a stamped disc with its text running round the ring and a two-digit count in the middle) and for the phrase a search matched. Everything else, including selection, hover and the primary action, is done in ink and neutral grounds. Controls are square, flat and printed: filled ink for the one primary action, 1px ink outline for secondary actions, mono caps on a hairline rule for quiet text actions.\n\nThe system rides on WPF's Fluent ThemeMode and overrides it rather than replacing it: corner radii are zeroed, Fluent's accent keys are re-pointed at ink, and field borders take the palette. Light and dark are the same plate; dark is the plate at night, near-black stock with the ink reversed and the seal deepened.",
+    "keyCharacteristics": [
+      "Gradient stock (warm to cool, top left to bottom right), solid ground for menus and inset panels.",
+      "One ink at three strengths (ink, secondary, muted); no pure black, no pure white.",
+      "1px hairlines for structure; a 1px ink rule where something is emphasised (column heads, selected row, single-line field baseline, second part-of-speech section).",
+      "Square corners on every control, container and window.",
+      "Geist for English, Geist Mono 11px caps for labels and data, Microsoft JhengHei UI for Chinese, Segoe UI for IPA only.",
+      "One accent, periwinkle, for the seal and the matched phrase and nothing else."
+    ],
+    "rules": [
+      {
+        "name": "The One Seal Rule",
+        "body": "Periwinkle appears in exactly two places: the notebook seal and the phrase block a search matched. Selection, hover, focus, the current item and the primary action never use it. If a new surface wants colour, it does not get it.",
+        "section": "colors"
+      },
+      {
+        "name": "The Neutral Selection Rule",
+        "body": "A selected row is `press-fill` with its bottom rule turned to ink; text selection is `selection`. Selection reads as the plate being pressed, not tinted.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ink Not Black Rule",
+        "body": "Text and fills use `ink` (and its night counterpart), never #000 or #FFF.",
+        "section": "colors"
+      },
+      {
+        "name": "The Regular Weight Rule",
+        "body": "Headwords and titles are Geist 400. Weight 500 is reserved for a phrase title or a bolded word inside an example; nothing in the UI is bold.",
+        "section": "typography"
+      },
+      {
+        "name": "The Label Is Not An Eyebrow Rule",
+        "body": "Mono caps name a field, a column, a count or a token. They never sit above a heading as a decorative kicker.",
+        "section": "typography"
+      },
+      {
+        "name": "The Right Face For The Script Rule",
+        "body": "English in Geist, Chinese in JhengHei, IPA in Segoe UI. Never let IPA fall back inside Geist.",
+        "section": "typography"
+      },
+      {
+        "name": "The Printed Plate Rule",
+        "body": "Separation is a rule, not a shadow or a card. If two regions need dividing, draw a 1px hairline between them; if one needs emphasis, turn that rule to ink.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** keep every control, field, menu and window square (0px radius); keep circles for the seal, the navigation dot and the crosshair ring.",
+      "**Do** divide regions with a 1px `hairline` and emphasise with a 1px `ink` rule.",
+      "**Do** mark the current navigation item with the 5px ink dot and ink text.",
+      "**Do** show selection as `press-fill` with an ink rule, and text selection as `selection`.",
+      "**Do** set labels, counts and tokens in Geist Mono 11px caps, counts zero-padded (`03`).",
+      "**Do** give each view one filled-ink primary action; use the 1px ink outline for real secondary actions and mono text-on-a-rule for quiet ones.",
+      "**Do** keep light and dark palettes on one key list and add any new key to Light.xaml, Dark.xaml and reader.css together.",
+      "**Do** keep the \"Open in Cambridge\" action and Cambridge's source line visible on entries."
+    ],
+    "donts": [
+      "**Don't** use periwinkle for anything except the seal and the matched phrase: not selection, hover, focus, links or the current item.",
+      "**Don't** fill a navigation item with ink to show it is current; filled ink means a primary action or the chosen segment.",
+      "**Don't** add drop shadows, cards or tinted panels to separate content.",
+      "**Don't** set headwords or titles bold; display type is Geist 400.",
+      "**Don't** put a mono caps label above a heading as an eyebrow.",
+      "**Don't** animate the seal continuously or on every lookup; it stamps once, in 180ms, and honours reduced motion.",
+      "**Don't** use pure black or pure white for ink or ground.",
+      "**Don't** put a shared brush in a style's `Style.Resources` when it must change with the theme; give each palette its own literal."
+    ]
+  }
+}

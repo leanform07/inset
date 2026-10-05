@@ -5,6 +5,45 @@
   if (window !== window.top || location.hostname !== 'dictionary.cambridge.org') return;
 
   const post = msg => window.chrome.webview.postMessage(msg);
+  const SVG = 'http://www.w3.org/2000/svg';
+
+  function svg(tag, attributes = {}) {
+    const el = document.createElementNS(SVG, tag);
+    for (const [name, value] of Object.entries(attributes)) el.setAttribute(name, value);
+    return el;
+  }
+
+  // Registration mark for the plate's top corners.
+  function crosshair(className) {
+    const mark = svg('svg', { class: `lu-cross ${className}`, viewBox: '0 0 18 18', 'aria-hidden': 'true' });
+    mark.append(svg('path', { d: 'M9 0V18M0 9H18' }), svg('circle', { cx: 9, cy: 9, r: 4.5 }));
+    return mark;
+  }
+
+  // The notebook seal, stamped half over the plate's top-right corner. Called by the app:
+  // __lookupSeal({ category, date, count, animate }) to stamp, __lookupSeal(null) to lift it.
+  window.__lookupSeal = seal => {
+    const root = document.getElementById('lu-root');
+    if (!root) return;
+    root.querySelector('.lu-seal')?.remove();
+    root.classList.toggle('lu-sealed', !!seal);
+    if (!seal) return;
+
+    const stamp = svg('svg', { class: 'lu-seal', viewBox: '0 0 92 92', role: 'img',
+                               'aria-label': `In notebook: ${seal.category}` });
+    const ring = svg('path', { id: 'lu-seal-ring', d: 'M46 46 m-34 0 a34 34 0 1 1 68 0 a34 34 0 1 1 -68 0', fill: 'none' });
+    const text = svg('text', { class: 'ring' });
+    // textLength spreads or tightens the letters so the ring always closes on itself.
+    const path = svg('textPath', { href: '#lu-seal-ring', startOffset: '0', textLength: 211, lengthAdjust: 'spacing' });
+    const category = seal.category.length > 14 ? `${seal.category.slice(0, 13)}…` : seal.category;
+    path.textContent = `Notebook · ${category} · ${seal.date} · `;
+    text.append(path);
+    const count = svg('text', { class: 'count', x: 46, y: 54 });
+    count.textContent = String(Math.max(seal.count, 1)).padStart(2, '0');
+    stamp.append(svg('circle', { cx: 46, cy: 46, r: 45 }), ring, text, count);
+    if (seal.animate) stamp.classList.add('stamp');
+    root.append(stamp);
+  };
 
   function apply() {
     if (window._cf_chl_opt) {
@@ -29,7 +68,7 @@
 
     const root = document.createElement('main');
     root.id = 'lu-root';
-    root.append(entry);
+    root.append(crosshair('lu-cross-l'), crosshair('lu-cross-r'), entry);
     const source = document.querySelector('.definition-src');
     if (source) root.append(source);
     document.body.append(root);

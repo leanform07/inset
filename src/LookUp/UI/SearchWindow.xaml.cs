@@ -16,8 +16,18 @@ public partial class SearchWindow : Window
         PreviewKeyDown += OnPreviewKeyDown;
     }
 
-    public void SetShortcuts(string lookupSelection, string notebook) =>
-        Hint.Text = $"Enter to search  ·  {lookupSelection} selected text  ·  {notebook} notebook";
+    public void SetShortcuts(string lookupSelection, string notebook)
+    {
+        Hint.Inlines.Clear();
+        foreach (var (keys, action) in new[] { ("ENTER", "SEARCH"), (lookupSelection, "SELECTED TEXT"), (notebook, "NOTEBOOK") })
+        {
+            if (Hint.Inlines.Count > 0) Hint.Inlines.Add(new System.Windows.Documents.Run("      "));
+            var key = new System.Windows.Documents.Run(keys.ToUpperInvariant());
+            key.SetResourceReference(System.Windows.Documents.TextElement.ForegroundProperty, "InkBrush");
+            Hint.Inlines.Add(key);
+            Hint.Inlines.Add(new System.Windows.Documents.Run("  " + action));
+        }
+    }
 
     public void ShowSearch()
     {

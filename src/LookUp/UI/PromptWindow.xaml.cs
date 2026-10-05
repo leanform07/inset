@@ -5,13 +5,14 @@ namespace LookUp.UI;
 /// <summary>A one-line text prompt, used for category names.</summary>
 public partial class PromptWindow : Window
 {
-    PromptWindow() => InitializeComponent();
+    internal PromptWindow() => InitializeComponent(); // use Ask(); internal so tests can render it
 
     /// <returns>The trimmed text, or null if cancelled or left blank.</returns>
-    public static string? Ask(Window owner, string title, string initial = "")
+    public static string? Ask(Window owner, string title, string initial = "", string action = "Save")
     {
         var prompt = new PromptWindow { Owner = owner, Title = title };
         prompt.Input.Text = initial;
+        prompt.ActionButton.Content = action;
         prompt.Loaded += (_, _) =>
         {
             prompt.Input.Focus();

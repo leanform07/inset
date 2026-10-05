@@ -3,6 +3,7 @@ using System.IO;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Threading;
 using LookUp.Lookup;
 using LookUp.Notebook;
@@ -31,7 +32,13 @@ public partial class PopupWindow : Window
         _notebook = notebook;
         InitializeComponent();
         CategoryBox.ItemsSource = notebook.Categories;
-        SourceInitialized += (_, _) => WindowEffects.MakeFloating(this);
+        SourceInitialized += (_, _) =>
+        {
+            WindowEffects.MakeFloating(this);
+            WindowEffects.RemoveMaximize(this);
+            HwndSource.FromHwnd(new WindowInteropHelper(this).Handle).AddHook(WndProc);
+        };
+        StateChanged += (_, _) => { if (WindowState != WindowState.Normal) WindowState = WindowState.Normal; };
         Deactivated += (_, _) => Dismiss();
         PreviewKeyDown += OnPreviewKeyDown;
 
@@ -65,6 +72,11 @@ public partial class PopupWindow : Window
         core.Settings.IsStatusBarEnabled = false;
         core.Settings.IsZoomControlEnabled = false;
         await core.AddScriptToExecuteOnDocumentCreatedAsync(Cambridge.ReaderScript());
+
+        // reader.css loads the app's fonts from /__lookup/ on the Cambridge origin, so no
+        // cross-origin rules apply; the app answers those requests itself.
+        core.AddWebResourceRequestedFilter($"https://{Cambridge.Host}/__lookup/*", CoreWebView2WebResourceContext.All);
+        core.WebResourceRequested += OnAppResourceRequested;
         ApplyTheme();
         ThemeService.Changed += ApplyTheme;
         core.NavigationStarting += OnNavigationStarting;
@@ -80,6 +92,25 @@ public partial class PopupWindow : Window
         ShowActivated = true;
     }
 
+    static readonly HashSet<string> ServedFonts = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "Geist-Regular.ttf", "Geist-Medium.ttf", "GeistMono-Regular.ttf",
+    };
+
+    void OnAppResourceRequested(object? sender, CoreWebView2WebResourceRequestedEventArgs e)
+    {
+        var environment = Web.CoreWebView2.Environment;
+        var name = Path.GetFileName(new Uri(e.Request.Uri).AbsolutePath);
+        if (!ServedFonts.Contains(name))
+        {
+            e.Response = environment.CreateWebResourceResponse(null, 404, "Not Found", "");
+            return;
+        }
+        var font = Application.GetResourceStream(new Uri($"pack://application:,,,/LookUp;component/Assets/Fonts/{name}"));
+        e.Response = environment.CreateWebResourceResponse(font.Stream, 200, "OK",
+            "Content-Type: font/ttf\r\nCache-Control: max-age=31536000");
+    }
+
     /// <summary>The entry page follows the app theme through prefers-color-scheme (see reader.css).</summary>
     void ApplyTheme()
     {
@@ -87,7 +118,7 @@ public partial class PopupWindow : Window
         core.Profile.PreferredColorScheme = ThemeService.IsDark
             ? CoreWebView2PreferredColorScheme.Dark
             : CoreWebView2PreferredColorScheme.Light;
-        var surface = (System.Windows.Media.Color)FindResource("SurfaceColor");
+        var surface = (System.Windows.Media.Color)FindResource("GroundWarmColor");
         Web.DefaultBackgroundColor = System.Drawing.Color.FromArgb(surface.R, surface.G, surface.B);
     }
 
@@ -149,24 +180,32 @@ public partial class PopupWindow : Window
         Web.Visibility = Visibility.Hidden;
         StatusPanel.Visibility = Visibility.Visible;
         StatusTitle.Text = _query;
+        StatusTitle.Visibility = Visibility.Visible;
         StatusMessage.Text = "Searching…";
         OpenInCambridgeButton.Visibility = Visibility.Visible;
         SuggestionsPanel.Visibility = Visibility.Collapsed;
         ActionsPanel.Visibility = Visibility.Collapsed;
-        FooterNote.Text = "";
+        SetTokens();
         _slowTimer.Start();
         _timeoutTimer.Start();
         Focus(); // keep Esc working while the WebView is hidden
     }
 
-    void ShowPage(string footerNote = "")
+    void ShowPage(string? source = null, string count = "")
     {
         _state = State.Showing;
         StopTimers();
         StatusPanel.Visibility = Visibility.Collapsed;
         Web.Visibility = Visibility.Visible;
-        FooterNote.Text = footerNote;
+        SetTokens(source, count);
         if (IsActive) Web.Focus(); // arrow keys / PageDown scroll the entry
+    }
+
+    /// <summary>The token bar: which dictionary the entry is from, and how often the word has come up.</summary>
+    void SetTokens(string? source = null, string count = "")
+    {
+        SourceToken.Text = source ?? "EN · 中文";
+        CountToken.Text = count;
     }
 
     void ShowMessage(string message, bool retry = false, IReadOnlyList<string>? suggestions = null, bool actions = true)
@@ -176,6 +215,7 @@ public partial class PopupWindow : Window
         Web.Visibility = Visibility.Hidden;
         StatusPanel.Visibility = Visibility.Visible;
         StatusTitle.Text = _query;
+        StatusTitle.Visibility = _query.Length > 0 ? Visibility.Visible : Visibility.Collapsed; // notices have no word
         StatusMessage.Text = message;
         Suggestions.ItemsSource = suggestions;
         SuggestionsPanel.Visibility = suggestions is { Count: > 0 } ? Visibility.Visible : Visibility.Collapsed;
@@ -236,11 +276,11 @@ public partial class PopupWindow : Window
                 var lookups = _notebook.RecordLookup(_entry.Headword);
                 // Cambridge's own search falls back to its English-only dictionary when the
                 // English–Chinese one lacks the word; say so, or the missing Chinese looks like a bug.
-                var notes = new List<string>();
-                if (Cambridge.IsEnglishOnly(_entry.SourceUrl)) notes.Add("English only · no Chinese translation");
-                if (lookups.Count >= 2) notes.Add($"Looked up {lookups.Count} times");
-                ShowPage(string.Join("  ·  ", notes));
+                ShowPage(
+                    Cambridge.IsEnglishOnly(_entry.SourceUrl) ? "EN ONLY · NO CHINESE" : null,
+                    lookups.Count >= 2 ? $"LOOKED UP {lookups.Count:00}" : "");
                 UpdateNotebookButton();
+                UpdateSeal(animate: false);
                 break;
             case "other":
                 ShowPage();
@@ -248,7 +288,7 @@ public partial class PopupWindow : Window
             case "challenge":
                 // Cloudflare checks a new browser profile once, then reloads the real page.
                 // The page must stay visible: a hidden WebView pauses the check.
-                ShowPage("One-time security check by Cloudflare…");
+                ShowPage("ONE-TIME SECURITY CHECK · CLOUDFLARE");
                 break;
             case "noresult":
                 var suggestions = message.RootElement.GetProperty("suggestions")
@@ -256,6 +296,63 @@ public partial class PopupWindow : Window
                 ShowMessage("No Cambridge Dictionary entry found.", suggestions: suggestions);
                 break;
         }
+    }
+
+    // ── Moving and sizing ─────────────────────────────────────
+
+    public const double DefaultWidth = 440, DefaultHeight = 560;
+
+    /// <summary>Raised when the user resizes the window or resets it; null means the default size.</summary>
+    internal event Action<Size?>? SizeChosen;
+
+    Size? _chosenSize;
+
+    /// <summary>Applies a remembered size (null for the default).</summary>
+    internal void UseSize(Size? size)
+    {
+        _chosenSize = size;
+        Width = Math.Max(MinWidth, size?.Width ?? DefaultWidth);
+        Height = Math.Max(MinHeight, size?.Height ?? DefaultHeight);
+        ResetSizeButton.Visibility = size == null ? Visibility.Collapsed : Visibility.Visible;
+    }
+
+    void OnTokenBarMouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.ClickCount == 2) ResetSize();
+        else if (e.ButtonState == MouseButtonState.Pressed) DragMove();
+    }
+
+    void OnResetSizeClick(object sender, RoutedEventArgs e)
+    {
+        ResetSize();
+        if (_state == State.Showing) Web.Focus();
+        else Focus();
+    }
+
+    void ResetSize()
+    {
+        if (_chosenSize == null) return;
+        UseSize(null);
+        SizeChosen?.Invoke(null);
+    }
+
+    const int WM_EXITSIZEMOVE = 0x0232;
+
+    IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+    {
+        if (msg == WM_EXITSIZEMOVE) OnSizeMoveEnded();
+        return IntPtr.Zero;
+    }
+
+    /// <summary>After a drag on the edges, remembers the new size (a plain move changes nothing).</summary>
+    void OnSizeMoveEnded()
+    {
+        var size = new Size(Math.Round(ActualWidth), Math.Round(ActualHeight));
+        var current = _chosenSize ?? new Size(DefaultWidth, DefaultHeight);
+        if (size == current) return;
+        var chosen = size == new Size(DefaultWidth, DefaultHeight) ? (Size?)null : size;
+        UseSize(chosen);
+        SizeChosen?.Invoke(chosen);
     }
 
     void OnPreviewKeyDown(object sender, KeyEventArgs e)
@@ -296,7 +393,9 @@ public partial class PopupWindow : Window
         }
 
         // Saving is immediate; the panel only offers optional details.
-        _editing = _notebook.Find(_entry.Headword) ?? _notebook.Add(_entry);
+        var existing = _notebook.Find(_entry.Headword);
+        _editing = existing ?? _notebook.Add(_entry);
+        if (existing == null) UpdateSeal(animate: true); // the stamp: once, when the word is first saved
         CategoryBox.Text = _editing.Category;
         StatusNew.IsChecked = _editing.Status == Familiarity.New;
         StatusLearning.IsChecked = _editing.Status == Familiarity.Learning;
@@ -316,6 +415,7 @@ public partial class PopupWindow : Window
         _editing = null;
         NotePanel.Visibility = Visibility.Collapsed;
         UpdateNotebookButton();
+        UpdateSeal(animate: false);
         if (_state == State.Showing) Web.Focus();
     }
 
@@ -331,16 +431,35 @@ public partial class PopupWindow : Window
         _editing = null;
         NotePanel.Visibility = Visibility.Collapsed;
         UpdateNotebookButton();
+        UpdateSeal(animate: false); // the category is written on the seal
         if (_state == State.Showing && IsActive) Web.Focus();
     }
 
+    /// <summary>Filled ink "Add to notebook" until the word is saved, then an outline naming its category.</summary>
     void UpdateNotebookButton()
     {
-        var saved = _entry != null && _notebook.Find(_entry.Headword) is { } note
-            ? (note.Category.Length > 0 ? $"★ {note.Category}" : "★ In notebook")
-            : null;
-        NotebookButton.Content = saved ?? "☆ Add to notebook";
+        var note = _entry == null ? null : _notebook.Find(_entry.Headword);
+        NotebookButton.Style = (Style)FindResource(note == null ? "PrimaryButton" : "SecondaryButton");
+        NotebookIcon.Text = note == null ? "\uE734" : "\uE735"; // FavoriteStar / FavoriteStarFill
+        NotebookLabel.Text = note == null ? "Add to notebook"
+                           : note.Category.Length > 0 ? note.Category
+                           : "In notebook";
         NotebookButton.Visibility = _entry != null ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    /// <summary>Stamps (or clears) the seal on the entry page; reader.js draws it.</summary>
+    void UpdateSeal(bool animate)
+    {
+        if (_state != State.Showing || _entry == null || Web.CoreWebView2 == null) return;
+        var note = _notebook.Find(_entry.Headword);
+        var seal = note == null ? "null" : JsonSerializer.Serialize(new
+        {
+            category = note.Category.Length > 0 ? note.Category : "Uncategorized",
+            date = note.AddedAt.ToString("yyyy.MM.dd"),
+            count = note.LookupCount,
+            animate,
+        });
+        _ = Web.CoreWebView2.ExecuteScriptAsync($"window.__lookupSeal && window.__lookupSeal({seal})");
     }
 
     static EntrySummary ParseSummary(JsonElement s)
