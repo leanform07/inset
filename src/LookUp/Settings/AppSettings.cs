@@ -82,7 +82,7 @@ readonly record struct Hotkey(ModifierKeys Modifiers, Key Key)
     }
 }
 
-/// <summary>User preferences in %AppData%\LookUp\settings.json. Launch-at-startup lives in the registry instead.</summary>
+/// <summary>User preferences in %AppData%\Inset\settings.json. Launch-at-startup lives in the registry instead.</summary>
 sealed class AppSettings
 {
     public static readonly Hotkey DefaultLookupSelection = new(ModifierKeys.Control | ModifierKeys.Alt, Key.D);
@@ -125,8 +125,7 @@ sealed class AppSettings
         Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping, // keep "Ctrl+Alt+D" readable
     };
 
-    public static string DefaultPath => Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LookUp", "settings.json");
+    public static string DefaultPath => Path.Combine(AppFolders.Roaming, "settings.json");
 
     public static AppSettings Load(string path)
     {

@@ -6,9 +6,14 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <!-- The product is Inset; the code keeps the LookUp namespace it was written under. -->
+    <AssemblyName>Inset</AssemblyName>
+    <RootNamespace>LookUp</RootNamespace>
+    <Product>Inset</Product>
+    <AssemblyTitle>Inset</AssemblyTitle>
     <!-- Only for the notification-area icon (NotifyIcon). -->
     <UseWindowsForms>true</UseWindowsForms>
-    <ApplicationIcon>Assets\LookUp.ico</ApplicationIcon>
+    <ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <!-- WFO0003 asks Windows Forms apps to set DPI in code; this is a WPF app, where the manifest is the right place. -->
     <NoWarn>$(NoWarn);WFO0003</NoWarn>
@@ -26,7 +31,8 @@
     <!-- Windows Forms is only used for NotifyIcon; keep its names out of the global namespace. -->
     <Using Remove="System.Windows.Forms" />
     <Using Remove="System.Drawing" />
-    <Resource Include="Assets\LookUp.ico" />
+    <!-- Drawn by tools/make_icon.py; no letters, so it does not depend on the name. -->
+    <Resource Include="Assets\AppIcon.ico" />
     <Resource Include="Assets\Fonts\*.ttf" />
     <!-- Geist is SIL OFL 1.1: the licence travels with the fonts. -->
     <None Include="Assets\Fonts\Geist-OFL.txt" CopyToOutputDirectory="PreserveNewest" />

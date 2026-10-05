@@ -376,7 +376,7 @@ public partial class NotebookWindow : Window
         var dialog = new SaveFileDialog
         {
             Filter = "CSV file (*.csv)|*.csv",
-            FileName = $"LookUp notebook {DateTime.Now:yyyy-MM-dd}.csv",
+            FileName = $"Inset notebook {DateTime.Now:yyyy-MM-dd}.csv",
         };
         if (dialog.ShowDialog(this) != true) return;
 

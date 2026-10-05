@@ -1,5 +1,5 @@
 ---
-name: LookUp
+name: Inset
 description: A design annual's plate section, set beside the cursor. Near-white stock, one ink, one grotesque, hairline rules, and a single periwinkle seal.
 colors:
   ground-warm: "#FAF6F5"
@@ -158,13 +158,13 @@ components:
     size: "88px"
 ---
 
-# Design System: LookUp
+# Design System: Inset
 
 ## Overview
 
 **Creative North Star: "The Plate Section"**
 
-Every LookUp window is a plate from a design annual. The stock is an uncoated near-white that drifts warm at the top left to faintly cool at the bottom right; there is one ink, never pure black; one grotesque carries all English, and its mono sets the labels, counts and tokens. Structure comes from 1px hairline rules, not boxes or fills. Registration crosshairs sit at a plate's top corners, the way they would on a printed proof. The dictionary entry is the plate; the notebook reads like the annual's index of plates.
+Every Inset window is a plate from a design annual. The stock is an uncoated near-white that drifts warm at the top left to faintly cool at the bottom right; there is one ink, never pure black; one grotesque carries all English, and its mono sets the labels, counts and tokens. Structure comes from 1px hairline rules, not boxes or fills. Registration crosshairs sit at a plate's top corners, the way they would on a printed proof. The dictionary entry is the plate; the notebook reads like the annual's index of plates.
 
 Colour is withheld so it can mean something. The single periwinkle accent exists for the notebook seal (a stamped disc with its text running round the ring and a two-digit count in the middle) and for the phrase a search matched. Everything else, including selection, hover and the primary action, is done in ink and neutral grounds. Controls are square, flat and printed: filled ink for the one primary action, 1px ink outline for secondary actions, mono caps on a hairline rule for quiet text actions.
 
@@ -294,6 +294,9 @@ An 18px mark (vertical and horizontal stroke through a 4.5px-radius ring), 1px `
 
 ### Notebook seal (signature)
 An 88px `seal` disc rotated -8deg, half over the plate's top-right corner. Its ring carries `NOTEBOOK · <CATEGORY> · <DATE>` in Geist Mono 7.6px caps (0.16em tracking), letters spread evenly so the text closes on itself; the centre holds the lookup count in Geist 22px, zero-padded. All in `seal-ink`. The web draws it as SVG with a `textPath`; WPF draws the same 92-unit geometry in `SealStamp`. Saved words keep the seal on every later lookup. It animates once, when a word is first saved: 180ms from 1.35 scale and -16deg to rest, `cubic-bezier(0.2, 0.9, 0.3, 1)`, skipped under reduced motion. It never rotates or animates otherwise.
+
+### App icon
+The registration crosshair, enlarged, on a square plate of the stock: the gradient ground with a 1px `field-border` edge (`hairline` is too faint on a light taskbar), the cross and its ring in `ink`, the ring half the cross wide. No letters, so the name can change without it. `tools/make_icon.py` draws every size from 16 to 256 on whole pixels (1px strokes up to 24, 2px to 64, then size/32); at 16px the ring is placed by hand as a 7px pixel circle, since an anti-aliased one turns grey. The same icon serves the exe, the windows and the notification area.
 
 ### Matched phrase
 Phrase and idiom blocks inside an entry are outlined insets (1px `hairline`, 12px 14px padding, 40px left indent). The one a phrase search asked for fills with `seal` and its border takes the same colour; its secondary text switches to `seal-ink-secondary`.

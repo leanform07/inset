@@ -1,7 +1,7 @@
 <Window x:Class="LookUp.UI.SearchWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="LookUp Search" Width="520" SizeToContent="Height"
+        Title="Inset Search" Width="520" SizeToContent="Height"
         WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False" Topmost="True"
         Background="{DynamicResource GroundBrush}" BorderBrush="{DynamicResource HairlineBrush}" BorderThickness="1"
         FontFamily="{StaticResource UiFont}" TextOptions.TextFormattingMode="Ideal">

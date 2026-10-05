@@ -42,13 +42,13 @@ Instant, in-place lookup over the real Cambridge English–Chinese (Traditional)
 - Cambridge's search falls back to its English-only dictionary for words missing from English–Chinese; such entries have no Chinese.
 - Phrase searches may land on a head word's entry; the matching phrase block is highlighted.
 - Selection is read via UI Automation, falling back to a simulated copy with the clipboard restored; terminals and apps running as administrator are not supported.
-- Notebook data stays local (`%AppData%\LookUp\notebook.json`); no accounts, sync, or cloud.
+- Notebook data stays local (`%AppData%\Inset\notebook.json`); no accounts, sync, or cloud.
 - UI copy is English; content includes Traditional Chinese.
 - Explicit non-goals: offline dictionary, bulk scraping, AI translation, flashcards / spaced repetition, accounts, cross-platform, browser extension.
 
 ## Brand Commitments
 
-- The name "LookUp" is a placeholder and may change: do not build the name into the icon or identity.
+- The name is **Inset** (a printer's term: a small plate set into a page), chosen in October 2026 to replace the placeholder "LookUp", which an existing dictionary app already uses. Still keep the name out of the icon: the mark is a registration crosshair, no letters.
 - Unofficial tool: never imply affiliation with Cambridge; do not use Cambridge's logo or marks. Keep the "Open in Cambridge" link and Cambridge's source line visible on entries.
 
 ## Evidence on Hand

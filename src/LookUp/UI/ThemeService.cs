@@ -39,7 +39,7 @@ static class ThemeService
 
         var palette = new ResourceDictionary
         {
-            Source = new Uri($"pack://application:,,,/LookUp;component/Themes/{(dark ? "Dark" : "Light")}.xaml"),
+            Source = new Uri($"pack://application:,,,/Inset;component/Themes/{(dark ? "Dark" : "Light")}.xaml"),
         };
         // Ours go last: later merged dictionaries win, and the palette overrides some Fluent keys
         // (corner radii, accent and field colours). Shared styles follow the palette they read.

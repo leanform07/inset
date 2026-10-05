@@ -1,32 +1,53 @@
-# 鈭斗?辣嚗?026-10-05嚗?
-蝯虫?銝??Claude Code 撠店?具?霈?遢嚗?霈 `PRODUCT.md`?DESIGN.md`?docs/PLAN.md`???? ChatGPT 閮???瘙?隞嗅 `docs/original-spec.md`??
-## 撠??暹?
+# 交接文件（2026-10-06）
 
-LookUp嚗摰?蝔梧?嚗indows ?摮???敹急????頝喳 Cambridge ?望慰閫?????亙?撌亙嚗?桀?蝑??研?C# / .NET 10 / WPF嚗luent ThemeMode嚗? WebView2??獢 `D:\Projects\Dictionary`??
-- ??券摰?銝血歇 commit嚗hase 0????閮嚗?- 隞?閮剛?撌?commit嚗?026-10-06嚗???impeccable design skill ??嚗??身閮僑???ｇ?design annual plate section嚗?finish reviewer ?文? ship嚗DESIGN.md` ??`.impeccable/design.json` 撌脣神憟賬.impeccable/review/`?reference/`?questions/` 銝脩??改?閬?`.gitignore`嚗?- 閰衣敺蕭??????commit嚗?
-  - ?亙?閬??舀??喲?蝡舐? token bar 蝘餃?嚗?甈⊥?亥岷隞???詨?????
-  - ?亙?閬??臬??楠隤踵憭批?嚗?撠?360?400嚗?憭批?摮 settings.json ??`PopupWidth`/`PopupHeight`嚗?之撠? token bar ?喳?箇?EFAULT SIZE???? token bar 銋???身 440?560
-  - WebView 撌血?? 5px嚗???WebView ?臬???閬?????皛?嚗?蝺??????撌脫??憭批?璅??嚗???啗撟?蝡航◤?憭批?
-  - 蝑??祈底蝝啣??ook up again?ambridge?宏?唬??乩??嫘ATEGORY 銝嚗?閮剖之撠??冽?停????- 皜祈岫嚗dotnet test tests/LookUp.Tests/LookUp.Tests.csproj`嚗?8 ??券?
+給下一個 Claude Code 對話用。先讀這份，再讀 `PRODUCT.md`、`DESIGN.md`、`docs/PLAN.md`。最初和 ChatGPT 討論的需求文件在 `docs/original-spec.md`。
 
-## 蝑蝙?刻Ⅱ隤?鈭?
-- 隤踵憭批??祕????瘝??梧????臬?賣?敺????啗撟?蝺??銝?鋡?Windows 鞎潮?嚗nap嚗椰??5px ?抒葬???蝮?
-## 銋??航?極雿?
-- `docs/TESTING.md` ?? App ?詨捆?扯”嚗hrome?ord?crobat?otion?佗?蝑蝙?刻??葫閰血?憛怠神
-- ???潔?嚗dotnet publish` single-file?EADME嚗???孵極?瑁?eist 摮? OFL ??嚗?- 甇???迂??蝷綽??桀? `Assets/LookUp.ico` ?舀摰??? Aa嚗?蝷箔??舀?迂嚗?內?? DESIGN.md ?????湛?
+## 專案現況
 
-## ??餉銝?瘜冽?鈭?嚗萱????
+Inset（原暫定名稱 LookUp）：Windows 版「選字 → 快捷鍵 → 跳出 Cambridge 英漢解釋」的查字工具，含單字筆記本。
+C# / .NET 10 / WPF（Fluent ThemeMode）+ WebView2。專案在 `D:\Projects\Dictionary`，git 只有 `master` 一個分支、沒有 remote，使用者試用過再 commit。
 
-- **Bash 撌亙??heredoc ??????**嚗\n`?\s`?indows 頝臬?嚗?銵? Python/C# 靽格?單嚗???Write 撌亙撖急?瑼??銵?- **雿輻?虜撣詨頝?LookUp.exe**嚗??? `bin/` 撠撱箇蔭憭望??隞?`dotnet build -o <?怠?鞈?憭?` 瑼Ｘ蝺刻陌嚗???雿輻?? LookUp ????- **銝????嗥暺? GUI ?芸?皜祈岫**嚗蝙?刻???券?佗???閬箸炎?交?剁?
-  - WPF 閬?嚗WindowSmokeTests` ?刻撟?皜脫?嚗身?啣?霈 `LOOKUP_SNAPSHOT_DIR` 撠望?頛詨 PNG嚗滓?脯楛?脤??
-  - 閰???WebView嚗?`tools/CssProbe`嚗?Ｗ?憭???Cambridge 銝血??函?甇?? reader.js/css 敺?瘜?`CssProbe.exe <頛詨鞈?憭? <?亥岷摮?..>`嚗憓???`PROBE_DARK=1` 瘛梯?PROBE_SEAL=1` ?蝡??撌梁? WebView2 profile嚗洵銝甈⊥??? Cloudflare 撽?
-- **皜祈岫鋆∠?撠?閬?`new App()`**嚗PF ?銵?`App.OnStartup`嚗???????LookUp
-- **Cambridge ??Cloudflare 撽?**嚗ttpClient ?湔?? 403嚗ebView2 敹??閬?撽????芸楛?????航??????- impeccable ?捱蝑?隡箸??剁?`serve-question`嚗 PowerShell ??`--start` ???◤皜?嚗???Bash `run_in_background` 銝? `--start` ?撘銵?
-## 閮剛?蝟餌絞??嚗敦蝭??DESIGN.md嚗?
-- ?脩巨??`src/LookUp/Themes/Light.xaml`?Dark.xaml`嚗 `tools/make_palettes.py` 銝甈∠?隞踝???蝯?key嚗憿隢??砍??瑁? `python tools/make_palettes.py`嚗?閬??嗡葉銝??XAML
-- ?梁璅????`Themes/Shared.xaml`嚗ontextMenu 璅???餅??曉?脩巨瑼ㄐ嚗??梯? DESIGN.md嚗?- 閰??見撘 `src/LookUp/Web/reader.css`嚗SS 霈撠??脩巨嚗reader.js`嚗?摮?閮蝡?
-- ?臭?撘瑁矽?脫?瑟?梯??啁?嚗?典?啁???隤蝚血?憛?嚗???銝剜抒?
+- 功能全部完成並已 commit（Phase 0–4、筆記本）
+- 介面重新設計已 commit（`f00f934`）：用 impeccable design skill 做的，方向是「設計年鑑版面（design annual plate section）」，`DESIGN.md` 與 `.impeccable/design.json` 已寫好。`.impeccable/review/`、`reference/`、`questions/` 不進版控（見 `.gitignore`）
+  - 同一個 commit 也包含：查字視窗可拖曳頂端 token bar 移動、從邊緣調整大小（最小 360×400，存在 settings.json 的 `PopupWidth`/`PopupHeight`，「DEFAULT SIZE」或雙擊 token bar 回到 440×560）；筆記本詳細區的「Look up again」「Cambridge」移到 CATEGORY 上方
+  - 注意：`f00f934` 裡的這份 HANDOFF.md 是亂碼（PowerShell 編碼問題），下一個 commit 已修正
+- **正式名稱與圖示（2026-10-06，尚未 commit）**：
+  - 名稱 **Inset**（印刷術語「嵌入圖版」）。搜尋時發現 LookUp、Margin、Gloss 都有同名或極相近的查字工具。只查過同類工具撞名，沒查商標與網域
+  - 圖示是對位十字（registration crosshair）放在紙色方塊上，沒有字母。由 `tools/make_icon.py` 產生 `src/LookUp/Assets/AppIcon.ico`（16–256 各尺寸分別畫在整數像素上，16px 的圓環是手點的）。改圖示請改腳本再執行 `python tools/make_icon.py [預覽.png]`
+  - exe 改名為 `Inset.exe`（csproj 的 `AssemblyName`），pack URI 改成 `/Inset;component/`。程式碼的 namespace、專案資料夾 `src/LookUp`、`LookUp.slnx`、測試專案維持 LookUp，沒有改
+  - 資料夾改成 `%AppData%\Inset`、`%LocalAppData%\Inset`。啟動時 `AppFolders.MoveFromFormerName()` 會把舊的 `LookUp` 資料夾搬過去；搬不動（舊版還在跑）時先沿用舊資料夾，下次啟動再試
+  - 開機啟動的登錄值從 `LookUp` 改成 `Inset`，`StartupRegistration.MoveFromFormerName()` 會沿用使用者原本的選擇
+- 測試：`dotnet test tests/LookUp.Tests/LookUp.Tests.csproj`，72 個全部通過
 
-## 蝯虫?銝??閰梁???踝??舐?亥票銝?
+## 等使用者確認的事
 
-> 蝜潛? D:\Projects\Dictionary ??LookUp 撠???霈 docs/HANDOFF.md嚗敺?閮湔??桀??鈭?瘙箏?????
+- 改名後的試用：系統匣圖示、資料有沒有順利搬到 `Inset` 資料夾（筆記本內容、設定、Cloudflare 不用重新驗證）
+- 調整大小的實際手感還沒回報：四邊是否都拉得動、拖到螢幕邊緣會不會被 Windows 貼齊（snap）、左右 5px 內縮有沒有接縫
+
+## 之後可能的工作
+
+- `docs/TESTING.md` 的各 App 相容性表（Chrome、Word、Acrobat、Notion…）等使用者手動測試後填寫
+- 打包發佈：`dotnet publish` single-file、README（含非官方工具聲明、Geist 字型 OFL 授權）
+
+## 這台電腦上的注意事項（踩過的坑）
+
+- **Bash 工具會吃掉反斜線**（heredoc 和 sed 都會：`\n`、`\s`、Windows 路徑）。多行的 Python/C# 修改腳本，先用 Write 工具寫成檔案再執行；含反斜線的取代用 Edit 工具
+- **PowerShell 5.1 的編碼**：`Get-Content` 會把沒有 BOM 的 UTF-8 檔當成 Big5 讀，`Set-Content -Encoding utf8` 會加 BOM，兩者合起來會把中文檔案變亂碼。不要用 PowerShell 改文字檔，用 Write／Edit 工具。`git commit -F -` 搭配 here-string 也沒用，commit 訊息請寫進暫存檔再 `-F <檔案>`
+- **使用者常常在跑 Inset.exe**（舊版叫 LookUp.exe），會鎖住 `bin/` 導致建置失敗。可以 `dotnet test -o <暫存資料夾>` 檢查編譯；要關掉使用者的程式前先問
+- **不要做會搶焦點的 GUI 自動測試**（使用者同時在用電腦）。視覺檢查改用：
+  - WPF 視窗：`WindowSmokeTests` 在螢幕外渲染，設環境變數 `LOOKUP_SNAPSHOT_DIR` 就會輸出 PNG（淺色、深色都有）
+  - 詞條頁（WebView）：`tools/CssProbe`，在螢幕外載入 Cambridge 並套用真正的 reader.js/css 後截圖。用法：`CssProbe.exe <輸出資料夾> <查詢字...>`；環境變數 `PROBE_DARK=1` 深色、`PROBE_SEAL=1` 蓋印章。它有自己的 WebView2 profile，第一次會先通過 Cloudflare 驗證
+- **測試裡絕對不要 `new App()`**：WPF 會執行 `App.OnStartup`，啟動一個真的 Inset
+- **Cambridge 有 Cloudflare 驗證**：HttpClient 直接抓會 403；WebView2 必須「可見」時驗證才會自己通過。不可自動化或繞過
+- impeccable 的決策頁伺服器（`serve-question`）用 PowerShell 或 `--start` 啟動會被清掉；要用 Bash `run_in_background` 不加 `--start` 的方式執行
+
+## 設計系統重點（細節看 DESIGN.md）
+
+- 色票在 `src/LookUp/Themes/Light.xaml`、`Dark.xaml`，由 `tools/make_palettes.py` 一次產生兩份（同一組 key）。改顏色請改這個腳本再執行 `python tools/make_palettes.py`，不要只手改其中一個 XAML
+- 共用樣式在 `Themes/Shared.xaml`；ContextMenu 樣式刻意放在色票檔裡（理由見 DESIGN.md）
+- 詞條頁樣式在 `src/LookUp/Web/reader.css`（CSS 變數對應色票）、`reader.js`（十字標記、印章）
+- 唯一強調色是長春花藍印章（只用在印章與片語相符區塊）；選取狀態是中性的
+
+## 給下一個對話的開場白（可直接貼上）
+
+> 繼續 D:\Projects\Dictionary 的 Inset 專案。先讀 docs/HANDOFF.md，然後告訴我目前有哪些待決定的事。

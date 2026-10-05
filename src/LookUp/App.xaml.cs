@@ -13,8 +13,8 @@ public partial class App : Application
     internal const string LookupSelectionAction = "lookup", SearchAction = "search", NotebookAction = "notebook";
     static readonly string[] Actions = [LookupSelectionAction, SearchAction, NotebookAction];
 
-    const string InstanceName = @"Local\LookUp.SingleInstance";
-    const string ShowSearchSignalName = @"Local\LookUp.ShowSearch";
+    const string InstanceName = @"Local\Inset.SingleInstance";
+    const string ShowSearchSignalName = @"Local\Inset.ShowSearch";
 
     Mutex? _singleInstance;
     EventWaitHandle? _showSearchSignal;
@@ -45,6 +45,8 @@ public partial class App : Application
         ThreadPool.RegisterWaitForSingleObject(_showSearchSignal,
             (_, _) => Dispatcher.BeginInvoke(ShowSearch), null, Timeout.Infinite, executeOnlyOnce: false);
 
+        AppFolders.MoveFromFormerName();
+        StartupRegistration.MoveFromFormerName();
         _settings = AppSettings.Load(AppSettings.DefaultPath);
         ThemeService.Apply(_settings.Theme);
 
@@ -65,7 +67,7 @@ public partial class App : Application
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Couldn't start the Microsoft Edge WebView2 runtime.\n\n{ex.Message}", "LookUp");
+            MessageBox.Show($"Couldn't start the Microsoft Edge WebView2 runtime.\n\n{ex.Message}", "Inset");
             Shutdown();
             return;
         }
@@ -82,8 +84,8 @@ public partial class App : Application
         }
         else if (!_settings.WelcomeShown)
         {
-            _tray.ShowMessage("LookUp is running",
-                $"Select a word in any app and press {_settings.LookupSelection}. LookUp stays in the notification area.");
+            _tray.ShowMessage("Inset is running",
+                $"Select a word in any app and press {_settings.LookupSelection}. Inset stays in the notification area.");
             _settings.WelcomeShown = true;
             _settings.Save(AppSettings.DefaultPath);
         }

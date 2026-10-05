@@ -37,8 +37,7 @@ sealed class NotebookStore
         _now = now ?? (() => DateTime.Now);
     }
 
-    public static string DefaultPath => Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LookUp", "notebook.json");
+    public static string DefaultPath => Path.Combine(Settings.AppFolders.Roaming, "notebook.json");
 
     /// <summary>
     /// Loads the notebook, or starts an empty one. An unreadable file is kept aside

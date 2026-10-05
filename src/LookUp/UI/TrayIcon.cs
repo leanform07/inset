@@ -26,15 +26,15 @@ sealed class TrayIcon : IDisposable
         _menu.Items.Add(_notebookItem);
         _menu.Items.Add(new Separator());
         _menu.Items.Add(Item("Settings…", settings));
-        _menu.Items.Add(Item("Quit LookUp", quit));
+        _menu.Items.Add(Item("Quit Inset", quit));
 
-        _focusSink = new HwndSource(new HwndSourceParameters("LookUpTray") { Width = 0, Height = 0, WindowStyle = unchecked((int)0x80000000) }); // WS_POPUP, never shown
+        _focusSink = new HwndSource(new HwndSourceParameters("InsetTray") { Width = 0, Height = 0, WindowStyle = unchecked((int)0x80000000) }); // WS_POPUP, never shown
 
-        using var stream = Application.GetResourceStream(new Uri("pack://application:,,,/LookUp;component/Assets/LookUp.ico")).Stream;
+        using var stream = Application.GetResourceStream(new Uri("pack://application:,,,/Inset;component/Assets/AppIcon.ico")).Stream;
         _icon = new Forms.NotifyIcon
         {
             Icon = new System.Drawing.Icon(stream, Forms.SystemInformation.SmallIconSize),
-            Text = "LookUp",
+            Text = "Inset",
             Visible = true,
         };
         _icon.MouseUp += (_, e) =>

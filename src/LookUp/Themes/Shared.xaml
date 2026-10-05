@@ -7,8 +7,8 @@
 
     <!-- Faces: one grotesque for all English, its mono for labels and data, JhengHei for Chinese,
          Segoe UI for IPA (Geist has no IPA glyphs), Segoe Fluent Icons for icons. -->
-    <FontFamily x:Key="UiFont">pack://application:,,,/LookUp;component/Assets/Fonts/#Geist, Microsoft JhengHei UI</FontFamily>
-    <FontFamily x:Key="MonoFont">pack://application:,,,/LookUp;component/Assets/Fonts/#Geist Mono, Consolas</FontFamily>
+    <FontFamily x:Key="UiFont">pack://application:,,,/Inset;component/Assets/Fonts/#Geist, Microsoft JhengHei UI</FontFamily>
+    <FontFamily x:Key="MonoFont">pack://application:,,,/Inset;component/Assets/Fonts/#Geist Mono, Consolas</FontFamily>
     <FontFamily x:Key="CjkFont">Microsoft JhengHei UI</FontFamily>
     <FontFamily x:Key="IpaFont">Segoe UI</FontFamily>
     <FontFamily x:Key="IconFont">Segoe Fluent Icons, Segoe MDL2 Assets</FontFamily>

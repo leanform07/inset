@@ -63,8 +63,7 @@ public partial class PopupWindow : Window
         ShowActivated = false;
         Show();
 
-        var dataFolder = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "LookUp", "WebView2");
+        var dataFolder = Path.Combine(Settings.AppFolders.Local, "WebView2");
         var environment = await CoreWebView2Environment.CreateAsync(userDataFolder: dataFolder);
         await Web.EnsureCoreWebView2Async(environment);
 
@@ -106,7 +105,7 @@ public partial class PopupWindow : Window
             e.Response = environment.CreateWebResourceResponse(null, 404, "Not Found", "");
             return;
         }
-        var font = Application.GetResourceStream(new Uri($"pack://application:,,,/LookUp;component/Assets/Fonts/{name}"));
+        var font = Application.GetResourceStream(new Uri($"pack://application:,,,/Inset;component/Assets/Fonts/{name}"));
         e.Response = environment.CreateWebResourceResponse(font.Stream, 200, "OK",
             "Content-Type: font/ttf\r\nCache-Control: max-age=31536000");
     }

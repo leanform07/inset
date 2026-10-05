@@ -25,7 +25,7 @@ public sealed class WindowSmokeTests
             foreach (var name in new[] { "Light", "Shared" })
                 app.Resources.MergedDictionaries.Add(new ResourceDictionary
                 {
-                    Source = new Uri($"pack://application:,,,/LookUp;component/Themes/{name}.xaml"),
+                    Source = new Uri($"pack://application:,,,/Inset;component/Themes/{name}.xaml"),
                 });
         }
 
@@ -100,7 +100,7 @@ public sealed class WindowSmokeTests
                 menu.Items.Add(new System.Windows.Controls.MenuItem { Header = "Notebook", InputGestureText = "Ctrl+Alt+N" });
                 menu.Items.Add(new System.Windows.Controls.Separator());
                 menu.Items.Add(new System.Windows.Controls.MenuItem { Header = "Settings…" });
-                menu.Items.Add(new System.Windows.Controls.MenuItem { Header = "Quit LookUp" });
+                menu.Items.Add(new System.Windows.Controls.MenuItem { Header = "Quit Inset" });
                 menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Absolute;
                 menu.HorizontalOffset = -12000;
                 menu.IsOpen = true;

@@ -9,7 +9,7 @@
 做法：在各 App 選一個單字（例如 `resilience`）和一個片語（例如 `account for`），按 Ctrl+Alt+D。
 「方法」欄填實際成功的方式：
 - **UIA**：剪貼簿沒有變動
-- **剪貼簿**：Win+V 歷史會多一筆剛選的字（這是那個 App 自己的 Ctrl+C 造成的，LookUp 還原的那一筆不會出現）
+- **剪貼簿**：Win+V 歷史會多一筆剛選的字（這是那個 App 自己的 Ctrl+C 造成的，Inset 還原的那一筆不會出現）
 
 | App | 單字 | 片語 | 方法 | 備註 |
 |---|---|---|---|---|
@@ -50,7 +50,8 @@
 ## 4. 桌面整合
 
 - [ ] 系統匣圖示：左鍵開搜尋框；右鍵選單有 Look up / Notebook / Settings / Quit
-- [ ] 已在執行時再開一次 LookUp.exe → 叫出原本那個的搜尋框，不會開第二個
+- [ ] 已在執行時再開一次 Inset.exe → 叫出原本那個的搜尋框，不會開第二個
 - [ ] Settings：改快捷鍵後立即生效；設成別的 App 已占用的組合會顯示錯誤；Reset to defaults
 - [ ] Settings：深色 / 淺色 / 跟隨 Windows，查字視窗內容也會跟著變
-- [ ] 勾選「開機啟動」→ 重新登入後 LookUp 在系統匣，不會跳出搜尋框
+- [ ] 勾選「開機啟動」→ 重新登入後 Inset 在系統匣，不會跳出搜尋框
+- [ ] 從舊名 LookUp 升級：第一次開 Inset 後，筆記本和設定都還在（`%AppData%\LookUp` 搬成 `%AppData%\Inset`），Cloudflare 不用重新驗證；原本有勾開機啟動的，登錄值換成 Inset 且仍勾選

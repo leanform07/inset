@@ -20,7 +20,7 @@ sealed class GlobalHotkeyService : IDisposable
 
     public GlobalHotkeyService()
     {
-        _source = new HwndSource(new HwndSourceParameters("LookUpHotkeys") { ParentWindow = new IntPtr(-3) }); // HWND_MESSAGE
+        _source = new HwndSource(new HwndSourceParameters("InsetHotkeys") { ParentWindow = new IntPtr(-3) }); // HWND_MESSAGE
         _source.AddHook(WndProc);
     }
 
