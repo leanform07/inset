@@ -32,7 +32,7 @@ public partial class NotebookWindow : Window
     CategoryItem? _menuCategory; // the category that was right-clicked
 
     /// <summary>Raised with the word and where the popup should open.</summary>
-    internal event Action<WordNote, Point>? LookupRequested;
+    internal event Action<WordNote, ScreenPlacement.Anchor>? LookupRequested;
 
     internal NotebookWindow(NotebookStore store)
     {
@@ -336,10 +336,10 @@ public partial class NotebookWindow : Window
     {
         CommitEdits();
         // Over the right-hand side of this window, where the details are.
-        var topLeft = WindowState == WindowState.Maximized
-            ? new Point(SystemParameters.WorkArea.Right - 460, SystemParameters.WorkArea.Top + 80)
-            : new Point(Left + ActualWidth - 460, Top + 80);
-        LookupRequested?.Invoke(word, topLeft);
+        var bounds = ScreenPlacement.WindowRect(this);
+        var scale = ScreenPlacement.MonitorAt(bounds.TopLeft).Scale;
+        var topLeft = new Point(bounds.Right - 460 * scale, bounds.Top + 80 * scale);
+        LookupRequested?.Invoke(word, ScreenPlacement.Anchor.TopLeft(topLeft));
     }
 
     // ── Export ────────────────────────────────────────────────

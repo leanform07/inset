@@ -65,6 +65,8 @@ public partial class PopupWindow : Window
         core.Settings.IsStatusBarEnabled = false;
         core.Settings.IsZoomControlEnabled = false;
         await core.AddScriptToExecuteOnDocumentCreatedAsync(Cambridge.ReaderScript());
+        ApplyTheme();
+        ThemeService.Changed += ApplyTheme;
         core.NavigationStarting += OnNavigationStarting;
         core.NavigationCompleted += OnNavigationCompleted;
         core.WebMessageReceived += OnWebMessageReceived;
@@ -78,16 +80,44 @@ public partial class PopupWindow : Window
         ShowActivated = true;
     }
 
+    /// <summary>The entry page follows the app theme through prefers-color-scheme (see reader.css).</summary>
+    void ApplyTheme()
+    {
+        if (Web.CoreWebView2 is not { } core) return;
+        core.Profile.PreferredColorScheme = ThemeService.IsDark
+            ? CoreWebView2PreferredColorScheme.Dark
+            : CoreWebView2PreferredColorScheme.Light;
+        var surface = (System.Windows.Media.Color)FindResource("SurfaceColor");
+        Web.DefaultBackgroundColor = System.Drawing.Color.FromArgb(surface.R, surface.G, surface.B);
+    }
+
     /// <summary>
     /// Shows the window immediately in a loading state, then loads the entry.
     /// A known entry URL (from the notebook) is opened directly instead of searching.
     /// </summary>
-    public void ShowLookup(string query, Point topLeft, Uri? entryUrl = null)
+    internal void ShowLookup(string query, ScreenPlacement.Anchor anchor, Uri? entryUrl = null)
     {
-        Left = topLeft.X;
-        Top = topLeft.Y;
         Load(query, entryUrl);
+        Present(anchor);
+    }
+
+    /// <summary>Shows a short message instead of an entry, e.g. when no text was selected.</summary>
+    internal void ShowNotice(string title, string message, ScreenPlacement.Anchor anchor)
+    {
+        _query = title;
+        CloseNotePanel();
+        _entry = null;
+        UpdateNotebookButton();
+        Web.CoreWebView2?.Navigate("about:blank");
+        ShowMessage(message, actions: false);
+        Present(anchor);
+    }
+
+    void Present(ScreenPlacement.Anchor anchor)
+    {
+        ScreenPlacement.Place(this, anchor);
         Show();
+        ScreenPlacement.Place(this, anchor); // again, in case showing on another monitor changed its DPI
         Activate();
     }
 
@@ -120,6 +150,7 @@ public partial class PopupWindow : Window
         StatusPanel.Visibility = Visibility.Visible;
         StatusTitle.Text = _query;
         StatusMessage.Text = "Searching…";
+        OpenInCambridgeButton.Visibility = Visibility.Visible;
         SuggestionsPanel.Visibility = Visibility.Collapsed;
         ActionsPanel.Visibility = Visibility.Collapsed;
         FooterNote.Text = "";
@@ -138,7 +169,7 @@ public partial class PopupWindow : Window
         if (IsActive) Web.Focus(); // arrow keys / PageDown scroll the entry
     }
 
-    void ShowMessage(string message, bool retry = false, IReadOnlyList<string>? suggestions = null)
+    void ShowMessage(string message, bool retry = false, IReadOnlyList<string>? suggestions = null, bool actions = true)
     {
         _state = State.Message;
         StopTimers();
@@ -149,7 +180,8 @@ public partial class PopupWindow : Window
         Suggestions.ItemsSource = suggestions;
         SuggestionsPanel.Visibility = suggestions is { Count: > 0 } ? Visibility.Visible : Visibility.Collapsed;
         RetryButton.Visibility = retry ? Visibility.Visible : Visibility.Collapsed;
-        ActionsPanel.Visibility = Visibility.Visible;
+        ActionsPanel.Visibility = actions ? Visibility.Visible : Visibility.Collapsed;
+        OpenInCambridgeButton.Visibility = _query.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
         Focus();
     }
 
@@ -202,7 +234,12 @@ public partial class PopupWindow : Window
                 _entry = ParseSummary(message.RootElement.GetProperty("summary"));
                 if (_entry.Headword.Length == 0) _entry = _entry with { Headword = _query };
                 var lookups = _notebook.RecordLookup(_entry.Headword);
-                ShowPage(lookups.Count >= 2 ? $"Looked up {lookups.Count} times" : "");
+                // Cambridge's own search falls back to its English-only dictionary when the
+                // English–Chinese one lacks the word; say so, or the missing Chinese looks like a bug.
+                var notes = new List<string>();
+                if (Cambridge.IsEnglishOnly(_entry.SourceUrl)) notes.Add("English only · no Chinese translation");
+                if (lookups.Count >= 2) notes.Add($"Looked up {lookups.Count} times");
+                ShowPage(string.Join("  ·  ", notes));
                 UpdateNotebookButton();
                 break;
             case "other":

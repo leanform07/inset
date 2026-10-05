@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using LookUp.Notebook;
+using LookUp.Settings;
 using LookUp.UI;
 
 namespace LookUp.Tests;
@@ -16,10 +17,16 @@ public sealed class WindowSmokeTests
     [Fact]
     public void Windows_load_and_the_notebook_shows_saved_words() => RunOnSta(() =>
     {
+        // A plain Application with our dictionaries: creating App itself would run its OnStartup
+        // (a whole LookUp instance, or a signal to the one already running) once the dispatcher runs.
         if (Application.Current == null)
         {
-            var app = new App();
-            app.InitializeComponent(); // shared styles; OnStartup does not run
+            var app = new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
+            foreach (var name in new[] { "Light", "Shared" })
+                app.Resources.MergedDictionaries.Add(new ResourceDictionary
+                {
+                    Source = new Uri($"pack://application:,,,/LookUp;component/Themes/{name}.xaml"),
+                });
         }
 
         var dir = Path.Combine(Path.GetTempPath(), "LookUpTests", Guid.NewGuid().ToString("N"));
@@ -31,23 +38,27 @@ public sealed class WindowSmokeTests
             _ = new PopupWindow(store);
             _ = new SearchWindow();
 
-            var window = new NotebookWindow(store)
+            foreach (var theme in new[] { AppTheme.Light, AppTheme.Dark })
             {
-                Left = -12000, Top = 0, Width = 1080, Height = 660,
-                ShowActivated = false, ShowInTaskbar = false, WindowStartupLocation = WindowStartupLocation.Manual,
-            };
-            window.Show();
-            window.WordList.SelectedIndex = 0;
-            window.UpdateLayout();
-            Flush();
+                ThemeService.Apply(theme);
+                var name = theme.ToString().ToLowerInvariant();
 
-            Assert.Equal(3, window.WordList.Items.Count);
-            Assert.Equal(Visibility.Visible, window.DetailPanel.Visibility);
-            Assert.Equal("Architecture", window.CategoryEditor.Text);
+                var notebook = OffScreen(new NotebookWindow(store) { Width = 1080, Height = 660 });
+                notebook.WordList.SelectedIndex = 0;
+                Flush();
+                Assert.Equal(3, notebook.WordList.Items.Count);
+                Assert.Equal(Visibility.Visible, notebook.DetailPanel.Visibility);
+                Assert.Equal("Architecture", notebook.CategoryEditor.Text);
+                Snapshot(notebook, $"notebook-{name}.png");
+                notebook.Close();
 
-            if (Environment.GetEnvironmentVariable("LOOKUP_SNAPSHOT_DIR") is { Length: > 0 } snapshotDir)
-                SavePng((FrameworkElement)window.Content, Path.Combine(snapshotDir, "notebook.png"));
-            window.Close();
+                var settings = OffScreen(new SettingsWindow(null!, new AppSettings()));
+                Flush();
+                Assert.Equal("Ctrl+Alt+D", settings.LookupBox.Text);
+                Snapshot(settings, $"settings-{name}.png");
+                settings.Close();
+            }
+            ThemeService.Apply(AppTheme.Light);
         }
         finally
         {
@@ -83,16 +94,43 @@ public sealed class WindowSmokeTests
         store.AddCategory("Daily life");
     }
 
+    static T OffScreen<T>(T window) where T : Window
+    {
+        window.WindowStartupLocation = WindowStartupLocation.Manual;
+        window.Left = -12000;
+        window.Top = 0;
+        window.ShowActivated = false;
+        window.ShowInTaskbar = false;
+        window.Show();
+        window.UpdateLayout();
+        return window;
+    }
+
+    static void Snapshot(Window window, string fileName)
+    {
+        if (Environment.GetEnvironmentVariable("LOOKUP_SNAPSHOT_DIR") is { Length: > 0 } dir)
+            SavePng(window, Path.Combine(dir, fileName));
+    }
+
     static void Flush() =>
         System.Windows.Threading.Dispatcher.CurrentDispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
 
-    static void SavePng(FrameworkElement element, string path)
+    /// <summary>Renders the window's client area, background included (it is not part of Content).</summary>
+    static void SavePng(Window window, string path)
     {
-        var dpi = VisualTreeHelper.GetDpi(element);
+        var content = (FrameworkElement)window.Content;
+        var dpi = VisualTreeHelper.GetDpi(content);
+        var size = new Size(content.ActualWidth, content.ActualHeight);
+        var visual = new DrawingVisual();
+        using (var context = visual.RenderOpen())
+        {
+            context.DrawRectangle(window.Background, null, new Rect(size));
+            context.DrawRectangle(new VisualBrush(content), null, new Rect(size));
+        }
         var bitmap = new RenderTargetBitmap(
-            (int)(element.ActualWidth * dpi.DpiScaleX), (int)(element.ActualHeight * dpi.DpiScaleY),
+            (int)(size.Width * dpi.DpiScaleX), (int)(size.Height * dpi.DpiScaleY),
             dpi.PixelsPerInchX, dpi.PixelsPerInchY, PixelFormats.Pbgra32);
-        bitmap.Render(element);
+        bitmap.Render(visual);
         var encoder = new PngBitmapEncoder();
         encoder.Frames.Add(BitmapFrame.Create(bitmap));
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);

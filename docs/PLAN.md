@@ -9,6 +9,29 @@
 - 資料來源：**每次查詢時讀取 Cambridge 網頁**（不批次抓取、不建資料庫）
 - 快捷鍵：**可以自訂**，預設不用 Alt+D
 
+## 進度（2026-10-05）
+
+| 階段 | 狀態 | 說明 |
+|---|---|---|
+| Phase 0 技術驗證 | ✅ | 見 [PHASE0_RESULTS.md](PHASE0_RESULTS.md) |
+| Phase 1 搜尋框 + Popup | ✅ | |
+| Phase 1.5 單字筆記 | ✅ | 後來新增的需求，見下方 |
+| Phase 2 選字查詢 | ✅ | 記事本實測：UIA 57–133 ms、剪貼簿 208–280 ms，剪貼簿有還原 |
+| Phase 3 桌面整合 | ✅ | 系統匣、設定視窗、可自訂快捷鍵、深淺色、開機啟動、單一實例 |
+| Phase 4 品質 | ✅（相容性表待填） | 片語定位、英英 fallback 提示；各 App 相容性見 [TESTING.md](TESTING.md) |
+| 介面設計 | ⏳ 下一步 | 用 design skill 重新設計所有視窗 |
+| 打包發佈 | ⏳ | single-file publish、README |
+
+實作過程中的決定（和原計劃不同的地方）：
+- **預設快捷鍵**：Ctrl+Alt+D 選字查詢、Ctrl+Alt+F 搜尋框、Ctrl+Alt+N 筆記本
+- **英英 fallback 不用自己做**：Cambridge 的搜尋在英漢版沒有這個字時，會自己跳到英英版（例如 `deplatform`），App 只需在底部標示「English only」
+- **片語**：Cambridge 有時把片語導到主詞條（`be subject to` → subject），reader.js 會找到相符的片語區塊，捲動過去並標示，筆記也存那個片語
+- **詞形還原、拼字建議**：都直接用 Cambridge 搜尋的結果（`running` → run），不另外做 NLP
+- **不封鎖廣告**：會加速載入，但 Cambridge 的內容靠廣告支持，打算公開發佈的工具不該這樣做；而且廣告區塊本來就被 reader 隱藏了
+- **深色模式**：使用 .NET 10 內建的 Windows 11 Fluent 主題（`ThemeMode`），標準控制項自動有深色樣式
+- **注音輸入法**：搜尋框固定英文輸入（關閉 IME），否則 Enter 會被輸入法吃掉
+- **Cloudflare 驗證期間 WebView 必須是可見的**：隱藏時驗證程式會暫停
+
 ---
 
 ## 一、可行性分析

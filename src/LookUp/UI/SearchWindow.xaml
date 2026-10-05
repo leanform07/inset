@@ -3,14 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="LookUp Search" Width="420" SizeToContent="Height"
         WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False" Topmost="True"
-        Background="White" FontFamily="{StaticResource UiFont}">
+        Background="{DynamicResource SurfaceBrush}" FontFamily="{StaticResource UiFont}">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="0" ResizeBorderThickness="0" GlassFrameThickness="0,0,0,1" UseAeroCaptionButtons="False" />
     </WindowChrome.WindowChrome>
 
     <StackPanel Margin="22,16,22,12">
         <Grid>
-            <TextBlock Text="Search Cambridge Dictionary" FontSize="20" Foreground="#B0B0B0"
+            <TextBlock Text="Search Cambridge Dictionary" FontSize="20" Foreground="{DynamicResource PlaceholderBrush}"
                        IsHitTestVisible="False" Margin="2,0,0,0">
                 <TextBlock.Style>
                     <Style TargetType="TextBlock">
@@ -26,9 +26,8 @@
             <!-- English-only box: the IME is off so a Chinese input mode never swallows the typing. -->
             <TextBox x:Name="Input" FontSize="20" BorderThickness="0" Background="Transparent"
                      InputMethod.IsInputMethodEnabled="False"
-                     Foreground="{StaticResource TextBrush}" />
+                     Foreground="{DynamicResource TextBrush}" />
         </Grid>
-        <TextBlock Margin="2,8,0,0" FontSize="11" Foreground="{StaticResource MutedBrush}"
-                   Text="Enter to search  ·  Ctrl+Alt+N notebook  ·  Ctrl+Q to quit" />
+        <TextBlock x:Name="Hint" Margin="2,8,0,0" FontSize="11" Foreground="{DynamicResource MutedBrush}" />
     </StackPanel>
 </Window>

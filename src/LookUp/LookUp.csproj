@@ -6,7 +6,12 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <!-- Only for the notification-area icon (NotifyIcon). -->
+    <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon>Assets\LookUp.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- WFO0003 asks Windows Forms apps to set DPI in code; this is a WPF app, where the manifest is the right place. -->
+    <NoWarn>$(NoWarn);WFO0003</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,6 +20,13 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="LookUp.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Windows Forms is only used for NotifyIcon; keep its names out of the global namespace. -->
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
+    <Resource Include="Assets\LookUp.ico" />
   </ItemGroup>
 
   <ItemGroup>

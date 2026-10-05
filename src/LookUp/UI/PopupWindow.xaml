@@ -4,7 +4,7 @@
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         Title="LookUp" Width="420" Height="540"
         WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False" Topmost="True"
-        Background="White" FontFamily="{StaticResource UiFont}">
+        Background="{DynamicResource SurfaceBrush}" FontFamily="{StaticResource UiFont}">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="0" ResizeBorderThickness="0" GlassFrameThickness="0,0,0,1" UseAeroCaptionButtons="False" />
     </WindowChrome.WindowChrome>
@@ -18,16 +18,16 @@
 
         <!-- The WebView is a native child window, so WPF content cannot draw over it:
              it is hidden whenever the status panel is showing. -->
-        <wv2:WebView2 x:Name="Web" Visibility="Hidden" DefaultBackgroundColor="White" />
+        <wv2:WebView2 x:Name="Web" Visibility="Hidden" />
 
         <StackPanel x:Name="StatusPanel" Margin="22,18,22,0">
             <TextBlock x:Name="StatusTitle" FontSize="24" FontWeight="SemiBold" TextWrapping="Wrap"
-                       Foreground="{StaticResource TextBrush}" />
+                       Foreground="{DynamicResource TextBrush}" />
             <TextBlock x:Name="StatusMessage" Margin="0,6,0,0" FontSize="14" TextWrapping="Wrap"
-                       Foreground="{StaticResource MutedBrush}" />
+                       Foreground="{DynamicResource MutedBrush}" />
 
             <StackPanel x:Name="SuggestionsPanel" Margin="0,18,0,0" Visibility="Collapsed">
-                <TextBlock Text="Did you mean" FontSize="12" Foreground="{StaticResource MutedBrush}" />
+                <TextBlock Text="Did you mean" FontSize="12" Foreground="{DynamicResource MutedBrush}" />
                 <ItemsControl x:Name="Suggestions" Margin="0,4,0,0">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -47,8 +47,8 @@
         </StackPanel>
 
         <!-- Opens under the entry after "Add to notebook"; everything in it is optional. -->
-        <Border x:Name="NotePanel" Grid.Row="1" Visibility="Collapsed" Background="#FAFAFA"
-                BorderThickness="0,1,0,0" BorderBrush="{StaticResource DividerBrush}" Padding="22,12,22,10">
+        <Border x:Name="NotePanel" Grid.Row="1" Visibility="Collapsed" Background="{DynamicResource SubtleSurfaceBrush}"
+                BorderThickness="0,1,0,0" BorderBrush="{DynamicResource DividerBrush}" Padding="22,12,22,10">
             <StackPanel>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -86,19 +86,19 @@
                     <Button DockPanel.Dock="Right" Content="Done" Style="{StaticResource LinkButton}" FontSize="13"
                             Click="OnNoteDoneClick" />
                     <Button Content="Remove from notebook" Style="{StaticResource LinkButton}" FontSize="12"
-                            Foreground="{StaticResource MutedBrush}" HorizontalAlignment="Left" Click="OnNoteRemoveClick" />
+                            Foreground="{DynamicResource MutedBrush}" HorizontalAlignment="Left" Click="OnNoteRemoveClick" />
                 </DockPanel>
             </StackPanel>
         </Border>
 
-        <Border Grid.Row="2" BorderThickness="0,1,0,0" BorderBrush="{StaticResource DividerBrush}" Padding="22,9">
+        <Border Grid.Row="2" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource DividerBrush}" Padding="22,9">
             <DockPanel>
-                <Button DockPanel.Dock="Right" Content="Open in Cambridge ↗" Style="{StaticResource LinkButton}"
-                        FontSize="12" Click="OnOpenInCambridgeClick" />
+                <Button x:Name="OpenInCambridgeButton" DockPanel.Dock="Right" Content="Open in Cambridge ↗"
+                        Style="{StaticResource LinkButton}" FontSize="12" Click="OnOpenInCambridgeClick" />
                 <Button x:Name="NotebookButton" DockPanel.Dock="Left" Style="{StaticResource LinkButton}"
                         FontSize="12" Margin="0,0,14,0" Visibility="Collapsed" Click="OnNotebookButtonClick"
                         ToolTip="Ctrl+S" />
-                <TextBlock x:Name="FooterNote" FontSize="12" Foreground="{StaticResource MutedBrush}"
+                <TextBlock x:Name="FooterNote" FontSize="12" Foreground="{DynamicResource MutedBrush}"
                            TextTrimming="CharacterEllipsis" Margin="0,0,12,0" />
             </DockPanel>
         </Border>

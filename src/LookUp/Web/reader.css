@@ -21,7 +21,7 @@ html.lu-reader body > :not(#lu-root) { display: none !important; }
 
 /* Things that are not the meaning of the word. */
 #lu-root :is(.dwl, .daccord, .pb-inline-sense, .parallax-container, .contentslot, [id^="ad_"],
-             .xref, .dbtn, .cid, .js-share-holder, .epp-xref, .i-caret-right,
+             .xref, .dbtn, .cid, .epp-xref, .i-caret-right,
              .dsense_h .hw, .dsense_h .pos) {
   display: none !important;
 }
@@ -117,6 +117,10 @@ html.lu-reader body > :not(#lu-root) { display: none !important; }
   margin: 0 0 2px !important;
 }
 #lu-root .phrase-body .def-block { margin: 0 0 4px; }
+#lu-root .phrase-block.lu-match {
+  background: #FFF6DC;
+  box-shadow: inset 3px 0 0 #E8B931;
+}
 
 /* Source line stays visible: content belongs to Cambridge. */
 #lu-root .definition-src {
@@ -130,3 +134,23 @@ html.lu-reader body > :not(#lu-root) { display: none !important; }
 
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
+
+/* Dark theme: the app sets the WebView's preferred colour scheme. Cambridge's own colours are
+   for a white page, so text colours are reset first and ours applied on top. */
+@media (prefers-color-scheme: dark) {
+  html.lu-reader, html.lu-reader body { background: #202020 !important; }
+  #lu-root, #lu-root *:not(.i) { color: #ECECEC !important; }
+
+  #lu-root :is(.posgram, .posgram *, .dpron-i, .dpron-i *, .c_aud, .examp, .examp .eg, .examp .eg *) { color: #B4B4B4 !important; }
+  #lu-root :is(.def-info, .def-info *, .dgram, .dsense_h, .dsense_h *, .definition-src, .definition-src *) { color: #8E8E8E !important; }
+  #lu-root :is(.def-body > .trans, .def-body > .trans *) { color: #7DB3F5 !important; }
+  #lu-root :is(.examp .trans, .examp .trans *) { color: #8FA9CF !important; }
+  #lu-root .c_aud:hover { color: #7DB3F5 !important; }
+
+  #lu-root .examp { border-left-color: #3A3A3A; }
+  #lu-root .entry-body__el + .entry-body__el, #lu-root .definition-src { border-top-color: #333; }
+  #lu-root .phrase-block { background: #2A2A2A; }
+  #lu-root .phrase-block.lu-match { background: #3A3221; box-shadow: inset 3px 0 0 #C9A227; }
+
+  ::-webkit-scrollbar-thumb { background: #444; }
+}

@@ -17,6 +17,11 @@ static class Cambridge
     public static Uri WebSearchUrl(string query) =>
         new($"https://www.google.com/search?q={Uri.EscapeDataString(query + " meaning")}");
 
+    /// <summary>An entry from the English-only dictionary rather than English–Chinese.</summary>
+    public static bool IsEnglishOnly(string entryUrl) =>
+        Uri.TryCreate(entryUrl, UriKind.Absolute, out var uri) &&
+        uri.AbsolutePath.StartsWith("/dictionary/english/", StringComparison.OrdinalIgnoreCase);
+
     public static bool IsDictionaryHost(Uri uri) =>
         uri.Host.Equals(Host, StringComparison.OrdinalIgnoreCase);
 

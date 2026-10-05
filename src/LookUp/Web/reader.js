@@ -38,26 +38,70 @@
     style.textContent = __LU_CSS__;
     document.head.append(style);
     document.documentElement.classList.add('lu-reader');
-    window.scrollTo(0, 0);
 
-    post({ type: 'entry', summary: summarize(entry) });
+    // A phrase search can land on the head word's entry ("be subject to" → subject):
+    // point at the matching phrase instead of the top of the entry.
+    const phrase = findPhrase(entry);
+    if (phrase) phrase.classList.add('lu-match');
+    holdScroll(phrase);
+
+    post({ type: 'entry', summary: phrase ? summarizePhrase(entry, phrase) : summarize(entry) });
   }
+
+  function findPhrase(entry) {
+    const query = (new URLSearchParams(location.search).get('q') || '').toLowerCase().trim();
+    const words = query.split(/\s+/);
+    if (words.length < 2) return null;
+
+    for (const block of entry.querySelectorAll('.phrase-block')) {
+      const title = textOf(block.querySelector('.phrase-title')).toLowerCase();
+      const titleWords = title.split(/[\s()/,]+/);
+      if (title.includes(query) || words.every(w => titleWords.includes(w))) return block;
+    }
+    return null;
+  }
+
+  // Page scripts may scroll after load. Hold the start position until the user scrolls.
+  function holdScroll(target) {
+    history.scrollRestoration = 'manual';
+    let userMoved = false;
+    for (const type of ['wheel', 'keydown', 'mousedown', 'touchstart'])
+      addEventListener(type, () => { userMoved = true; }, { capture: true, once: true });
+    const pin = () => {
+      if (!userMoved) window.scrollTo(0, target ? target.getBoundingClientRect().top + window.scrollY - 16 : 0);
+    };
+    pin();
+    addEventListener('load', pin);
+    for (const ms of [150, 400, 800, 1500]) setTimeout(pin, ms);
+  }
+
+  const textOf = el => el ? el.textContent.replace(/\s+/g, ' ').trim() : '';
 
   // First sense of the entry, for the notebook.
   function summarize(entry) {
-    const text = selector => {
-      const el = entry.querySelector(selector);
-      return el ? el.textContent.replace(/\s+/g, ' ').trim() : '';
-    };
+    const text = selector => textOf(entry.querySelector(selector));
     return {
       headword: text('.headword'),
-      partOfSpeech: text('.posgram .pos'),
+      partOfSpeech: text('.posgram .pos') || text('.pos'),
       ipa: text('.uk .ipa') || text('.ipa'),
       chinese: text('.def-body > .trans'),
       definition: text('.def.ddef_d').replace(/:$/, ''),
       example: text('.examp .eg'),
       exampleChinese: text('.examp .trans'),
       sourceUrl: location.origin + location.pathname,
+    };
+  }
+
+  function summarizePhrase(entry, phrase) {
+    const text = selector => textOf(phrase.querySelector(selector));
+    return {
+      ...summarize(entry),
+      headword: text('.phrase-title'),
+      partOfSpeech: 'phrase',
+      chinese: text('.def-body > .trans'),
+      definition: text('.def.ddef_d').replace(/:$/, ''),
+      example: text('.examp .eg'),
+      exampleChinese: text('.examp .trans'),
     };
   }
 
