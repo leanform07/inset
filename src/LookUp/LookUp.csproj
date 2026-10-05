@@ -14,6 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="LookUp.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="Web\*.js;Web\*.css" LogicalName="%(Filename)%(Extension)" />
   </ItemGroup>
 

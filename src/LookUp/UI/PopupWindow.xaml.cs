@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using LookUp.Lookup;
+using LookUp.Notebook;
 using Microsoft.Web.WebView2.Core;
 
 namespace LookUp.UI;
@@ -21,9 +22,15 @@ public partial class PopupWindow : Window
     string _query = "";
     ulong _navigationId; // completions from older navigations are ignored
 
-    public PopupWindow()
+    readonly NotebookStore _notebook;
+    EntrySummary? _entry;   // the entry on screen
+    WordNote? _editing;     // the saved word open in the note panel
+
+    internal PopupWindow(NotebookStore notebook)
     {
+        _notebook = notebook;
         InitializeComponent();
+        CategoryBox.ItemsSource = notebook.Categories;
         SourceInitialized += (_, _) => WindowEffects.MakeFloating(this);
         Deactivated += (_, _) => Dismiss();
         PreviewKeyDown += OnPreviewKeyDown;
@@ -71,12 +78,15 @@ public partial class PopupWindow : Window
         ShowActivated = true;
     }
 
-    /// <summary>Shows the window immediately in a loading state, then loads the entry.</summary>
-    public void ShowLookup(string query, Point topLeft)
+    /// <summary>
+    /// Shows the window immediately in a loading state, then loads the entry.
+    /// A known entry URL (from the notebook) is opened directly instead of searching.
+    /// </summary>
+    public void ShowLookup(string query, Point topLeft, Uri? entryUrl = null)
     {
         Left = topLeft.X;
         Top = topLeft.Y;
-        Load(query);
+        Load(query, entryUrl);
         Show();
         Activate();
     }
@@ -84,6 +94,7 @@ public partial class PopupWindow : Window
     public void Dismiss()
     {
         if (_state == State.Idle) return;
+        CloseNotePanel();
         _state = State.Idle;
         StopTimers();
         Hide();
@@ -91,15 +102,18 @@ public partial class PopupWindow : Window
         Web.CoreWebView2?.Navigate("about:blank"); // stops audio and page scripts while hidden
     }
 
-    void Load(string query)
+    void Load(string query, Uri? entryUrl = null)
     {
         _query = query;
         BeginLoading();
-        Web.CoreWebView2.Navigate(Cambridge.SearchUrl(query).ToString());
+        Web.CoreWebView2.Navigate((entryUrl ?? Cambridge.SearchUrl(query)).ToString());
     }
 
     void BeginLoading()
     {
+        CloseNotePanel();
+        _entry = null;
+        UpdateNotebookButton();
         _state = State.Loading;
         StopTimers();
         Web.Visibility = Visibility.Hidden;
@@ -185,6 +199,12 @@ public partial class PopupWindow : Window
         switch (type)
         {
             case "entry":
+                _entry = ParseSummary(message.RootElement.GetProperty("summary"));
+                if (_entry.Headword.Length == 0) _entry = _entry with { Headword = _query };
+                var lookups = _notebook.RecordLookup(_entry.Headword);
+                ShowPage(lookups.Count >= 2 ? $"Looked up {lookups.Count} times" : "");
+                UpdateNotebookButton();
+                break;
             case "other":
                 ShowPage();
                 break;
@@ -206,7 +226,18 @@ public partial class PopupWindow : Window
         var key = e.Key == Key.ImeProcessed ? e.ImeProcessedKey : e.Key;
         if (key == Key.Escape)
         {
-            Dismiss();
+            if (_editing != null) CloseNotePanel();
+            else Dismiss();
+            e.Handled = true;
+        }
+        else if (key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
+        {
+            OnNotebookButtonClick(this, e);
+            e.Handled = true;
+        }
+        else if (key == Key.Enter && _editing != null)
+        {
+            CloseNotePanel();
             e.Handled = true;
         }
         else if (key == Key.Enter && _state == State.Message && RetryButton.IsVisible)
@@ -215,6 +246,74 @@ public partial class PopupWindow : Window
             e.Handled = true;
         }
     }
+
+    // ── Notebook ──────────────────────────────────────────────
+
+    void OnNotebookButtonClick(object sender, RoutedEventArgs e)
+    {
+        if (_entry == null || _state != State.Showing) return;
+        if (_editing != null)
+        {
+            CloseNotePanel();
+            return;
+        }
+
+        // Saving is immediate; the panel only offers optional details.
+        _editing = _notebook.Find(_entry.Headword) ?? _notebook.Add(_entry);
+        CategoryBox.Text = _editing.Category;
+        StatusNew.IsChecked = _editing.Status == Familiarity.New;
+        StatusLearning.IsChecked = _editing.Status == Familiarity.Learning;
+        StatusKnown.IsChecked = _editing.Status == Familiarity.Known;
+        NoteBox.Text = _editing.Note;
+        NotePanel.Visibility = Visibility.Visible;
+        UpdateNotebookButton();
+        CategoryBox.Focus();
+    }
+
+    void OnNoteDoneClick(object sender, RoutedEventArgs e) => CloseNotePanel();
+
+    void OnNoteRemoveClick(object sender, RoutedEventArgs e)
+    {
+        if (_editing == null) return;
+        _notebook.Remove(_editing);
+        _editing = null;
+        NotePanel.Visibility = Visibility.Collapsed;
+        UpdateNotebookButton();
+        if (_state == State.Showing) Web.Focus();
+    }
+
+    /// <summary>Saves what is in the note panel and closes it.</summary>
+    void CloseNotePanel()
+    {
+        if (_editing == null) return;
+        _notebook.SetCategory(_editing, CategoryBox.Text);
+        _editing.Status = StatusKnown.IsChecked == true ? Familiarity.Known
+                        : StatusLearning.IsChecked == true ? Familiarity.Learning
+                        : Familiarity.New;
+        _editing.Note = NoteBox.Text.Trim();
+        _editing = null;
+        NotePanel.Visibility = Visibility.Collapsed;
+        UpdateNotebookButton();
+        if (_state == State.Showing && IsActive) Web.Focus();
+    }
+
+    void UpdateNotebookButton()
+    {
+        var saved = _entry != null && _notebook.Find(_entry.Headword) is { } note
+            ? (note.Category.Length > 0 ? $"★ {note.Category}" : "★ In notebook")
+            : null;
+        NotebookButton.Content = saved ?? "☆ Add to notebook";
+        NotebookButton.Visibility = _entry != null ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    static EntrySummary ParseSummary(JsonElement s)
+    {
+        string Get(string name) => s.TryGetProperty(name, out var v) ? v.GetString() ?? "" : "";
+        return new EntrySummary(Get("headword"), Get("partOfSpeech"), Get("ipa"), Get("chinese"),
+            Get("definition"), Get("example"), Get("exampleChinese"), Get("sourceUrl"));
+    }
+
+    // ── Message actions ───────────────────────────────────────
 
     void OnSuggestionClick(object sender, RoutedEventArgs e) => Load((string)((FrameworkElement)sender).DataContext);
 

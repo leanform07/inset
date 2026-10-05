@@ -29,6 +29,6 @@
                      Foreground="{StaticResource TextBrush}" />
         </Grid>
         <TextBlock Margin="2,8,0,0" FontSize="11" Foreground="{StaticResource MutedBrush}"
-                   Text="Enter to search  ·  Esc to close  ·  Ctrl+Q to quit" />
+                   Text="Enter to search  ·  Ctrl+Alt+N notebook  ·  Ctrl+Q to quit" />
     </StackPanel>
 </Window>

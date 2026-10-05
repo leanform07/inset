@@ -124,8 +124,17 @@ LookUp/                      ← 專案名稱避開 "Cambridge"（名字可再�
 - reader.js 選擇器集中管理，Cambridge 改版時只改一個地方
 - 選配：封鎖第三方廣告 / 追蹤請求來加速載入
 
+### Phase 1.5：單字學習筆記（2026-10-05 新增需求）
+原 spec 把「單字學習系統」列為不做，但使用者決定加入。做法是讓查字流程不受影響：
+- popup 底部只多一個「☆ Add to notebook」（Ctrl+S），一按就存成 Uncategorized；下方展開的小面板可選填分類、熟悉度（New / Learning / Known）、個人筆記，全部都是選填
+- 每次查字自動記錄查詢次數與日期（30 分鐘內重複查同一字只算一次）；查第 2 次起 popup 底部顯示「Looked up N times」
+- 筆記本視窗（Ctrl+Alt+N）：左側自訂分類（新增 / 改名 / 刪除）、中間單字列表（篩選、熟悉度過濾、多選後右鍵批次分類）、右側詳細資料（摘要、分類、熟悉度、筆記、查詢紀錄、Look up again）
+- 匯出 CSV（UTF-8 BOM，Excel 和 Anki 都能用）
+- 存的內容：單字、詞性、IPA、第一個繁中翻譯與英文定義、一句例句，加上自己的筆記。只存在本機 `%AppData%\LookUp\notebook.json`
+- 「不把查詢結果寫入磁碟快取」的原則仍然適用：只有使用者主動加入筆記的字才會存摘要，一般查詢只記字和次數
+
 ### Phase 5：選配（不屬於 MVP）
-- History（只記 query + 時間）、Favourite ☆
+- ~~History、Favourite~~ → 已由 Phase 1.5 筆記功能取代
 - 第二資料來源（Free Dictionary API），Cambridge 不能用時切換
 - 公開發佈：`dotnet publish` 打包成 single-file、README 加上非官方聲明、GitHub Release
 
