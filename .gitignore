@@ -1,0 +1,6 @@
+bin/
+obj/
+*.user
+.vs/
+wv2-profile/
+out/
