@@ -11,6 +11,7 @@
     <RootNamespace>LookUp</RootNamespace>
     <Product>Inset</Product>
     <AssemblyTitle>Inset</AssemblyTitle>
+    <Version>0.1.0</Version>
     <!-- Only for the notification-area icon (NotifyIcon). -->
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
@@ -35,7 +36,7 @@
     <Resource Include="Assets\AppIcon.ico" />
     <Resource Include="Assets\Fonts\*.ttf" />
     <!-- Geist is SIL OFL 1.1: the licence travels with the fonts. -->
-    <None Include="Assets\Fonts\Geist-OFL.txt" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="Assets\Fonts\Geist-OFL.txt" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
   </ItemGroup>
 
   <ItemGroup>
