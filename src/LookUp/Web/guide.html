@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inset 使用說明</title>
+<style>
+:root {
+  --ground-warm: #FAF6F5; --ground: #F5F4F6; --ground-cool: #EEF3EF; --rail: #EEF3EF;
+  --ink: #16181A; --ink-secondary: #5E6166; --ink-muted: #686B71; --inverse-ink: #FAF6F5;
+  --press-fill: #ECE9E7; --hairline: #C9C7C4; --field-border: #B5B3B0;
+  --seal: #DCDDF3; --seal-ink: #3E4291; --seal-ink-secondary: #4A4E73;
+  --ui: "Geist", "Segoe UI Variable Text", "Segoe UI", "Microsoft JhengHei UI", "Microsoft JhengHei", sans-serif;
+  --mono: "Geist Mono", "Cascadia Mono", Consolas, monospace;
+  --zh: "Microsoft JhengHei UI", "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", sans-serif;
+  --ipa: "Segoe UI", sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ground-warm: #1B1A1B; --ground: #18191B; --ground-cool: #161A19; --rail: #1D2120;
+    --ink: #ECEBE8; --ink-secondary: #A9ABAF; --ink-muted: #8C8F94; --inverse-ink: #17181A;
+    --press-fill: #26272A; --hairline: #3A3B3F; --field-border: #55575C;
+    --seal: #33365A; --seal-ink: #C3C6F5; --seal-ink-secondary: #B9BCE6;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+html { background: var(--ground); }
+body {
+  margin: 0; color: var(--ink);
+  background: linear-gradient(160deg, var(--ground-warm), var(--ground) 55%, var(--ground-cool)) fixed;
+  font: 400 16px/1.75 var(--ui), var(--zh);
+  -webkit-font-smoothing: antialiased;
+}
+.plate { position: relative; max-width: 820px; margin: 0 auto; padding: 56px 28px 72px; }
+.mark { position: absolute; top: 14px; width: 18px; height: 18px; color: var(--ink-muted); }
+.mark.l { left: 14px; } .mark.r { right: 14px; }
+.token { display: flex; justify-content: space-between; font: 11px/1 var(--mono); letter-spacing: .12em; color: var(--ink-muted);
+  text-transform: uppercase; padding-bottom: 12px; border-bottom: 1px solid var(--hairline); }
+h1 { font-weight: 400; font-size: 46px; line-height: 1.1; letter-spacing: -.02em; margin: 40px 0 14px; }
+.lead { font-size: 19px; line-height: 1.7; max-width: 36em; margin: 0 0 18px; }
+.facts { font: 11px/1.8 var(--mono); letter-spacing: .12em; color: var(--ink-secondary); margin: 0; }
+section { margin-top: 64px; }
+h2 { display: flex; align-items: baseline; gap: 18px; font-weight: 400; font-size: 26px; line-height: 1.3; margin: 0 0 6px;
+  padding-bottom: 12px; border-bottom: 1px solid var(--ink); }
+h2 .n { font: 11px var(--mono); letter-spacing: .12em; color: var(--ink-muted); }
+h3 { font-weight: 400; font-size: 18px; margin: 34px 0 6px; }
+p { margin: 10px 0; }
+.muted { color: var(--ink-secondary); }
+kbd { font: 12px/1 var(--mono); letter-spacing: .04em; padding: 3px 6px 2px; border: 1px solid var(--field-border);
+  color: var(--ink); white-space: nowrap; }
+.ui { font-family: var(--ui); white-space: nowrap; }
+.label { font: 11px var(--mono); letter-spacing: .12em; }
+ol.steps { list-style: none; counter-reset: step; padding: 0; margin: 14px 0; }
+ol.steps > li { counter-increment: step; position: relative; padding: 12px 0 12px 48px; border-bottom: 1px solid var(--hairline); }
+ol.steps > li::before { content: counter(step, decimal-leading-zero); position: absolute; left: 0; top: 15px;
+  font: 11px var(--mono); letter-spacing: .12em; color: var(--ink-muted); }
+.note { margin: 18px 0; padding: 4px 0 4px 14px; border-left: 1px solid var(--hairline); color: var(--ink-secondary); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; }
+th { text-align: left; font: 400 11px var(--mono); letter-spacing: .12em; color: var(--ink-muted); padding: 0 16px 8px 0;
+  border-bottom: 1px solid var(--ink); }
+td { vertical-align: top; padding: 11px 16px 11px 0; border-bottom: 1px solid var(--hairline); }
+td:first-child { white-space: nowrap; }
+figure { margin: 26px 0 8px; }
+figure svg { display: block; width: 100%; height: auto; }
+figcaption { font: 11px var(--mono); letter-spacing: .12em; color: var(--ink-muted); margin-top: 10px; }
+.callouts { list-style: none; padding: 0; margin: 14px 0; }
+.callouts li { display: grid; grid-template-columns: 34px 1fr; padding: 9px 0; border-bottom: 1px solid var(--hairline); }
+.tag { display: inline-block; width: 18px; height: 18px; background: var(--ink); color: var(--inverse-ink);
+  font: 11px/18px var(--mono); text-align: center; margin-top: 4px; }
+.seal-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: var(--seal);
+  border: 1px solid var(--seal-ink); vertical-align: -1px; }
+.phrase-swatch { display: inline-block; width: 14px; height: 12px; background: var(--seal); vertical-align: -1px; }
+dl.faq { margin: 14px 0; }
+dl.faq dt { font-size: 17px; padding-top: 18px; }
+dl.faq dd { margin: 4px 0 0; padding-bottom: 16px; border-bottom: 1px solid var(--hairline); color: var(--ink-secondary); }
+code { font: 13px var(--mono); }
+footer { margin-top: 72px; padding-top: 14px; border-top: 1px solid var(--hairline); font: 11px/1.9 var(--mono);
+  letter-spacing: .08em; color: var(--ink-muted); }
+footer p { margin: 0; }
+/* figure ink */
+.f-frame { fill: var(--ground); stroke: var(--hairline); }
+.f-rail { fill: var(--rail); }
+.f-rule { stroke: var(--hairline); }
+.f-inkrule { stroke: var(--ink); }
+.f-ink { fill: var(--ink); }
+.f-press { fill: var(--press-fill); }
+.f-seal { fill: var(--seal); }
+.f-sealink { fill: var(--seal-ink); }
+.f-sealring { fill: none; stroke: var(--seal-ink); }
+.f-box { fill: none; stroke: var(--field-border); }
+.f-btn { fill: none; stroke: var(--ink); }
+.f-mark { fill: none; stroke: var(--ink-muted); }
+.t { fill: var(--ink); font-family: var(--ui), var(--zh); }
+.t2 { fill: var(--ink-secondary); font-family: var(--ui), var(--zh); }
+.tm { fill: var(--ink-muted); font-family: var(--mono); letter-spacing: .1em; }
+.tmi { fill: var(--ink); font-family: var(--mono); letter-spacing: .1em; }
+.tinv { fill: var(--inverse-ink); font-family: var(--ui); }
+.tz { fill: var(--ink); font-family: var(--zh); }
+.tipa { fill: var(--ink-secondary); font-family: var(--ipa); }
+.ctag rect { fill: var(--ink); }
+.ctag text { fill: var(--inverse-ink); font-family: var(--mono); font-size: 11px; text-anchor: middle; }
+@media (max-width: 560px) {
+  h1 { font-size: 36px; } .plate { padding: 48px 16px 56px; }
+  td:first-child { white-space: normal; }
+}
+@media print {
+  :root { --ground-warm: #fff; --ground: #fff; --ground-cool: #fff; }
+  body { background: #fff; font-size: 13px; }
+  section, figure, tr { break-inside: avoid; }
+  .plate { padding-top: 20px; }
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="cross" viewBox="0 0 18 18"><path d="M9 0v18M0 9h18" stroke="currentColor" fill="none"/><circle cx="9" cy="9" r="4.5" stroke="currentColor" fill="none"/></symbol>
+  <symbol id="crossf" viewBox="0 0 18 18"><path d="M9 0v18M0 9h18" class="f-mark"/><circle cx="9" cy="9" r="4.5" class="f-mark"/></symbol>
+  <symbol id="speaker" viewBox="0 0 14 12"><path d="M1 4h3l4-3v10L4 8H1z" class="f-ink"/><path d="M10 3.5q2 2.5 0 5M11.8 2q3.4 4 0 8" fill="none" class="f-inkrule" stroke-width="1"/></symbol>
+</svg>
+
+<main class="plate">
+  <svg class="mark l" aria-hidden="true"><use href="#cross"/></svg>
+  <svg class="mark r" aria-hidden="true"><use href="#cross"/></svg>
+
+  <div class="token"><span>Inset · 使用說明</span><span>EN · 中文</span></div>
+
+  <h1>選起來，按一下，<br>就看得懂。</h1>
+  <p class="lead">讀英文時遇到不懂的字，把它選起來、按 <kbd>Ctrl+Alt+D</kbd>，游標旁邊就會跳出 Cambridge 英漢字典的解釋：發音、詞性、英文定義、中文翻譯、例句。看完按 <kbd>Esc</kbd>，繼續讀。想記住的字按 <kbd>Ctrl+S</kbd> 存進單字筆記本。</p>
+  <p class="facts">免費 · 不用註冊 · 資料只存在你的電腦 · WINDOWS 11</p>
+
+  <section id="install">
+    <h2><span class="n">01</span>安裝</h2>
+    <ol class="steps">
+      <li>把 zip 解壓縮到一個固定的資料夾，例如「文件\Inset」。不要直接在壓縮檔裡面執行。</li>
+      <li>雙擊 <span class="ui">Inset.exe</span>。畫面上不會跳出大視窗，它會待在工作列右下角、時鐘旁邊的系統匣裡，圖示是白底黑十字。沒看到的話，按一下那裡的 <span class="ui">^</span> 展開。</li>
+      <li>如果出現「Windows 已保護您的電腦」，按「其他資訊」→「仍要執行」。這是因為這個程式沒有購買數位簽章，Windows 認不得是誰發行的，只會在第一次出現。</li>
+      <li>第一次查字時，視窗上方會寫 <span class="label">ONE-TIME SECURITY CHECK · CLOUDFLARE</span>，這是 Cambridge 網站的安全驗證。等幾秒鐘它會自己通過，之後就不會再出現。</li>
+    </ol>
+    <p class="note">想每次開機就自動啟動：系統匣的十字圖示按右鍵 → <span class="ui">Settings…</span> → 勾選 <span class="ui">Start Inset when I sign in to Windows</span>。</p>
+  </section>
+
+  <section id="lookup">
+    <h2><span class="n">02</span>查字</h2>
+    <table>
+      <thead><tr><th>怎麼叫出來</th><th>什麼時候用</th></tr></thead>
+      <tbody>
+        <tr><td>選取文字，按 <kbd>Ctrl+Alt+D</kbd></td><td>最常用。瀏覽器、Word、PDF、Notion 等大部分的程式都可以。</td></tr>
+        <tr><td>按 <kbd>Ctrl+Alt+F</kbd>，或點一下系統匣圖示</td><td>打開搜尋框，自己打字，按 <kbd>Enter</kbd> 查。選不到字的地方用這個。</td></tr>
+      </tbody>
+    </table>
+    <p>片語也可以查，最多 6 個字，例如 <i>be subject to</i>、<i>take something for granted</i>。</p>
+
+    <figure>
+      <svg viewBox="0 0 440 392" role="img" aria-label="查字視窗示意圖">
+        <rect class="f-frame" x="0.5" y="0.5" width="439" height="391"/>
+        <line class="f-rule" x1="1" y1="32.5" x2="439" y2="32.5"/>
+        <text class="tm" x="16" y="21" font-size="11">EN · 中文</text>
+        <text class="tmi" x="424" y="21" font-size="11" text-anchor="end">LOOKED UP 03</text>
+        <use href="#crossf" x="10" y="42" width="18" height="18"/>
+        <g transform="rotate(-8 384 84)">
+          <circle class="f-seal" cx="384" cy="84" r="40"/>
+          <circle class="f-sealring" cx="384" cy="84" r="31" stroke-width="5" stroke-dasharray="1.6 2.4" opacity=".55"/>
+          <text class="f-sealink" x="384" y="92" font-size="22" text-anchor="middle" font-family="Geist, Segoe UI, sans-serif">03</text>
+        </g>
+        <text class="t" x="28" y="100" font-size="34" letter-spacing="-.6">resilience</text>
+        <text class="tm" x="28" y="128" font-size="11">NOUN [ U ]</text>
+        <text class="tm" x="28" y="155" font-size="11">UK</text>
+        <use href="#speaker" x="50" y="145" width="14" height="12"/>
+        <text class="tipa" x="70" y="156" font-size="14">/rɪˈzɪl.jəns/</text>
+        <text class="tm" x="178" y="155" font-size="11">US</text>
+        <use href="#speaker" x="200" y="145" width="14" height="12"/>
+        <text class="tipa" x="220" y="156" font-size="14">/rɪˈzɪl.jəns/</text>
+        <line class="f-rule" x1="28" y1="176.5" x2="412" y2="176.5"/>
+        <text class="tm" x="28" y="205" font-size="11">01</text>
+        <text class="t" x="68" y="205" font-size="15">the ability to be happy, successful, etc.</text>
+        <text class="t" x="68" y="227" font-size="15">again after something difficult or bad</text>
+        <text class="tz" x="68" y="256" font-size="16">復原力；恢復力</text>
+        <line class="f-rule" x1="68.5" y1="270" x2="68.5" y2="310"/>
+        <text class="t2" x="81" y="286" font-size="13.5">the resilience of the human psyche</text>
+        <text class="t2" x="81" y="305" font-size="13" font-family="Microsoft JhengHei UI, sans-serif">人類心理的復原力</text>
+        <line class="f-rule" x1="1" y1="340.5" x2="439" y2="340.5"/>
+        <rect class="f-ink" x="16" y="350" width="200" height="32"/>
+        <text class="tinv" x="30" y="371" font-size="13">☆  Add to notebook</text>
+        <text class="tinv" x="160" y="370.5" font-size="10" font-family="Geist Mono, Consolas, monospace" opacity=".65">CTRL+S</text>
+        <text class="tmi" x="412" y="370" font-size="11" text-anchor="end">CAMBRIDGE ↗</text>
+        <line class="f-rule" x1="330" y1="376.5" x2="412" y2="376.5"/>
+        <g class="ctag"><rect x="190" y="7" width="18" height="18"/><text x="199" y="20">1</text></g>
+        <g class="ctag"><rect x="332" y="142" width="18" height="18"/><text x="341" y="155">2</text></g>
+        <g class="ctag"><rect x="320" y="44" width="18" height="18"/><text x="329" y="57">3</text></g>
+        <g class="ctag"><rect x="224" y="357" width="18" height="18"/><text x="233" y="370">4</text></g>
+        <g class="ctag"><rect x="304" y="357" width="18" height="18"/><text x="313" y="370">5</text></g>
+      </svg>
+      <figcaption>查字視窗</figcaption>
+    </figure>
+    <ul class="callouts">
+      <li><span class="tag">1</span><span>上方這一條：左邊是字典來源，同一個字查過兩次以上，右邊會顯示查了幾次（<span class="label">LOOKED UP 03</span>）。按住這一條可以拖曳視窗。</span></li>
+      <li><span class="tag">2</span><span>UK、US 旁邊的喇叭：播放英式、美式發音。</span></li>
+      <li><span class="tag">3</span><span><span class="seal-swatch"></span> 印章：存進筆記本的字會蓋上這枚章，外圈寫著分類和存的日期，中間是查過的次數。</span></li>
+      <li><span class="tag">4</span><span><span class="ui">Add to notebook</span>（<kbd>Ctrl+S</kbd>）：把這個字存進筆記本，見下一節。</span></li>
+      <li><span class="tag">5</span><span><span class="label">CAMBRIDGE</span>：用瀏覽器打開 Cambridge 的原網頁。</span></li>
+    </ul>
+
+    <h3>操作</h3>
+    <table>
+      <tbody>
+        <tr><td>關閉</td><td>按 <kbd>Esc</kbd>，或點視窗外面任何地方。</td></tr>
+        <tr><td>捲動</td><td>滑鼠滾輪、方向鍵、<kbd>PageDown</kbd>。</td></tr>
+        <tr><td>再查詞條裡的字</td><td>解釋或例句裡的英文字可以直接點，會在同一個視窗查那個字。</td></tr>
+        <tr><td>移動、調整大小</td><td>按住上方那一條拖曳；拉視窗邊緣調整大小，下次會記得。想恢復原本大小，按上方的 <span class="label">DEFAULT SIZE</span>，或在上方那一條連按兩下。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>看到這些是什麼意思</h3>
+    <table>
+      <tbody>
+        <tr><td><span class="phrase-swatch"></span> 淡紫色的一塊</td><td>你查的是片語。Cambridge 把片語放在主要單字的詞條裡，淡紫色那一塊就是你要找的片語。</td></tr>
+        <tr><td><span class="label">EN ONLY · NO CHINESE</span></td><td>Cambridge 英漢字典沒有收錄這個字，顯示的是英英解釋，所以沒有中文。</td></tr>
+        <tr><td><span class="label">DID YOU MEAN</span></td><td>可能拼錯了。點下面列出的字就能查。</td></tr>
+        <tr><td><span class="ui">Selection is too long</span></td><td>選太多字了。一次最多查 6 個字。</td></tr>
+        <tr><td><span class="ui">Can't read…</span></td><td>終端機，以及用系統管理員身分執行的程式，讀不到選取的文字。改用 <kbd>Ctrl+Alt+F</kbd> 自己輸入。</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="notebook">
+    <h2><span class="n">03</span>存字與單字筆記本</h2>
+    <h3>存一個字</h3>
+    <p>在查字視窗按 <kbd>Ctrl+S</kbd>（或 <span class="ui">Add to notebook</span>），字就存好了，詞條右上角會蓋上印章。下方同時會展開一個面板，可以順手填：</p>
+    <table>
+      <tbody>
+        <tr><td><span class="label">CATEGORY</span></td><td>分類，例如「建築」「雅思」。打一個新名字，就會自動新增這個分類。</td></tr>
+        <tr><td><span class="label">STATUS</span></td><td>熟悉度：<span class="ui">New</span> 新字、<span class="ui">Learning</span> 學習中、<span class="ui">Known</span> 已經會了。</td></tr>
+        <tr><td><span class="label">NOTE</span></td><td>筆記，例如在哪裡看到、怎麼記。</td></tr>
+      </tbody>
+    </table>
+    <p>這些都可以不填，按 <span class="ui">Done</span> 或 <kbd>Enter</kbd> 收起來。之後要改，再按一次同一個按鈕；不想存了，按 <span class="ui">Remove</span>。</p>
+    <p class="note">每個查過的字都會記次數，就算沒有存也一樣，所以常查的字之後一眼就看得出來。30 分鐘內重複查同一個字，只算一次。</p>
+
+    <h3>打開筆記本</h3>
+    <p>按 <kbd>Ctrl+Alt+N</kbd>，或系統匣圖示按右鍵 → <span class="ui">Notebook</span>。</p>
+
+    <figure>
+      <svg viewBox="0 0 760 400" role="img" aria-label="筆記本視窗示意圖">
+        <rect class="f-frame" x="0.5" y="0.5" width="759" height="399"/>
+        <rect class="f-rail" x="1" y="1" width="149" height="398"/>
+        <line class="f-rule" x1="150.5" y1="1" x2="150.5" y2="399"/>
+        <text class="t" x="16" y="42" font-size="20">Notebook</text>
+        <circle class="f-ink" cx="10" cy="80" r="2.5"/>
+        <text class="t" x="16" y="85" font-size="13.5">All words</text><text class="tm" x="134" y="85" font-size="11" text-anchor="end">03</text>
+        <text class="t2" x="16" y="113" font-size="13.5">Uncategorized</text><text class="tm" x="134" y="113" font-size="11" text-anchor="end">02</text>
+        <text class="t2" x="16" y="141" font-size="13.5">Architecture</text><text class="tm" x="134" y="141" font-size="11" text-anchor="end">01</text>
+        <text class="t2" x="16" y="169" font-size="13.5">IELTS</text><text class="tm" x="134" y="169" font-size="11" text-anchor="end">00</text>
+        <rect class="f-btn" x="16.5" y="326.5" width="118" height="30"/>
+        <text class="t" x="28" y="346" font-size="12.5">+  New category</text>
+        <text class="tmi" x="16" y="382" font-size="10.5">HOW TO USE</text>
+        <line class="f-rule" x1="16" y1="387.5" x2="84" y2="387.5"/>
+
+        <rect class="f-box" x="170.5" y="22.5" width="250" height="30"/>
+        <circle class="f-mark" cx="185" cy="36" r="4.5"/><line class="f-mark" x1="188.5" y1="39.5" x2="192" y2="43"/>
+        <text class="t2" x="200" y="42" font-size="12.5">Filter words, Chinese or notes</text>
+        <rect class="f-btn" x="432.5" y="22.5" width="78" height="30"/>
+        <text class="t" x="445" y="42" font-size="12.5">Export CSV</text>
+        <rect class="f-ink" x="170" y="66" width="38" height="28"/><text class="tinv" x="181" y="85" font-size="12.5">All</text>
+        <rect class="f-box" x="207.5" y="66.5" width="44" height="27"/><text class="t" x="217" y="85" font-size="12.5">New</text>
+        <rect class="f-box" x="251.5" y="66.5" width="68" height="27"/><text class="t" x="261" y="85" font-size="12.5">Learning</text>
+        <rect class="f-box" x="319.5" y="66.5" width="58" height="27"/><text class="t" x="329" y="85" font-size="12.5">Known</text>
+        <text class="tm" x="510" y="85" font-size="11" text-anchor="end">03 WORDS</text>
+        <text class="tm" x="174" y="124" font-size="11">WORD</text><text class="tm" x="300" y="124" font-size="11">CHINESE</text>
+        <text class="tm" x="392" y="124" font-size="11">STATUS</text><text class="tm" x="510" y="124" font-size="11" text-anchor="end">LOOKUPS</text>
+        <line class="f-inkrule" x1="170" y1="132.5" x2="510" y2="132.5"/>
+        <rect class="f-press" x="170" y="133" width="340" height="34"/>
+        <line class="f-inkrule" x1="170" y1="166.5" x2="510" y2="166.5"/>
+        <text class="t" x="174" y="155" font-size="13.5">resilience</text><text class="tz" x="300" y="155" font-size="12.5">復原力；恢復…</text>
+        <text class="tmi" x="392" y="155" font-size="10.5">LEARNING</text><text class="tmi" x="496" y="155" font-size="11">01</text>
+        <text class="t" x="174" y="189" font-size="13.5">charge</text><text class="tz" x="300" y="189" font-size="12.5">（尤指對某…</text>
+        <text class="tmi" x="392" y="189" font-size="10.5">NEW</text><text class="tmi" x="496" y="189" font-size="11">01</text>
+        <line class="f-rule" x1="170" y1="200.5" x2="510" y2="200.5"/>
+        <text class="t" x="174" y="223" font-size="13.5">account for</text><text class="tz" x="300" y="223" font-size="12.5">（對某人）就…</text>
+        <text class="tmi" x="392" y="223" font-size="10.5">NEW</text><text class="tmi" x="496" y="223" font-size="11">01</text>
+        <line class="f-rule" x1="170" y1="234.5" x2="510" y2="234.5"/>
+
+        <line class="f-rule" x1="530.5" y1="1" x2="530.5" y2="399"/>
+        <use href="#crossf" x="540" y="12" width="18" height="18"/>
+        <g transform="rotate(-8 718 52)">
+          <circle class="f-seal" cx="718" cy="52" r="30"/>
+          <circle class="f-sealring" cx="718" cy="52" r="23" stroke-width="4" stroke-dasharray="1.4 2" opacity=".55"/>
+          <text class="f-sealink" x="718" y="58" font-size="16" text-anchor="middle" font-family="Geist, Segoe UI, sans-serif">01</text>
+        </g>
+        <text class="t" x="552" y="72" font-size="24" letter-spacing="-.4">resilience</text>
+        <text class="tm" x="552" y="96" font-size="10.5">NOUN</text><text class="tipa" x="594" y="96" font-size="12">/rɪˈzɪl.jəns/</text>
+        <line class="f-rule" x1="552" y1="110.5" x2="744" y2="110.5"/>
+        <text class="tz" x="552" y="134" font-size="14">復原力；恢復力</text>
+        <text class="t" x="552" y="156" font-size="12">the ability to be happy, successful…</text>
+        <rect class="f-ink" x="552" y="174" width="104" height="28"/><text class="tinv" x="564" y="192" font-size="12">Look up again</text>
+        <rect class="f-btn" x="662.5" y="174.5" width="84" height="27"/><text class="t" x="671" y="192" font-size="11.5">Cambridge ↗</text>
+        <line class="f-rule" x1="552" y1="220.5" x2="744" y2="220.5"/>
+        <text class="tm" x="552" y="244" font-size="10.5">CATEGORY</text>
+        <rect class="f-box" x="552.5" y="252.5" width="191" height="27"/><text class="t" x="562" y="271" font-size="12">Architecture</text>
+        <text class="tm" x="552" y="302" font-size="10.5">STATUS</text>
+        <rect class="f-box" x="552.5" y="310.5" width="40" height="25"/><text class="t" x="560" y="327" font-size="11.5">New</text>
+        <rect class="f-ink" x="592" y="310" width="62" height="26"/><text class="tinv" x="600" y="327" font-size="11.5">Learning</text>
+        <rect class="f-box" x="654.5" y="310.5" width="50" height="25"/><text class="t" x="662" y="327" font-size="11.5">Known</text>
+        <text class="tm" x="552" y="358" font-size="10.5">NOTE</text>
+        <rect class="f-box" x="552.5" y="366.5" width="191" height="26"/>
+
+        <g class="ctag"><rect x="104" y="54" width="18" height="18"/><text x="113" y="67">1</text></g>
+        <g class="ctag"><rect x="386" y="71" width="18" height="18"/><text x="395" y="84">2</text></g>
+        <g class="ctag"><rect x="470" y="176" width="18" height="18"/><text x="479" y="189">3</text></g>
+        <g class="ctag"><rect x="532" y="179" width="18" height="18"/><text x="541" y="192">4</text></g>
+        <g class="ctag"><rect x="512" y="28" width="18" height="18"/><text x="521" y="41">5</text></g>
+      </svg>
+      <figcaption>單字筆記本</figcaption>
+    </figure>
+    <ul class="callouts">
+      <li><span class="tag">1</span><span>分類：<span class="ui">All words</span> 是全部的字，點一個分類就只看那一類。<span class="ui">New category</span> 新增分類；在分類上按右鍵可以改名或刪除。刪掉分類時，裡面的字會變成 <span class="ui">Uncategorized</span>，不會不見。</span></li>
+      <li><span class="tag">2</span><span>搜尋與篩選：可以搜英文、中文或筆記內容；<span class="ui">All / New / Learning / Known</span> 依熟悉度篩選。</span></li>
+      <li><span class="tag">3</span><span>單字清單：<span class="label">LOOKUPS</span> 是查過幾次。按住 <kbd>Ctrl</kbd> 或 <kbd>Shift</kbd> 可以多選，按右鍵可以一次移到某個分類、改熟悉度或刪除。<kbd>Delete</kbd> 刪除，<kbd>Enter</kbd> 或連按兩下重新查這個字。</span></li>
+      <li><span class="tag">4</span><span>右邊是選到的字：<span class="ui">Look up again</span> 重新查、<span class="ui">Cambridge</span> 開原網頁。分類、熟悉度、筆記都可以直接改，會自動存檔。</span></li>
+      <li><span class="tag">5</span><span><span class="ui">Export CSV</span>：把目前清單上的字（有篩選就只匯出篩選後的）存成 CSV，可以用 Excel 打開，或匯入 Anki 做字卡。</span></li>
+    </ul>
+    <p class="muted">左下角的 <span class="label">HOW TO USE</span> 會打開這份說明。</p>
+  </section>
+
+  <section id="settings">
+    <h2><span class="n">04</span>設定</h2>
+    <p>系統匣圖示按右鍵 → <span class="ui">Settings…</span></p>
+    <table>
+      <tbody>
+        <tr><td><span class="ui">Shortcuts</span></td><td>三個快捷鍵都可以改：點一下框框，再按新的組合鍵。跟別的程式衝突時會直接提示。<span class="ui">Reset to defaults</span> 恢復預設。</td></tr>
+        <tr><td><span class="ui">Appearance</span></td><td>外觀：<span class="ui">Same as Windows</span> 跟著 Windows、<span class="ui">Light</span> 淺色、<span class="ui">Dark</span> 深色。</td></tr>
+        <tr><td><span class="ui">Startup</span></td><td>開機自動啟動。</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="faq">
+    <h2><span class="n">05</span>常見問題</h2>
+    <dl class="faq">
+      <dt>要錢嗎？要註冊嗎？</dt>
+      <dd>都不用。</dd>
+      <dt>我查了哪些字，會被上傳嗎？</dt>
+      <dd>Inset 不會把你的筆記本、設定或查字紀錄傳到任何地方，這些都只存在你的電腦。查字時，它是在內嵌的瀏覽器裡打開 Cambridge 網站，就跟你自己用瀏覽器查一樣，Cambridge 網站本身的統計和廣告程式也會照常載入。</dd>
+      <dt>沒有網路可以用嗎？</dt>
+      <dd>不行。字典內容是每次即時從 Cambridge 網站讀取的。</dd>
+      <dt>按了快捷鍵沒反應？</dt>
+      <dd>先看系統匣有沒有十字圖示，沒有的話代表 Inset 沒在執行，重新打開 <span class="ui">Inset.exe</span>。如果有，可能是那組快捷鍵被別的程式占用了，到 <span class="ui">Settings…</span> 換一組。</dd>
+      <dt>換電腦時，筆記本怎麼帶走？</dt>
+      <dd>先在系統匣按右鍵 → <span class="ui">Quit Inset</span> 關掉程式，再把 <code>%AppData%\Inset\notebook.json</code> 複製到新電腦的同一個位置。也可以用 <span class="ui">Export CSV</span> 匯出備份。</dd>
+      <dt>怎麼移除？</dt>
+      <dd>如果有勾開機啟動，先到 <span class="ui">Settings…</span> 取消勾選；系統匣右鍵 → <span class="ui">Quit Inset</span>；再刪掉 Inset 的資料夾，以及 <code>%AppData%\Inset</code> 和 <code>%LocalAppData%\Inset</code> 兩個資料夾。</dd>
+    </dl>
+  </section>
+
+  <footer>
+    <p>非官方工具。Inset 與 Cambridge University Press &amp; Assessment 沒有任何關係。</p>
+    <p>字典內容即時取自 Cambridge Dictionary，版權屬於 Cambridge University Press &amp; Assessment。</p>
+    <p>介面字型 Geist、Geist Mono · SIL Open Font License 1.1</p>
+  </footer>
+</main>
+</body>
+</html>

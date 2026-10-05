@@ -25,6 +25,7 @@ sealed class TrayIcon : IDisposable
         _menu.Items.Add(_searchItem);
         _menu.Items.Add(_notebookItem);
         _menu.Items.Add(new Separator());
+        _menu.Items.Add(Item("How to use", UserGuide.Open));
         _menu.Items.Add(Item("Settings…", settings));
         _menu.Items.Add(Item("Quit Inset", quit));
 

@@ -28,6 +28,10 @@ if ($LASTEXITCODE -ne 0) { throw "dotnet publish failed" }
 New-Item -ItemType Directory -Force $stage | Out-Null
 Copy-Item (Join-Path $publish "Inset.exe") $stage
 Copy-Item (Join-Path $root "README.md") $stage
+# The how-to guide, under a Chinese name for the people it is written for. Spelled out by code point
+# because Windows PowerShell reads this BOM-less script as ANSI.
+$guideName = -join ([char[]](0x4F7F, 0x7528, 0x8AAA, 0x660E)) + ".html"   # "shi yong shuo ming": how to use
+Copy-Item (Join-Path $root "src\LookUp\Web\guide.html") (Join-Path $stage $guideName)
 New-Item -ItemType Directory -Force (Join-Path $stage "licenses") | Out-Null
 Copy-Item (Join-Path $root "src\LookUp\Assets\Fonts\Geist-OFL.txt") (Join-Path $stage "licenses")
 

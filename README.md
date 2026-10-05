@@ -23,6 +23,8 @@
 
 想開機自動啟動：系統匣圖示按右鍵 → Settings → 勾選「Start Inset when I sign in to Windows」。
 
+完整的圖文說明在 zip 裡的「使用說明.html」；裝好之後也可以從系統匣右鍵 → How to use，或筆記本左下角的 HOW TO USE 打開。
+
 ## 怎麼用
 
 | 快捷鍵 | 作用 |

@@ -153,6 +153,8 @@ public partial class NotebookWindow : Window
         if (_menuCategory is not { Kind: Kind.Category }) e.Handled = true;
     }
 
+    void OnHowToUseClick(object sender, RoutedEventArgs e) => UserGuide.Open();
+
     void OnNewCategoryClick(object sender, RoutedEventArgs e)
     {
         if (PromptWindow.Ask(this, "New category", action: "Create") is { } name && !_store.AddCategory(name))
