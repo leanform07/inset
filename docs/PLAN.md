@@ -19,8 +19,17 @@
 | Phase 2 選字查詢 | ✅ | 記事本實測：UIA 57–133 ms、剪貼簿 208–280 ms，剪貼簿有還原 |
 | Phase 3 桌面整合 | ✅ | 系統匣、設定視窗、可自訂快捷鍵、深淺色、開機啟動、單一實例 |
 | Phase 4 品質 | ✅（相容性表待填） | 片語定位、英英 fallback 提示；各 App 相容性見 [TESTING.md](TESTING.md) |
-| 介面設計 | ⏳ 下一步 | 用 design skill 重新設計所有視窗 |
+| 介面設計 | 🔄 進行中（2026-10-05 暫停） | 用 impeccable design skill 重新設計所有視窗，見下方「介面設計進度」 |
 | 打包發佈 | ⏳ | single-file publish、README |
+
+### 介面設計進度（暫停點）
+
+使用 `/impeccable`（design skill）做整體重新設計（redesign：保留功能和內容，舊外觀只當參考）。
+- ✅ **init**：已訪談並寫好 `PRODUCT.md`（使用情境：專業文獻 / 考試 / 日常閱讀都是主要情境；發佈對象：所有繁中使用者；名稱 LookUp 是暫定，圖示不要用名字）
+- ✅ 確認走 **code-first**（這個環境沒有圖片生成工具），也不適用 live 瀏覽器模式（原生 App）
+- ⏭ **下一步**：照 skill 的 `reference/new-work.md` 第 2 步，針對 Operate 介面問 2–3 個問題 → 第 3 步「Create or replace the visual world」→ 執行 `impeccable concept-seed --scope direction --mode operate`，在決策頁選方向 → 寫 direction contract（surface brief）→ 動手前讀 `reference/craft-floor.md` → 實作 → 截圖檢查 → finish reviewer → documenter 寫 DESIGN.md
+- 要處理的已知問題：筆記本詳細區的 New / Learning / Known 按鈕被切掉（Fluent RadioButton 有最小寬度）、popup 只有提示訊息時上方空一行、間距不一致、控制項看起來都是預設樣式
+- 範圍：查字視窗（含 reader.css）、搜尋框、筆記本、設定、命名對話框、系統匣選單、深淺兩種主題、App 圖示（目前是暫定的藍底 Aa）
 
 實作過程中的決定（和原計劃不同的地方）：
 - **預設快捷鍵**：Ctrl+Alt+D 選字查詢、Ctrl+Alt+F 搜尋框、Ctrl+Alt+N 筆記本
