@@ -220,6 +220,8 @@
         <Setter Property="CaretBrush" Value="{DynamicResource InkBrush}" />
         <Setter Property="SelectionBrush" Value="{DynamicResource SelectionBrush}" />
         <Setter Property="SelectionOpacity" Value="1" />
+        <!-- The selection sits behind the text (see LookUp.csproj), so selected words keep their ink. -->
+        <Setter Property="SelectionTextBrush" Value="{DynamicResource InkBrush}" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
