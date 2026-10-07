@@ -45,9 +45,11 @@
 
 - `%AppData%\Inset\notebook.json`：單字筆記本
 - `%AppData%\Inset\settings.json`：設定
+- `%LocalAppData%\Inset\Backups`：筆記本的每日備份，保留最近 14 天。刻意跟筆記本分開放，清快取時不要刪掉這個資料夾
 - `%LocalAppData%\Inset\WebView2`：內嵌瀏覽器的資料（Cloudflare 驗證、快取）
+- 登錄機碼 `HKCU\Software\Inset`：記錄筆記本上次存檔時有幾個字。啟動時如果筆記本突然變空，Inset 會靠它發現，並提議從備份還原
 
-**解除安裝：** 系統匣右鍵 → Quit Inset；如果有勾開機啟動，先在 Settings 取消；再刪掉 `Inset.exe` 和上面兩個資料夾。
+**解除安裝：** 系統匣右鍵 → Quit Inset；如果有勾開機啟動，先在 Settings 取消；再刪掉 `Inset.exe`、`%AppData%\Inset`、`%LocalAppData%\Inset` 兩個資料夾，以及登錄機碼 `HKCU\Software\Inset`。
 
 ## 授權
 

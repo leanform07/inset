@@ -1,3 +1,4 @@
+using System.IO;
 using System.Windows;
 using LookUp.Hotkeys;
 using LookUp.Lookup;
@@ -50,7 +51,7 @@ public partial class App : Application
         _settings = AppSettings.Load(AppSettings.DefaultPath);
         ThemeService.Apply(_settings.Theme);
 
-        _notebook = NotebookStore.Load(NotebookStore.DefaultPath);
+        _notebook = OpenNotebook(NotebookStore.DefaultPath);
         _popup = new PopupWindow(_notebook);
         _popup.UseSize(_settings.PopupSize);
         _popup.SizeChosen += size =>
@@ -91,6 +92,45 @@ public partial class App : Application
         }
 
         if (!e.Args.Contains(StartupRegistration.BackgroundArgument)) ShowSearch();
+    }
+
+    /// <summary>
+    /// Loads the notebook, offering the latest backup if words have gone missing since the last save,
+    /// and keeps the backups and the recorded word count up to date from then on.
+    /// </summary>
+    static NotebookStore OpenNotebook(string path)
+    {
+        var backups = new NotebookBackups(NotebookBackups.DefaultFolder);
+        var wordCount = new NotebookWordCount();
+
+        var store = NotebookStore.Load(path);
+        if (NotebookRecovery.Check(store, path, wordCount.Value, backups) is { } problem)
+        {
+            if (problem.Backup == null)
+                MessageBox.Show(problem.Message, "Inset", MessageBoxButton.OK, MessageBoxImage.Warning);
+            else if (MessageBox.Show(problem.Message, "Inset", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    store = NotebookRecovery.Restore(path, problem.Backup);
+                }
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+                {
+                    MessageBox.Show($"Couldn't restore the backup.\n\n{ex.Message}\n\nIt is still at {problem.Backup.Path}.",
+                        "Inset", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+        }
+
+        // Asked at most once: from here on, the notebook as it now is counts as the one to protect.
+        wordCount.Value = store.Words.Count;
+        backups.Take(path);
+        store.Changed += () =>
+        {
+            wordCount.Value = store.Words.Count;
+            backups.Take(path);
+        };
+        return store;
     }
 
     // ── Actions ───────────────────────────────────────────────

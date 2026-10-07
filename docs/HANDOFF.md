@@ -23,6 +23,17 @@ C# / .NET 10 / WPF（Fluent ThemeMode）+ WebView2。專案在 `D:\Projects\Dict
 - 舊的 `%LocalAppData%\LookUp`（舊 WebView2 profile）已丟進資源回收筒
 - 測試：`dotnet test tests/LookUp.Tests/LookUp.Tests.csproj`，72 個全部通過
 
+## 筆記本遺失事件與防護（2026-10-07）
+
+- 使用者 10/6 下午重開機後，`%AppData%\Inset\notebook.json` 變成一本新的空筆記本（`Lookups` 最早是 10/6 14:42），之前存的單字和查字紀錄全部不見。`%AppData%\LookUp` 不存在、沒有 `notebook.unreadable-*`、資源回收筒只有 10/6 02:23 丟掉的 `%LocalAppData%\LookUp`（92 MB 的 WebView2 profile，不含筆記本）、沒有「以前的版本」、沒匯出過 CSV。**單字沒救回來**
+- 原因沒查到。程式碼裡沒有任何會刪掉筆記本的路徑（`Remove` 會保留查字次數，所以連 `Lookups` 一起消失代表整個檔案或資料夾不見了）。前一次對話的線上紀錄只到 10/5 23:34，看不到改名當晚 02:2x 對資料夾做了什麼。注意：改名後單一執行個體的 Mutex 名稱也從 `LookUp` 改成 `Inset`，舊版 LookUp.exe 和 Inset.exe 可以同時執行、各自存檔
+- 加上的防護（雲端對話寫的，**沒有在 Windows 上編譯或跑過測試**，請先 `dotnet test`）：
+  - `NotebookBackups`：每天第一次存檔時把筆記本複製到 `%LocalAppData%\Inset\Backups\notebook-yyyy-MM-dd.json`，保留 14 份；空的筆記本不備份，免得把好的備份擠掉。故意跟筆記本放在不同資料夾
+  - `NotebookWordCount`：每次存檔把字數寫進 `HKCU\Software\Inset\NotebookWords`（不在資料夾裡，資料夾整個不見也還在）
+  - `NotebookRecovery` + `App.OpenNotebook`：啟動時如果登錄記得有字、筆記本卻是空的（檔案不見或讀不出來），跳 MessageBox 說明，有備份就問要不要還原；原本的檔案改名成 `notebook.replaced-*.json` 留著。只問一次
+  - `NotebookStore.Save` 先把暫存檔 flush 到磁碟再改名，避免斷電後檔案變空；讀不出來的檔案現在會透過 `SetAsidePath` 告訴使用者，不再默默開新的
+  - README、使用說明加上備份位置與登錄機碼
+
 ## 等使用者確認的事
 
 - 改名後的試用：系統匣圖示、資料有沒有順利搬到 `Inset` 資料夾（筆記本內容、設定、Cloudflare 不用重新驗證）

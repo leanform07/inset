@@ -353,10 +353,12 @@ footer p { margin: 0; }
       <dd>不行。字典內容是每次即時從 Cambridge 網站讀取的。</dd>
       <dt>按了快捷鍵沒反應？</dt>
       <dd>先看系統匣有沒有十字圖示，沒有的話代表 Inset 沒在執行，重新打開 <span class="ui">Inset.exe</span>。如果有，可能是那組快捷鍵被別的程式占用了，到 <span class="ui">Settings…</span> 換一組。</dd>
+      <dt>筆記本有備份嗎？</dt>
+      <dd>有。Inset 每天自動備份一次筆記本，保留最近 14 天，放在 <code>%LocalAppData%\Inset\Backups</code>，跟筆記本本身分開存放。如果啟動時發現原本有存單字、筆記本卻變成空的，Inset 會跳出提示，問你要不要從最近的備份還原。</dd>
       <dt>換電腦時，筆記本怎麼帶走？</dt>
       <dd>先在系統匣按右鍵 → <span class="ui">Quit Inset</span> 關掉程式，再把 <code>%AppData%\Inset\notebook.json</code> 複製到新電腦的同一個位置。也可以用 <span class="ui">Export CSV</span> 匯出備份。</dd>
       <dt>怎麼移除？</dt>
-      <dd>如果有勾開機啟動，先到 <span class="ui">Settings…</span> 取消勾選；系統匣右鍵 → <span class="ui">Quit Inset</span>；再刪掉 Inset 的資料夾，以及 <code>%AppData%\Inset</code> 和 <code>%LocalAppData%\Inset</code> 兩個資料夾。</dd>
+      <dd>如果有勾開機啟動，先到 <span class="ui">Settings…</span> 取消勾選；系統匣右鍵 → <span class="ui">Quit Inset</span>；再刪掉 Inset 的資料夾，以及 <code>%AppData%\Inset</code> 和 <code>%LocalAppData%\Inset</code> 兩個資料夾，以及登錄機碼 <code>HKCU\Software\Inset</code>。</dd>
     </dl>
   </section>
 

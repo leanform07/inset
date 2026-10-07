@@ -39,6 +39,9 @@ sealed class NotebookStore
 
     public static string DefaultPath => Path.Combine(Settings.AppFolders.Roaming, "notebook.json");
 
+    /// <summary>Where an unreadable notebook was kept aside by <see cref="Load"/>; null if nothing was.</summary>
+    public string? SetAsidePath { get; private set; }
+
     /// <summary>
     /// Loads the notebook, or starts an empty one. An unreadable file is kept aside
     /// (notebook.unreadable-*.json) rather than overwritten.
@@ -48,9 +51,8 @@ sealed class NotebookStore
         var store = new NotebookStore(path, now);
         if (File.Exists(path))
         {
-            try
+            if (TryRead(path) is { } data)
             {
-                var data = JsonSerializer.Deserialize<NotebookFile>(File.ReadAllText(path), JsonOptions) ?? new();
                 foreach (var stat in data.Lookups) store._lookups[stat.Word] = stat;
                 foreach (var category in data.Categories) store.Categories.Add(category);
                 foreach (var word in data.Words)
@@ -59,13 +61,39 @@ sealed class NotebookStore
                     store.Words.Add(word);
                 }
             }
-            catch (JsonException)
+            else
             {
-                File.Move(path, Path.ChangeExtension(path, $".unreadable-{store._now():yyyyMMdd-HHmmss}.json"));
-                store = new NotebookStore(path, now);
+                var aside = Path.ChangeExtension(path, $".unreadable-{store._now():yyyyMMdd-HHmmss}.json");
+                File.Move(path, aside);
+                store = new NotebookStore(path, now) { SetAsidePath = aside };
             }
         }
         return store;
+    }
+
+    /// <summary>The number of saved words in a notebook file, or null if it is missing or unreadable. Changes nothing.</summary>
+    public static int? CountWords(string path)
+    {
+        try
+        {
+            return File.Exists(path) ? TryRead(path)?.Words.Count : null;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            return null;
+        }
+    }
+
+    static NotebookFile? TryRead(string path)
+    {
+        try
+        {
+            return JsonSerializer.Deserialize<NotebookFile>(File.ReadAllText(path), JsonOptions) ?? new();
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
     }
 
     public WordNote? Find(string word) =>
@@ -183,7 +211,12 @@ sealed class NotebookStore
         };
         Directory.CreateDirectory(Path.GetDirectoryName(_path)!);
         var temp = _path + ".tmp";
-        File.WriteAllText(temp, JsonSerializer.Serialize(data, JsonOptions));
+        using (var stream = new FileStream(temp, FileMode.Create, FileAccess.Write))
+        {
+            JsonSerializer.Serialize(stream, data, JsonOptions);
+            // On disk before the rename: otherwise a power cut can leave the renamed file empty.
+            stream.Flush(flushToDisk: true);
+        }
         File.Move(temp, _path, overwrite: true);
         Changed?.Invoke();
     }

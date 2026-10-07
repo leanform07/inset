@@ -201,6 +201,30 @@ public sealed class NotebookStoreTests : IDisposable
 
         Assert.Empty(store.Words);
         Assert.False(File.Exists(_path));
-        Assert.Single(Directory.GetFiles(_dir, "notebook.unreadable-*.json"));
+        Assert.Equal(Directory.GetFiles(_dir, "notebook.unreadable-*.json").Single(), store.SetAsidePath);
+    }
+
+    [Fact]
+    public void A_readable_or_missing_file_sets_nothing_aside()
+    {
+        Assert.Null(Open().SetAsidePath);
+        Open().Add(Entry("a"));
+        Assert.Null(Open().SetAsidePath);
+    }
+
+    [Fact]
+    public void CountWords_reads_without_changing_anything()
+    {
+        Assert.Null(NotebookStore.CountWords(_path));
+
+        var store = Open();
+        store.Add(Entry("a"));
+        store.Add(Entry("b"));
+        Assert.Equal(2, NotebookStore.CountWords(_path));
+
+        File.WriteAllText(_path, "{ not json");
+        Assert.Null(NotebookStore.CountWords(_path));
+        Assert.True(File.Exists(_path));
+        Assert.Empty(Directory.GetFiles(_dir, "notebook.unreadable-*.json"));
     }
 }
