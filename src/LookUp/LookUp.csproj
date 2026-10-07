@@ -29,6 +29,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Draw text selection behind the text, not over it, so a selected word stays readable. -->
+    <RuntimeHostConfigurationOption Include="Switch.System.Windows.Controls.Text.UseAdornerForTextboxSelectionRendering" Value="false" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- Windows Forms is only used for NotifyIcon; keep its names out of the global namespace. -->
     <Using Remove="System.Windows.Forms" />
     <Using Remove="System.Drawing" />

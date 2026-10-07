@@ -65,6 +65,9 @@ public sealed class WindowSmokeTests
                 var search = OffScreen(new SearchWindow());
                 search.SetShortcuts("Ctrl+Alt+D", "Ctrl+Alt+N");
                 search.Input.Text = "resilience";
+                // As it reopens: the last word selected. Off screen the box has no focus, so draw the selection anyway.
+                search.Input.IsInactiveSelectionHighlightEnabled = true;
+                search.Input.SelectAll();
                 Flush();
                 Snapshot(search, $"search-{name}.png");
                 search.Close();
