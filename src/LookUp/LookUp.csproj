@@ -11,7 +11,7 @@
     <RootNamespace>LookUp</RootNamespace>
     <Product>Inset</Product>
     <AssemblyTitle>Inset</AssemblyTitle>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <!-- Only for the notification-area icon (NotifyIcon). -->
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>

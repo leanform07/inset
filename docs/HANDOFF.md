@@ -17,19 +17,19 @@ C# / .NET 10 / WPF（Fluent ThemeMode）+ WebView2。專案在 `D:\Projects\Dict
   - exe 改名為 `Inset.exe`（csproj 的 `AssemblyName`），pack URI 改成 `/Inset;component/`。程式碼的 namespace、專案資料夾 `src/LookUp`、`LookUp.slnx`、測試專案維持 LookUp，沒有改
   - 資料夾改成 `%AppData%\Inset`、`%LocalAppData%\Inset`。啟動時 `AppFolders.MoveFromFormerName()` 會把舊的 `LookUp` 資料夾搬過去；搬不動（舊版還在跑）時先沿用舊資料夾，下次啟動再試
   - 開機啟動的登錄值從 `LookUp` 改成 `Inset`，`StartupRegistration.MoveFromFormerName()` 會沿用使用者原本的選擇
-- 打包（2026-10-06）：`tools/publish.ps1` 產生 self-contained 單一檔案 `out/publish/win-x64/Inset.exe`（約 73 MB，不需安裝 .NET）和 `out/Inset-<版本>-win-x64.zip`（exe + README + licenses/Geist-OFL.txt）。版本號在 csproj 的 `<Version>`，目前 0.1.0。exe 沒有數位簽章，README 有寫 SmartScreen 怎麼放行。`README.md` 是給使用者看的說明
+- 打包（2026-10-06）：`tools/publish.ps1` 產生 self-contained 單一檔案 `out/publish/win-x64/Inset.exe`（約 73 MB，不需安裝 .NET）和 `out/Inset-<版本>-win-x64.zip`（exe + README + licenses/Geist-OFL.txt）。版本號在 csproj 的 `<Version>`，目前 0.1.1（2026-10-07 併入筆記本備份後升版）。exe 沒有數位簽章，README 有寫 SmartScreen 怎麼放行。`README.md` 是給使用者看的說明
 - 使用說明（2026-10-06）：`src/LookUp/Web/guide.html`（繁中，跟 App 同一套版面，含查字視窗與筆記本的編號示意圖，支援深色與列印）。嵌入 exe，從系統匣右鍵「How to use」或筆記本左下角「HOW TO USE」打開 `GuideWindow`（App 自己的 WebView2 視窗，頁面和 Geist 字型由 App 從 `https://guide.inset.invalid/` 自己回應，不連網）。原本交給預設瀏覽器開，但使用者的 Brave 視窗全部最小化時什麼都沒出現，所以改成自己的視窗。`publish.ps1` 也把它放進 zip，檔名「使用說明.html」。刻意不放在查字視窗（原則：小、不擋路）。介面文字改了要同步更新說明
 - GitHub：private repo https://github.com/leanform07/inset（remote `origin`，`master`）
 - GitHub Release（2026-10-07）：[v0.1.0](https://github.com/leanform07/inset/releases/tag/v0.1.0)，tag 指向 `42d558a`，附 `Inset-0.1.0-win-x64.zip`。repo 是 private，所以只有有權限的人下載得到。之後發新版：改 csproj 的 `<Version>`、跑 `publish.ps1`，再 `gh release create v<版本> out/Inset-<版本>-win-x64.zip --repo leanform07/inset --target master`（`--target` 不接受縮寫的 commit 編號）
 - 搜尋框選取修正（`42d558a`，2026-10-07）：搜尋框重開時會全選上次的字，原本被不透明的選取色蓋成一塊灰。csproj 設了 `Switch.System.Windows.Controls.Text.UseAdornerForTextboxSelectionRendering=false`，讓選取色畫在文字下面，`BareTextBox` 的 `SelectionTextBrush` 用 InkBrush。測試專案的 csproj 也要有同一個開關，螢幕外截圖才會一樣
 - 舊的 `%LocalAppData%\LookUp`（舊 WebView2 profile）已丟進資源回收筒
-- 測試：`dotnet test tests/LookUp.Tests/LookUp.Tests.csproj`，73 個全部通過
+- 測試：`dotnet test tests/LookUp.Tests/LookUp.Tests.csproj`，83 個全部通過
 
 ## 筆記本遺失事件與防護（2026-10-07）
 
 - 使用者 10/6 下午重開機後，`%AppData%\Inset\notebook.json` 變成一本新的空筆記本（`Lookups` 最早是 10/6 14:42），之前存的單字和查字紀錄全部不見。`%AppData%\LookUp` 不存在、沒有 `notebook.unreadable-*`、資源回收筒只有 10/6 02:23 丟掉的 `%LocalAppData%\LookUp`（92 MB 的 WebView2 profile，不含筆記本）、沒有「以前的版本」、沒匯出過 CSV。**單字沒救回來**
 - 原因沒查到。程式碼裡沒有任何會刪掉筆記本的路徑（`Remove` 會保留查字次數，所以連 `Lookups` 一起消失代表整個檔案或資料夾不見了）。前一次對話的線上紀錄只到 10/5 23:34，看不到改名當晚 02:2x 對資料夾做了什麼。注意：改名後單一執行個體的 Mutex 名稱也從 `LookUp` 改成 `Inset`，舊版 LookUp.exe 和 Inset.exe 可以同時執行、各自存檔
-- 加上的防護（雲端對話寫的，**沒有在 Windows 上編譯或跑過測試**，請先 `dotnet test`）：
+- 加上的防護（雲端對話寫的；2026-10-07 併進 master 後在 Windows 上 `dotnet test` 83 個全過，打包成 0.1.1）：
   - `NotebookBackups`：每天第一次存檔時把筆記本複製到 `%LocalAppData%\Inset\Backups\notebook-yyyy-MM-dd.json`，保留 14 份；空的筆記本不備份，免得把好的備份擠掉。故意跟筆記本放在不同資料夾
   - `NotebookWordCount`：每次存檔把字數寫進 `HKCU\Software\Inset\NotebookWords`（不在資料夾裡，資料夾整個不見也還在）
   - `NotebookRecovery` + `App.OpenNotebook`：啟動時如果登錄記得有字、筆記本卻是空的（檔案不見或讀不出來），跳 MessageBox 說明，有備份就問要不要還原；原本的檔案改名成 `notebook.replaced-*.json` 留著。只問一次
