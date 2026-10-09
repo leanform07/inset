@@ -17,7 +17,7 @@ C# / .NET 10 / WPF（Fluent ThemeMode）+ WebView2。專案在 `D:\Projects\Dict
   - exe 改名為 `Inset.exe`（csproj 的 `AssemblyName`），pack URI 改成 `/Inset;component/`。程式碼的 namespace、專案資料夾 `src/LookUp`、`LookUp.slnx`、測試專案維持 LookUp，沒有改
   - 資料夾改成 `%AppData%\Inset`、`%LocalAppData%\Inset`。啟動時 `AppFolders.MoveFromFormerName()` 會把舊的 `LookUp` 資料夾搬過去；搬不動（舊版還在跑）時先沿用舊資料夾，下次啟動再試
   - 開機啟動的登錄值從 `LookUp` 改成 `Inset`，`StartupRegistration.MoveFromFormerName()` 會沿用使用者原本的選擇
-- 打包（2026-10-06）：`tools/publish.ps1` 產生 self-contained 單一檔案 `out/publish/win-x64/Inset.exe`（約 73 MB，不需安裝 .NET）和 `out/Inset-<版本>-win-x64.zip`（exe + README + licenses/Geist-OFL.txt）。版本號在 csproj 的 `<Version>`，目前 0.1.1（2026-10-07 併入筆記本備份後升版）。exe 沒有數位簽章，README 有寫 SmartScreen 怎麼放行。`README.md` 是給使用者看的說明
+- 打包（2026-10-06）：`tools/publish.ps1` 產生 self-contained 單一檔案 `out/publish/win-x64/Inset.exe`（約 73 MB，不需安裝 .NET）和 `out/Inset-<版本>-win-x64.zip`（exe + README + licenses/Geist-OFL.txt）。版本號在 csproj 的 `<Version>`，目前 0.2.0（2026-10-09 加上追問 AI 後升版；0.1.1 是筆記本備份）。exe 沒有數位簽章，README 有寫 SmartScreen 怎麼放行。`README.md` 是給使用者看的說明
 - 使用說明（2026-10-06）：`src/LookUp/Web/guide.html`（繁中，跟 App 同一套版面，含查字視窗與筆記本的編號示意圖，支援深色與列印）。嵌入 exe，從系統匣右鍵「How to use」或筆記本左下角「HOW TO USE」打開 `GuideWindow`（App 自己的 WebView2 視窗，頁面和 Geist 字型由 App 從 `https://guide.inset.invalid/` 自己回應，不連網）。原本交給預設瀏覽器開，但使用者的 Brave 視窗全部最小化時什麼都沒出現，所以改成自己的視窗。`publish.ps1` 也把它放進 zip，檔名「使用說明.html」。刻意不放在查字視窗（原則：小、不擋路）。介面文字改了要同步更新說明
 - GitHub：private repo https://github.com/leanform07/inset（remote `origin`，`master`）
 - GitHub Release（2026-10-07）：[v0.1.0](https://github.com/leanform07/inset/releases/tag/v0.1.0)，tag 指向 `42d558a`，附 `Inset-0.1.0-win-x64.zip`。[v0.1.1](https://github.com/leanform07/inset/releases/tag/v0.1.1)（2026-10-07）加上筆記本備份與遺失提示，tag 指向 `7b68cf7`，附 `Inset-0.1.1-win-x64.zip`。repo 是 private，所以只有有權限的人下載得到。之後發新版：改 csproj 的 `<Version>`、跑 `publish.ps1`，再 `gh release create v<版本> out/Inset-<版本>-win-x64.zip --repo leanform07/inset --target master`（`--target` 不接受縮寫的 commit 編號）
@@ -25,7 +25,7 @@ C# / .NET 10 / WPF（Fluent ThemeMode）+ WebView2。專案在 `D:\Projects\Dict
 - 舊的 `%LocalAppData%\LookUp`（舊 WebView2 profile）已丟進資源回收筒
 - 測試：`dotnet test tests/LookUp.Tests/LookUp.Tests.csproj`，110 個全部通過
 
-## 追問 AI（2026-10-09，還沒 commit，等使用者試用）
+## 追問 AI（2026-10-09，使用者試用沒問題，commit `1ad6e2d`，打包成 0.2.0）
 
 - 使用者想問「這個字跟另一個字差在哪」「更詳細的用法」。選了三種做法裡最輕的：用瀏覽器打開使用者自己的 ChatGPT／Claude，問題用網址帶進去。不申請 API、不存金鑰、Inset 本身不連 AI。沒選內嵌 ChatGPT 視窗（Google 常擋內嵌 App 的登入）和 API（另外按量收費、視窗變重）
 - `Lookup/AskAi.cs`：`Classify` 判斷輸入框的意思（空白 → 問用法；3 個字以內的英文且開頭不是 how/what/is… → 比較兩個字；其他 → 使用者自己的問題），`Prompt` 組繁中問題（附詞性、中文、英文解釋，讓 AI 講同一個意思），`ChatUrl` 產生 `https://chatgpt.com/?q=` 或 `https://claude.ai/new?q=`。**兩家都沒有正式文件**，可能哪天失效，所以面板有 `COPY QUESTION`
