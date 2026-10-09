@@ -8,10 +8,10 @@ Inset（原暫定名稱 LookUp）：Windows 版「選字 → 快捷鍵 → 跳�
 C# / .NET 10 / WPF（Fluent ThemeMode）+ WebView2。專案在 `D:\Projects\Dictionary`，git 只有 `master` 一個分支，remote 是 GitHub（見下方），使用者試用過再 commit。
 
 - 功能全部完成並已 commit（Phase 0–4、筆記本）
-- 介面重新設計已 commit（`f00f934`）：用 impeccable design skill 做的，方向是「設計年鑑版面（design annual plate section）」，`DESIGN.md` 與 `.impeccable/design.json` 已寫好。`.impeccable/review/`、`reference/`、`questions/` 不進版控（見 `.gitignore`）
+- 介面重新設計已 commit（`061fcf4`）：用 impeccable design skill 做的，方向是「設計年鑑版面（design annual plate section）」，`DESIGN.md` 與 `.impeccable/design.json` 已寫好。`.impeccable/review/`、`reference/`、`questions/` 不進版控（見 `.gitignore`）
   - 同一個 commit 也包含：查字視窗可拖曳頂端 token bar 移動、從邊緣調整大小（最小 360×400，存在 settings.json 的 `PopupWidth`/`PopupHeight`，「DEFAULT SIZE」或雙擊 token bar 回到 440×560）；筆記本詳細區的「Look up again」「Cambridge」移到 CATEGORY 上方
-  - 注意：`f00f934` 裡的這份 HANDOFF.md 是亂碼（PowerShell 編碼問題），下一個 commit 已修正
-- 正式名稱與圖示已 commit（`599605e`，2026-10-06）：
+  - 注意：`061fcf4` 裡的這份 HANDOFF.md 是亂碼（PowerShell 編碼問題），下一個 commit 已修正
+- 正式名稱與圖示已 commit（`21ccef7`，2026-10-06）：
   - 名稱 **Inset**（印刷術語「嵌入圖版」）。搜尋時發現 LookUp、Margin、Gloss 都有同名或極相近的查字工具。只查過同類工具撞名，沒查商標與網域
   - 圖示是對位十字（registration crosshair）放在紙色方塊上，沒有字母。由 `tools/make_icon.py` 產生 `src/LookUp/Assets/AppIcon.ico`（16–256 各尺寸分別畫在整數像素上，16px 的圓環是手點的）。改圖示請改腳本再執行 `python tools/make_icon.py [預覽.png]`
   - exe 改名為 `Inset.exe`（csproj 的 `AssemblyName`），pack URI 改成 `/Inset;component/`。程式碼的 namespace、專案資料夾 `src/LookUp`、`LookUp.slnx`、測試專案維持 LookUp，沒有改
@@ -19,13 +19,13 @@ C# / .NET 10 / WPF（Fluent ThemeMode）+ WebView2。專案在 `D:\Projects\Dict
   - 開機啟動的登錄值從 `LookUp` 改成 `Inset`，`StartupRegistration.MoveFromFormerName()` 會沿用使用者原本的選擇
 - 打包（2026-10-06）：`tools/publish.ps1` 產生 self-contained 單一檔案 `out/publish/win-x64/Inset.exe`（約 73 MB，不需安裝 .NET）和 `out/Inset-<版本>-win-x64.zip`（exe + README + licenses/Geist-OFL.txt）。版本號在 csproj 的 `<Version>`，目前 0.2.0（2026-10-09 加上追問 AI 後升版；0.1.1 是筆記本備份）。exe 沒有數位簽章，README 有寫 SmartScreen 怎麼放行。`README.md` 是給使用者看的說明
 - 使用說明（2026-10-06）：`src/LookUp/Web/guide.html`（繁中，跟 App 同一套版面，含查字視窗與筆記本的編號示意圖，支援深色與列印）。嵌入 exe，從系統匣右鍵「How to use」或筆記本左下角「HOW TO USE」打開 `GuideWindow`（App 自己的 WebView2 視窗，頁面和 Geist 字型由 App 從 `https://guide.inset.invalid/` 自己回應，不連網）。原本交給預設瀏覽器開，但使用者的 Brave 視窗全部最小化時什麼都沒出現，所以改成自己的視窗。`publish.ps1` 也把它放進 zip，檔名「使用說明.html」。刻意不放在查字視窗（原則：小、不擋路）。介面文字改了要同步更新說明
-- GitHub：private repo https://github.com/leanform07/inset（remote `origin`，`master`）
-- GitHub Release（2026-10-07）：[v0.1.0](https://github.com/leanform07/inset/releases/tag/v0.1.0)，tag 指向 `42d558a`，附 `Inset-0.1.0-win-x64.zip`。[v0.1.1](https://github.com/leanform07/inset/releases/tag/v0.1.1)（2026-10-07）加上筆記本備份與遺失提示，tag 指向 `7b68cf7`，附 `Inset-0.1.1-win-x64.zip`。[v0.2.0](https://github.com/leanform07/inset/releases/tag/v0.2.0)（2026-10-09）加上追問 AI，tag 指向 `18154ed`，附 `Inset-0.2.0-win-x64.zip`。repo 是 private，所以只有有權限的人下載得到。之後發新版：改 csproj 的 `<Version>`、跑 `publish.ps1`，再 `gh release create v<版本> out/Inset-<版本>-win-x64.zip --repo leanform07/inset --target master`（`--target` 不接受縮寫的 commit 編號）
-- 搜尋框選取修正（`42d558a`，2026-10-07）：搜尋框重開時會全選上次的字，原本被不透明的選取色蓋成一塊灰。csproj 設了 `Switch.System.Windows.Controls.Text.UseAdornerForTextboxSelectionRendering=false`，讓選取色畫在文字下面，`BareTextBox` 的 `SelectionTextBrush` 用 InkBrush。測試專案的 csproj 也要有同一個開關，螢幕外截圖才會一樣
+- GitHub：**public** repo https://github.com/leanform07/inset（remote `origin`，`master`）。2026-10-09 公開，授權 MIT（`LICENSE`，版權人 leanform07；`publish.ps1` 會把它放進 zip 的 `LICENSE.txt`）。公開前用 `git filter-branch` 改寫了整段歷史：commit 作者信箱從 Gmail 換成 `309329802+leanform07@users.noreply.github.com`、拿掉交接文件裡的 gh 登入名稱，所以 2026-10-09 以前記下的 commit 編號都已失效（tag 已重新指向）。這個 repo 的 `git config user.email` 設成 noreply 信箱，**不要改回 Gmail**；全域設定仍是 Gmail，在別的資料夾新開 repo 時要注意
+- GitHub Release（2026-10-07）：[v0.1.0](https://github.com/leanform07/inset/releases/tag/v0.1.0)，tag 指向 `96b018b`，附 `Inset-0.1.0-win-x64.zip`。[v0.1.1](https://github.com/leanform07/inset/releases/tag/v0.1.1)（2026-10-07）加上筆記本備份與遺失提示，tag 指向 `c4dd409`，附 `Inset-0.1.1-win-x64.zip`。[v0.2.0](https://github.com/leanform07/inset/releases/tag/v0.2.0)（2026-10-09）加上追問 AI，tag 指向 `31ef36c`，附 `Inset-0.2.0-win-x64.zip`。repo 是 private，所以只有有權限的人下載得到。之後發新版：改 csproj 的 `<Version>`、跑 `publish.ps1`，再 `gh release create v<版本> out/Inset-<版本>-win-x64.zip --repo leanform07/inset --target master`（`--target` 不接受縮寫的 commit 編號）
+- 搜尋框選取修正（`96b018b`，2026-10-07）：搜尋框重開時會全選上次的字，原本被不透明的選取色蓋成一塊灰。csproj 設了 `Switch.System.Windows.Controls.Text.UseAdornerForTextboxSelectionRendering=false`，讓選取色畫在文字下面，`BareTextBox` 的 `SelectionTextBrush` 用 InkBrush。測試專案的 csproj 也要有同一個開關，螢幕外截圖才會一樣
 - 舊的 `%LocalAppData%\LookUp`（舊 WebView2 profile）已丟進資源回收筒
 - 測試：`dotnet test tests/LookUp.Tests/LookUp.Tests.csproj`，110 個全部通過
 
-## 追問 AI（2026-10-09，使用者試用沒問題，commit `1ad6e2d`，打包成 0.2.0）
+## 追問 AI（2026-10-09，使用者試用沒問題，commit `7c166c9`，打包成 0.2.0）
 
 - 使用者想問「這個字跟另一個字差在哪」「更詳細的用法」。選了三種做法裡最輕的：用瀏覽器打開使用者自己的 ChatGPT／Claude，問題用網址帶進去。不申請 API、不存金鑰、Inset 本身不連 AI。沒選內嵌 ChatGPT 視窗（Google 常擋內嵌 App 的登入）和 API（另外按量收費、視窗變重）
 - `Lookup/AskAi.cs`：`Classify` 判斷輸入框的意思（空白 → 問用法；3 個字以內的英文且開頭不是 how/what/is… → 比較兩個字；其他 → 使用者自己的問題），`Prompt` 組繁中問題（附詞性、中文、英文解釋，讓 AI 講同一個意思），`ChatUrl` 產生 `https://chatgpt.com/?q=` 或 `https://claude.ai/new?q=`。**兩家都沒有正式文件**，可能哪天失效，所以面板有 `COPY QUESTION`
@@ -58,8 +58,7 @@ C# / .NET 10 / WPF（Fluent ThemeMode）+ WebView2。專案在 `D:\Projects\Dict
 ## 之後可能的工作
 
 - `docs/TESTING.md` 的各 App 相容性表（Chrome、Word、Acrobat、Notion…）等使用者手動測試後填寫
-- 專案本身的授權還沒決定（目前沒有 LICENSE 檔，等於保留所有權利）；公開發佈前要決定
-- 發佈管道：GitHub Releases 已上傳 v0.1.0、v0.1.1；還沒決定 repo 要不要公開（公開前先決定授權）、要不要 win-arm64 版（`publish.ps1 -Runtime win-arm64`）、要不要買程式碼簽章
+- 發佈管道：GitHub Releases 已上傳 v0.1.0、v0.1.1、v0.2.0；還沒決定要不要 win-arm64 版（`publish.ps1 -Runtime win-arm64`）、要不要買程式碼簽章
 
 ## 這台電腦上的注意事項（踩過的坑）
 

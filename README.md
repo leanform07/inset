@@ -55,6 +55,7 @@
 
 ## 授權
 
+- Inset 本身：[MIT License](LICENSE)，可以自由使用、修改、轉發，請保留版權聲明。字典內容不在此授權內，版權屬於 Cambridge University Press & Assessment
 - 介面字型 [Geist、Geist Mono](https://vercel.com/font)：SIL Open Font License 1.1，授權全文在 `licenses/Geist-OFL.txt`
 
 ## 開發
