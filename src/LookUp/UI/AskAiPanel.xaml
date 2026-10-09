@@ -1,0 +1,58 @@
+<UserControl x:Class="LookUp.UI.AskAiPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Visibility="Collapsed">
+    <UserControl.Resources>
+        <Style x:Key="Shortcut" TargetType="Button" BasedOn="{StaticResource SecondaryButton}">
+            <Setter Property="FontSize" Value="12.5" />
+            <Setter Property="Padding" Value="10,5" />
+            <Setter Property="Margin" Value="0,0,8,8" />
+        </Style>
+        <!-- The shortcut chosen; Ask (or Enter) sends it. -->
+        <Style x:Key="ShortcutOn" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+            <Setter Property="FontSize" Value="12.5" />
+            <Setter Property="Padding" Value="10,5" />
+            <Setter Property="Margin" Value="0,0,8,8" />
+        </Style>
+    </UserControl.Resources>
+
+    <!-- A shortcut chooses the question; nothing is sent until Ask or Enter. The field holds the words
+         for Compare…, an optional note for the others, or a question of its own when none is chosen.
+         The hint says what will be asked before anything is sent. -->
+    <StackPanel>
+        <TextBlock x:Name="Heading" Style="{StaticResource Label}" TextTrimming="CharacterEllipsis" />
+        <WrapPanel x:Name="Shortcuts" Margin="0,10,0,0">
+            <Button x:Name="CompareButton" Content="Compare…" Tag="Compare" Style="{StaticResource Shortcut}" Click="OnShortcutClick"
+                    ToolTip="How it differs from other words you type" />
+            <Button Content="Usage" Tag="Usage" Style="{StaticResource Shortcut}" Click="OnShortcutClick"
+                    ToolTip="More on how it is used" />
+            <Button Content="Collocations" Tag="Collocations" Style="{StaticResource Shortcut}" Click="OnShortcutClick"
+                    ToolTip="The words it is usually used with" />
+            <Button Content="Memory tip" Tag="Memory" Style="{StaticResource Shortcut}" Click="OnShortcutClick"
+                    ToolTip="Roots, origin or a trick to remember it" />
+        </WrapPanel>
+        <Grid Margin="0,2,0,0">
+            <TextBox x:Name="Input" FontSize="13" TextChanged="OnInputChanged" KeyDown="OnInputKeyDown" />
+            <TextBlock x:Name="Placeholder" Style="{StaticResource Placeholder}"
+                       Visibility="{Binding Text, ElementName=Input, Converter={StaticResource EmptyToVisible}}" />
+        </Grid>
+        <TextBlock x:Name="Hint" Style="{StaticResource Secondary}" FontSize="12.5" TextWrapping="Wrap" Margin="0,7,0,0" />
+        <TextBlock Style="{StaticResource Secondary}" FontSize="12.5" TextWrapping="Wrap" Margin="0,2,0,0"
+                   Foreground="{DynamicResource InkMutedBrush}"
+                   Text="Copy the short conclusion at the end of the reply: it goes into this word’s note." />
+
+        <DockPanel Margin="0,14,0,0">
+            <Button x:Name="CopyButton" DockPanel.Dock="Left" Style="{StaticResource QuietButton}" VerticalAlignment="Center"
+                    Click="OnCopyClick" ToolTip="Copy the question, to paste into any AI chat" Content="COPY QUESTION" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Cancel" Style="{StaticResource SecondaryButton}" Margin="0,0,10,0" Click="OnCancelClick" />
+                <Button x:Name="AskButton" Style="{StaticResource PrimaryButton}" Click="OnAskClick">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="AskLabel" />
+                        <TextBlock Style="{StaticResource Icon}" Text="&#xE8A7;" FontSize="11" Margin="8,0,0,0" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </DockPanel>
+    </StackPanel>
+</UserControl>

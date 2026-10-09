@@ -48,6 +48,23 @@ public sealed class WindowSmokeTests
                 Assert.Equal(Visibility.Visible, notebook.DetailPanel.Visibility);
                 Assert.Equal("Architecture", notebook.CategoryEditor.Text);
                 Snapshot(notebook, $"notebook-{name}.png");
+                notebook.Assistant = LookUp.Lookup.AiAssistant.Claude;
+                notebook.AskPanel.Open("resilience", "noun", "復原力", "");
+                // A shortcut only chooses the question: Collocations, then Compare…, which keeps Ask off until there is a word.
+                var shortcuts = notebook.AskPanel.Shortcuts.Children.OfType<System.Windows.Controls.Button>().ToList();
+                void Press(System.Windows.Controls.Button button) =>
+                    button.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+                Press(shortcuts.Single(b => (string)b.Tag == "Collocations"));
+                Assert.True(notebook.AskPanel.IsOpen);
+                Assert.Equal("Asks which words “resilience” is usually used with.", notebook.AskPanel.Hint.Text);
+                Press(notebook.AskPanel.CompareButton);
+                Assert.False(notebook.AskPanel.AskButton.IsEnabled);
+                notebook.AskPanel.Input.Text = "resistance, robustness";
+                Flush();
+                Assert.True(notebook.AskPanel.AskButton.IsEnabled);
+                Assert.Equal("Ask Claude", notebook.AskPanel.AskLabel.Text);
+                Assert.Equal("Asks how “resilience” differs from “resistance” and “robustness”.", notebook.AskPanel.Hint.Text);
+                Snapshot(notebook, $"notebook-ask-{name}.png");
                 notebook.Close();
 
                 var empty = OffScreen(new NotebookWindow(NotebookStore.Load(Path.Combine(dir, $"empty-{name}.json"))) { Width = 1120, Height = 700 });
@@ -82,12 +99,22 @@ public sealed class WindowSmokeTests
                 popup.ActionsPanel.Visibility = Visibility.Visible;
                 popup.NotePanel.Visibility = Visibility.Visible;
                 popup.StatusLearning.IsChecked = true;
+                popup.NoteBox.Text = "Seen in a paper on flood-resilient housing.\nresilience 偏「恢復、回彈」；resistance 是「抵抗」。"; // with an AI conclusion under it
                 popup.NotebookButton.Visibility = Visibility.Visible;
                 popup.CountToken.Text = "LOOKED UP 03";
                 popup.UseSize(new Size(PopupWindow.DefaultWidth, PopupWindow.DefaultHeight)); // a remembered size shows "DEFAULT SIZE"
                 Flush();
                 Assert.Equal(Visibility.Visible, popup.ResetSizeButton.Visibility);
                 Snapshot(popup, $"popup-{name}.png");
+
+                // The same chrome with "Ask AI" open instead of the notebook panel.
+                popup.NotePanel.Visibility = Visibility.Collapsed;
+                popup.AskButton.Visibility = Visibility.Visible;
+                popup.AskPanel.Open("resilience", "noun", "復原力", "");
+                Flush();
+                Assert.Equal(Visibility.Visible, popup.AskBorder.Visibility);
+                Assert.Equal("Asks for more on how “resilience” is used.", popup.AskPanel.Hint.Text);
+                Snapshot(popup, $"popup-ask-{name}.png");
                 popup.Close();
 
                 var prompt = OffScreen(new PromptWindow());

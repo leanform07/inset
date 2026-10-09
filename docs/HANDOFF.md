@@ -1,4 +1,4 @@
-# 交接文件（2026-10-07）
+# 交接文件（2026-10-09）
 
 給下一個 Claude Code 對話用。先讀這份，再讀 `PRODUCT.md`、`DESIGN.md`、`docs/PLAN.md`。最初和 ChatGPT 討論的需求文件在 `docs/original-spec.md`。
 
@@ -23,7 +23,20 @@ C# / .NET 10 / WPF（Fluent ThemeMode）+ WebView2。專案在 `D:\Projects\Dict
 - GitHub Release（2026-10-07）：[v0.1.0](https://github.com/leanform07/inset/releases/tag/v0.1.0)，tag 指向 `42d558a`，附 `Inset-0.1.0-win-x64.zip`。[v0.1.1](https://github.com/leanform07/inset/releases/tag/v0.1.1)（2026-10-07）加上筆記本備份與遺失提示，tag 指向 `7b68cf7`，附 `Inset-0.1.1-win-x64.zip`。repo 是 private，所以只有有權限的人下載得到。之後發新版：改 csproj 的 `<Version>`、跑 `publish.ps1`，再 `gh release create v<版本> out/Inset-<版本>-win-x64.zip --repo leanform07/inset --target master`（`--target` 不接受縮寫的 commit 編號）
 - 搜尋框選取修正（`42d558a`，2026-10-07）：搜尋框重開時會全選上次的字，原本被不透明的選取色蓋成一塊灰。csproj 設了 `Switch.System.Windows.Controls.Text.UseAdornerForTextboxSelectionRendering=false`，讓選取色畫在文字下面，`BareTextBox` 的 `SelectionTextBrush` 用 InkBrush。測試專案的 csproj 也要有同一個開關，螢幕外截圖才會一樣
 - 舊的 `%LocalAppData%\LookUp`（舊 WebView2 profile）已丟進資源回收筒
-- 測試：`dotnet test tests/LookUp.Tests/LookUp.Tests.csproj`，83 個全部通過
+- 測試：`dotnet test tests/LookUp.Tests/LookUp.Tests.csproj`，110 個全部通過
+
+## 追問 AI（2026-10-09，還沒 commit，等使用者試用）
+
+- 使用者想問「這個字跟另一個字差在哪」「更詳細的用法」。選了三種做法裡最輕的：用瀏覽器打開使用者自己的 ChatGPT／Claude，問題用網址帶進去。不申請 API、不存金鑰、Inset 本身不連 AI。沒選內嵌 ChatGPT 視窗（Google 常擋內嵌 App 的登入）和 API（另外按量收費、視窗變重）
+- `Lookup/AskAi.cs`：`Classify` 判斷輸入框的意思（空白 → 問用法；3 個字以內的英文且開頭不是 how/what/is… → 比較兩個字；其他 → 使用者自己的問題），`Prompt` 組繁中問題（附詞性、中文、英文解釋，讓 AI 講同一個意思），`ChatUrl` 產生 `https://chatgpt.com/?q=` 或 `https://claude.ai/new?q=`。**兩家都沒有正式文件**，可能哪天失效，所以面板有 `COPY QUESTION`
+- `UI/AskAiPanel`（UserControl）：查字視窗（動作列右邊 `ASK AI`，`Ctrl+Q`，展開在筆記面板的位置，兩個面板互斥）和筆記本詳細區（Look up again / Cambridge 那一排右邊）共用。提示文字會即時說它要怎麼問，避免猜錯
+- 查字視窗的 `Esc`：面板開著時先關面板；正在用注音選字（`Key.ImeProcessed`）時不處理，免得選字的 Esc 把面板關掉
+- 設定：Settings 新增「Ask AI」：ChatGPT（預設）／Claude，存在 settings.json 的 `AiAssistant`，`App.SetAssistant` 同步到查字視窗與筆記本
+- `PRODUCT.md` 原本把「AI translation」列為不做；改寫成「只把追問交給使用者自己的 AI，Cambridge 仍是主要內容」，不做的清單改成「AI 翻譯或 AI 寫的詞條」
+- 使用說明（guide.html 的「追問 AI」小節、示意圖加上 5 號 ASK AI）、README、DESIGN.md 都已更新
+- 快捷按鈕（同一天，使用者追加；使用者從建議中選了搭配詞、記憶法，沒選正式程度、常見錯誤）：面板上方 `Compare…`／`Usage`／`Collocations`／`Memory tip`。**按快捷按鈕只是選好問題（按鈕變實心，再按一次取消），一律要按 Ask 或 Enter 才送出**（使用者試過「按了就直接問」後要求改的）。Compare… 時輸入框打要比較的字（逗號、頓號分開可以打好幾個，沒打字時 Ask 不能按）；Usage／Collocations／Memory tip 時輸入框是選填的補充，會加成「補充：…」一行。沒選快捷按鈕時，輸入框照舊猜：空白 → Usage、英文字清單 → Compare、其他 → 使用者自己的問題。`AskAi.Prompt` 改成傳 `Kind`
+- 結論存回筆記本（同一天，使用者追加的需求）：問題最後請 AI 把簡短的結論（不限行數，使用者要讓 AI 自己判斷長度）放進程式碼區塊，第一行 `[Inset] 單字`。AI 在瀏覽器裡，Inset 讀不到回答，所以靠剪貼簿：使用者按程式碼區塊的「複製」（或複製整則回答），`Selection/ClipboardWatcher`（`AddClipboardFormatListener`，message-only 視窗）把文字交給 `Notebook/AiConclusions`，比對 2 小時內問過的字（大小寫不拘；只問了一個字時，AI 把長詞條縮寫也認），加到筆記下一行（同一段不重複加），字還沒存就用問的那個詞條存進去，系統匣跳通知。**只在有待回的問題時才監聽剪貼簿**，過期就停。問題本身沒有任何一行以 `[Inset]` 開頭，所以 COPY QUESTION 不會被當成結論。查字視窗的 NOTE 欄改成自動換行（最高 84px）
+- 等使用者確認：`Ctrl+Q` 在 WebView 有焦點時能不能觸發（跟 `Ctrl+S` 同一條路，應該可以）、ChatGPT 打開後是否真的自動送出、注音輸入問題時按 Enter 會不會誤送、ChatGPT 是否照格式把結論放進 `[Inset] 單字` 開頭的程式碼區塊、複製後筆記有沒有自動填入
 
 ## 筆記本遺失事件與防護（2026-10-07）
 
@@ -39,6 +52,7 @@ C# / .NET 10 / WPF（Fluent ThemeMode）+ WebView2。專案在 `D:\Projects\Dict
 ## 等使用者確認的事
 
 - 改名後的試用：系統匣圖示、資料有沒有順利搬到 `Inset` 資料夾（筆記本內容、設定、Cloudflare 不用重新驗證）
+- 追問 AI 的試用（見上一節最後一點）
 - 調整大小的實際手感還沒回報：四邊是否都拉得動、拖到螢幕邊緣會不會被 Windows 貼齊（snap）、左右 5px 內縮有沒有接縫
 
 ## 之後可能的工作

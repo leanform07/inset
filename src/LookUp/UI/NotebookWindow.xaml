@@ -256,7 +256,11 @@
                                         <TextBlock Style="{StaticResource Icon}" Text="&#xE8A7;" FontSize="11" Margin="8,0,0,0" />
                                     </StackPanel>
                                 </Button>
+                                <Button x:Name="AskButton" Style="{StaticResource QuietButton}" Margin="16,0,0,0" VerticalAlignment="Center"
+                                        Click="OnAskClick" Content="ASK AI" />
                             </StackPanel>
+
+                            <ui:AskAiPanel x:Name="AskPanel" Margin="0,20,0,0" />
 
                             <Border Style="{StaticResource Rule}" Margin="0,22,0,0" />
 

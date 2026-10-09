@@ -284,7 +284,10 @@ Rows carry a hairline bottom rule and 9px vertical padding; hover fills `hover-f
 
 ### Bars
 - **Token bar:** 32px, 16px sides, hairline beneath; mono labels on the left (`EN · 中文` or `EN ONLY`), an ink token on the right (`LOOKED UP 03`).
-- **Action bar:** at least 48px, 16px 8px padding, hairline above; primary action left, quiet text action right.
+- **Action bar:** at least 48px, 16px 8px padding, hairline above; primary action left, quiet text actions right (`ASK AI`, then `CAMBRIDGE ↗`, 16px apart).
+
+### Ask AI panel
+`AskAiPanel`, shared by the popup (under the entry, in the note panel's place and on the same solid `ground` with a hairline above) and the notebook plate (under the Look up again / Cambridge row). A mono label naming the chat (`ASK CHATGPT`); a wrapping row of small outline shortcuts (12.5px, 10px 5px padding, 8px apart: `Compare…`, `Usage`, `Collocations`, `Memory tip`; a shortcut only chooses the question and turns filled ink until pressed again; nothing is sent until Ask); one text field (the words for `Compare…`, an optional note for the others, or a question of its own), and a `Secondary` 12.5px hint saying what will be asked; below, the quiet `COPY QUESTION` on the left and Cancel / filled-ink `Ask ChatGPT ↗` on the right. The hint is the safeguard for the field's guesswork (blank, another word, or a question), so it always restates the request in plain words.
 
 ### Context menus
 A square plate in `ground` with a 1px `hairline` edge, 4px padding, 13px Geist in ink. The style lives in each palette rather than in Shared.xaml: Fluent draws shortcut text in `TextFillColorDisabledBrush`, which falls below 4.5:1, so each palette overrides it with a literal per-theme colour (`ink-secondary`); a brush placed in `Style.Resources` is shared and would not be re-evaluated on theme change.

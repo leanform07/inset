@@ -96,6 +96,10 @@ sealed class AppSettings
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public AppTheme Theme { get; set; } = AppTheme.System;
 
+    /// <summary>Where "Ask AI" opens follow-up questions.</summary>
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public Lookup.AiAssistant AiAssistant { get; set; } = Lookup.AiAssistant.ChatGpt;
+
     /// <summary>The tray balloon explaining the hotkeys is shown on first run only.</summary>
     public bool WelcomeShown { get; set; }
 

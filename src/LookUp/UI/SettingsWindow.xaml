@@ -70,6 +70,16 @@
 
             <Border Style="{StaticResource Rule}" Margin="0,24" />
 
+            <TextBlock Text="Ask AI" Style="{StaticResource SectionTitle}" />
+            <StackPanel Orientation="Horizontal" Margin="1,0,0,0">
+                <RadioButton x:Name="AssistantChatGpt" Content="ChatGPT" GroupName="Assistant" Style="{StaticResource Segment}" Checked="OnAssistantChecked" />
+                <RadioButton x:Name="AssistantClaude" Content="Claude" GroupName="Assistant" Style="{StaticResource Segment}" Checked="OnAssistantChecked" />
+            </StackPanel>
+            <TextBlock Style="{StaticResource Secondary}" FontSize="12.5" TextWrapping="Wrap" Margin="0,10,0,0"
+                       Text="Questions open in your browser, in your own account. Inset sends nothing itself." />
+
+            <Border Style="{StaticResource Rule}" Margin="0,24" />
+
             <TextBlock Text="Startup" Style="{StaticResource SectionTitle}" />
             <CheckBox x:Name="StartupBox" Content="Start Inset when I sign in to Windows" FontSize="14"
                       Checked="OnStartupChanged" Unchecked="OnStartupChanged" />

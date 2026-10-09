@@ -5,6 +5,7 @@
 - 發音、詞性、英文定義、中文翻譯、例句，看完按 Esc 繼續讀，不用切換視窗、不用複製貼上、不用開瀏覽器
 - 想記下來的字按 Ctrl+S 存進單字筆記本，可以分類、標熟悉度、寫筆記，也能匯出 CSV（Excel、Anki）
 - 每個字查了幾次都會記下來，常查的字一眼就看得出來
+- 字典沒寫到的，按 ASK AI 用瀏覽器問 ChatGPT 或 Claude：快捷按鈕可以比較好幾個字的差別、問詳細用法、搭配詞、記憶法，也可以自己打問題，問題會自動帶上查的字和它的解釋；AI 最後給的簡短結論複製一下，就會自動存進這個字的筆記
 
 > 非官方工具。Inset 與 Cambridge University Press & Assessment 沒有任何關係。字典內容是即時從 [Cambridge Dictionary](https://dictionary.cambridge.org/) 網站讀取並顯示，版權屬於 Cambridge；每個詞條都保留「CAMBRIDGE」連結可以開原網頁。
 
@@ -33,6 +34,7 @@
 | `Ctrl+Alt+F` | 開搜尋框，自己打字查（選不到字的地方用這個） |
 | `Ctrl+Alt+N` | 開單字筆記本 |
 | `Ctrl+S` | 在查字視窗裡，把這個字存進筆記本 |
+| `Ctrl+Q` | 在查字視窗裡，追問 AI（ASK AI） |
 | `Esc` | 關閉查字視窗 |
 
 三個全域快捷鍵都可以在 Settings 裡改。查字視窗可以拖曳上緣移動、拉邊緣調整大小，右上角的「DEFAULT SIZE」可以恢復預設大小。
@@ -41,7 +43,7 @@
 
 ## 資料存在哪裡
 
-全部只存在這台電腦，沒有帳號、不上傳、不同步。
+全部只存在這台電腦，沒有帳號、不上傳、不同步。唯一的例外是你按 ASK AI 送出的問題：它會在瀏覽器裡送到你選的 ChatGPT 或 Claude，用的是你自己的帳號，Inset 本身不連線到任何 AI 服務。送出後 2 小時內，Inset 會留意剪貼簿裡開頭是 `[Inset]` 的結論並存進筆記本，其他複製的內容不看也不存。
 
 - `%AppData%\Inset\notebook.json`：單字筆記本
 - `%AppData%\Inset\settings.json`：設定

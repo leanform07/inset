@@ -193,11 +193,14 @@ footer p { margin: 0; }
         <text class="tinv" x="160" y="370.5" font-size="10" font-family="Geist Mono, Consolas, monospace" opacity=".65">CTRL+S</text>
         <text class="tmi" x="412" y="370" font-size="11" text-anchor="end">CAMBRIDGE ↗</text>
         <line class="f-rule" x1="330" y1="376.5" x2="412" y2="376.5"/>
+        <text class="tmi" x="314" y="370" font-size="11" text-anchor="end">ASK AI</text>
+        <line class="f-rule" x1="273" y1="376.5" x2="314" y2="376.5"/>
         <g class="ctag"><rect x="190" y="7" width="18" height="18"/><text x="199" y="20">1</text></g>
         <g class="ctag"><rect x="332" y="142" width="18" height="18"/><text x="341" y="155">2</text></g>
         <g class="ctag"><rect x="320" y="44" width="18" height="18"/><text x="329" y="57">3</text></g>
         <g class="ctag"><rect x="224" y="357" width="18" height="18"/><text x="233" y="370">4</text></g>
-        <g class="ctag"><rect x="304" y="357" width="18" height="18"/><text x="313" y="370">5</text></g>
+        <g class="ctag"><rect x="284" y="316" width="18" height="18"/><text x="293" y="329">5</text></g>
+        <g class="ctag"><rect x="362" y="316" width="18" height="18"/><text x="371" y="329">6</text></g>
       </svg>
       <figcaption>查字視窗</figcaption>
     </figure>
@@ -206,7 +209,8 @@ footer p { margin: 0; }
       <li><span class="tag">2</span><span>UK、US 旁邊的喇叭：播放英式、美式發音。</span></li>
       <li><span class="tag">3</span><span><span class="seal-swatch"></span> 印章：存進筆記本的字會蓋上這枚章，外圈寫著分類和存的日期，中間是查過的次數。</span></li>
       <li><span class="tag">4</span><span><span class="ui">Add to notebook</span>（<kbd>Ctrl+S</kbd>）：把這個字存進筆記本，見下一節。</span></li>
-      <li><span class="tag">5</span><span><span class="label">CAMBRIDGE</span>：用瀏覽器打開 Cambridge 的原網頁。</span></li>
+      <li><span class="tag">5</span><span><span class="label">ASK AI</span>（<kbd>Ctrl+Q</kbd>）：字典沒寫到的，問 ChatGPT 或 Claude，見下方「追問 AI」。</span></li>
+      <li><span class="tag">6</span><span><span class="label">CAMBRIDGE</span>：用瀏覽器打開 Cambridge 的原網頁。</span></li>
     </ul>
 
     <h3>操作</h3>
@@ -218,6 +222,28 @@ footer p { margin: 0; }
         <tr><td>移動、調整大小</td><td>按住上方那一條拖曳；拉視窗邊緣調整大小，下次會記得。想恢復原本大小，按上方的 <span class="label">DEFAULT SIZE</span>，或在上方那一條連按兩下。</td></tr>
       </tbody>
     </table>
+
+    <h3>追問 AI</h3>
+    <p>想知道這個字跟另一個字差在哪，或想看更細的用法，可以按 <span class="label">ASK AI</span>（<kbd>Ctrl+Q</kbd>）。下方會展開四個快捷按鈕和一個輸入框。先按一個按鈕選好要問什麼（按鈕會變成實心，再按一次取消），需要的話在輸入框補充，最後按 <kbd>Enter</kbd> 或 <span class="ui">Ask ChatGPT</span> 送出：</p>
+    <table>
+      <tbody>
+        <tr><td><span class="ui">Compare…</span></td><td>比較這個字跟其他字的差別。在輸入框打要比較的字，好幾個字用逗號分開，例如 <i>effect, influence</i>。沒打字時不能送出。</td></tr>
+        <tr><td><span class="ui">Usage</span></td><td>更詳細的用法：常見搭配、語氣、適合的場合。</td></tr>
+        <tr><td><span class="ui">Collocations</span></td><td>搭配詞：常跟哪些動詞、形容詞、名詞、介係詞一起用，哪些比較正式。</td></tr>
+        <tr><td><span class="ui">Memory tip</span></td><td>記憶法：字根、字首、字源或聯想記法。</td></tr>
+        <tr><td>不選按鈕</td><td>直接在輸入框打你自己的問題，中文、英文都可以，例如「寫論文可以用嗎」。什麼都不打就送出，等於問 <span class="ui">Usage</span>。</td></tr>
+      </tbody>
+    </table>
+    <p>選了 <span class="ui">Usage</span>、<span class="ui">Collocations</span>、<span class="ui">Memory tip</span> 時，輸入框可以補充說明，例如「在建築論文裡」，不打也可以。輸入框下方會寫它會怎麼問。送出後，瀏覽器會打開 ChatGPT，問題已經填好送出。Inset 會一起附上你查的字、詞性、中文和英文解釋，讓 AI 講的是同一個意思，並請它用繁體中文回答。用的是你自己的帳號，免費帳號也可以。想改用 Claude，到 <span class="ui">Settings…</span> 的 <span class="ui">Ask AI</span> 選。</p>
+    <p class="note">ChatGPT 和 Claude 都沒有正式提供「用網址帶入問題」的功能，哪天可能失效。如果打開後問題沒有自動帶進去，回來按 <span class="label">COPY QUESTION</span> 複製，再貼到 AI 的對話框。</p>
+
+    <h3>把結論存回筆記本</h3>
+    <p>問題的最後會請 AI 把重點整理成簡短的結論（長短由 AI 自己判斷），放在一個灰底的程式碼區塊裡，第一行是 <code>[Inset] 單字</code>。按那個區塊右上角的「複製」（或複製整則回答），Inset 就會把結論加進這個字的筆記 <span class="label">NOTE</span>，右下角會跳出通知。</p>
+    <ul>
+      <li>這個字還沒存進筆記本的話，會順便存進去。</li>
+      <li>原本有筆記的，結論會加在下一行，不會蓋掉。同一段結論複製兩次只會存一次；在同一個對話繼續追問、又得到新的結論，也可以再複製存進去。</li>
+      <li>只有按 <span class="label">ASK AI</span> 送出（或 <span class="label">COPY QUESTION</span>）之後的 2 小時內，Inset 才會看剪貼簿，而且只認開頭是 <code>[Inset]</code> 的那段文字，其他複製的內容一律不看、不存。</li>
+    </ul>
 
     <h3>看到這些是什麼意思</h3>
     <table>
@@ -324,7 +350,7 @@ footer p { margin: 0; }
       <li><span class="tag">1</span><span>分類：<span class="ui">All words</span> 是全部的字，點一個分類就只看那一類。<span class="ui">New category</span> 新增分類；在分類上按右鍵可以改名或刪除。刪掉分類時，裡面的字會變成 <span class="ui">Uncategorized</span>，不會不見。</span></li>
       <li><span class="tag">2</span><span>搜尋與篩選：可以搜英文、中文或筆記內容；<span class="ui">All / New / Learning / Known</span> 依熟悉度篩選。</span></li>
       <li><span class="tag">3</span><span>單字清單：<span class="label">LOOKUPS</span> 是查過幾次。按住 <kbd>Ctrl</kbd> 或 <kbd>Shift</kbd> 可以多選，按右鍵可以一次移到某個分類、改熟悉度或刪除。<kbd>Delete</kbd> 刪除，<kbd>Enter</kbd> 或連按兩下重新查這個字。</span></li>
-      <li><span class="tag">4</span><span>右邊是選到的字：<span class="ui">Look up again</span> 重新查、<span class="ui">Cambridge</span> 開原網頁。分類、熟悉度、筆記都可以直接改，會自動存檔。</span></li>
+      <li><span class="tag">4</span><span>右邊是選到的字：<span class="ui">Look up again</span> 重新查、<span class="ui">Cambridge</span> 開原網頁、<span class="label">ASK AI</span> 追問 AI（跟查字視窗一樣，見上一節）。分類、熟悉度、筆記都可以直接改，會自動存檔。</span></li>
       <li><span class="tag">5</span><span><span class="ui">Export CSV</span>：把目前清單上的字（有篩選就只匯出篩選後的）存成 CSV，可以用 Excel 打開，或匯入 Anki 做字卡。</span></li>
     </ul>
     <p class="muted">左下角的 <span class="label">HOW TO USE</span> 會打開這份說明。</p>
@@ -337,6 +363,7 @@ footer p { margin: 0; }
       <tbody>
         <tr><td><span class="ui">Shortcuts</span></td><td>三個快捷鍵都可以改：點一下框框，再按新的組合鍵。跟別的程式衝突時會直接提示。<span class="ui">Reset to defaults</span> 恢復預設。</td></tr>
         <tr><td><span class="ui">Appearance</span></td><td>外觀：<span class="ui">Same as Windows</span> 跟著 Windows、<span class="ui">Light</span> 淺色、<span class="ui">Dark</span> 深色。</td></tr>
+        <tr><td><span class="ui">Ask AI</span></td><td>按 <span class="label">ASK AI</span> 時要問 <span class="ui">ChatGPT</span> 還是 <span class="ui">Claude</span>。</td></tr>
         <tr><td><span class="ui">Startup</span></td><td>開機自動啟動。</td></tr>
       </tbody>
     </table>
@@ -348,7 +375,7 @@ footer p { margin: 0; }
       <dt>要錢嗎？要註冊嗎？</dt>
       <dd>都不用。</dd>
       <dt>我查了哪些字，會被上傳嗎？</dt>
-      <dd>Inset 不會把你的筆記本、設定或查字紀錄傳到任何地方，這些都只存在你的電腦。查字時，它是在內嵌的瀏覽器裡打開 Cambridge 網站，就跟你自己用瀏覽器查一樣，Cambridge 網站本身的統計和廣告程式也會照常載入。</dd>
+      <dd>Inset 不會把你的筆記本、設定或查字紀錄傳到任何地方，這些都只存在你的電腦。查字時，它是在內嵌的瀏覽器裡打開 Cambridge 網站，就跟你自己用瀏覽器查一樣，Cambridge 網站本身的統計和廣告程式也會照常載入。按 <span class="label">ASK AI</span> 送出問題時，問題（包含你查的字和它的解釋）會在瀏覽器裡送到你選的 ChatGPT 或 Claude，就跟你自己去問一樣；不按就不會送。送出後 2 小時內，Inset 會留意剪貼簿裡開頭是 <code>[Inset]</code> 的結論，好把它存回筆記本，其他複製的內容不看也不存。</dd>
       <dt>沒有網路可以用嗎？</dt>
       <dd>不行。字典內容是每次即時從 Cambridge 網站讀取的。</dd>
       <dt>按了快捷鍵沒反應？</dt>

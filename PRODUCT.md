@@ -44,7 +44,8 @@ Instant, in-place lookup over the real Cambridge English–Chinese (Traditional)
 - Selection is read via UI Automation, falling back to a simulated copy with the clipboard restored; terminals and apps running as administrator are not supported.
 - Notebook data stays local (`%AppData%\Inset\notebook.json`); no accounts, sync, or cloud.
 - UI copy is English; content includes Traditional Chinese.
-- Explicit non-goals: offline dictionary, bulk scraping, AI translation, flashcards / spaced repetition, accounts, cross-platform, browser extension.
+- Follow-up questions go to AI, but only as a hand-off: "Ask AI" in the popup and the notebook opens the user's own ChatGPT or Claude in the browser with the question filled in (the word, its sense from Cambridge, and "how does it differ from X" / "more on usage" / the user's own question). Inset holds no API keys and calls no AI service; the `?q=` address it uses is undocumented by both, so the question can also be copied. The question asks for a short conclusion in a code block headed `[Inset] <word>`; when the user copies it, Inset files it under the word's note (adding the word if needed). The clipboard is only watched for two hours after a question, and only that marked text is used. Cambridge stays the entry; AI only answers what the entry does not.
+- Explicit non-goals: offline dictionary, bulk scraping, AI translation or AI-written entries, flashcards / spaced repetition, accounts, cross-platform, browser extension.
 
 ## Brand Commitments
 

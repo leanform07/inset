@@ -32,6 +32,9 @@ public partial class PopupWindow : Window
         _notebook = notebook;
         InitializeComponent();
         CategoryBox.ItemsSource = notebook.Categories;
+        AskPanel.Finished += () => { if (_state == State.Showing && IsActive) Web.Focus(); };
+        AskPanel.Asked += _ => { if (_entry != null) QuestionAsked?.Invoke(_entry); };
+        Assistant = AiAssistant.ChatGpt;
         SourceInitialized += (_, _) =>
         {
             WindowEffects.MakeFloating(this);
@@ -54,6 +57,20 @@ public partial class PopupWindow : Window
             Web.CoreWebView2.Stop();
             ShowMessage("Cambridge Dictionary is taking too long to respond.", retry: true);
         };
+    }
+
+    /// <summary>Raised with the entry a question was sent or copied about.</summary>
+    internal event Action<EntrySummary>? QuestionAsked;
+
+    /// <summary>Where "Ask AI" opens questions; follows Settings.</summary>
+    internal AiAssistant Assistant
+    {
+        get => AskPanel.Assistant;
+        set
+        {
+            AskPanel.Assistant = value;
+            AskButton.ToolTip = $"Ask {AskAi.Name(value)} how this word differs from another, or how it is used (Ctrl+Q)";
+        }
     }
 
     /// <summary>Creates the WebView while the window is off-screen, so the first lookup does not pay for it.</summary>
@@ -136,6 +153,7 @@ public partial class PopupWindow : Window
     {
         _query = title;
         CloseNotePanel();
+        AskPanel.Close();
         _entry = null;
         UpdateNotebookButton();
         Web.CoreWebView2?.Navigate("about:blank");
@@ -155,6 +173,7 @@ public partial class PopupWindow : Window
     {
         if (_state == State.Idle) return;
         CloseNotePanel();
+        AskPanel.Close();
         _state = State.Idle;
         StopTimers();
         Hide();
@@ -172,6 +191,7 @@ public partial class PopupWindow : Window
     void BeginLoading()
     {
         CloseNotePanel();
+        AskPanel.Close();
         _entry = null;
         UpdateNotebookButton();
         _state = State.Loading;
@@ -357,15 +377,22 @@ public partial class PopupWindow : Window
     void OnPreviewKeyDown(object sender, KeyEventArgs e)
     {
         var key = e.Key == Key.ImeProcessed ? e.ImeProcessedKey : e.Key;
+        if (AskPanel.IsOpen && e.Key == Key.ImeProcessed) return; // the IME is composing a question
         if (key == Key.Escape)
         {
-            if (_editing != null) CloseNotePanel();
+            if (AskPanel.IsOpen) CloseAskPanel();
+            else if (_editing != null) CloseNotePanel();
             else Dismiss();
             e.Handled = true;
         }
         else if (key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
         {
             OnNotebookButtonClick(this, e);
+            e.Handled = true;
+        }
+        else if (key == Key.Q && Keyboard.Modifiers == ModifierKeys.Control)
+        {
+            OnAskClick(this, e);
             e.Handled = true;
         }
         else if (key == Key.Enter && _editing != null)
@@ -390,6 +417,7 @@ public partial class PopupWindow : Window
             CloseNotePanel();
             return;
         }
+        AskPanel.Close();
 
         // Saving is immediate; the panel only offers optional details.
         var existing = _notebook.Find(_entry.Headword);
@@ -444,6 +472,7 @@ public partial class PopupWindow : Window
                            : note.Category.Length > 0 ? note.Category
                            : "In notebook";
         NotebookButton.Visibility = _entry != null ? Visibility.Visible : Visibility.Collapsed;
+        AskButton.Visibility = NotebookButton.Visibility;
     }
 
     /// <summary>Stamps (or clears) the seal on the entry page; reader.js draws it.</summary>
@@ -459,6 +488,26 @@ public partial class PopupWindow : Window
             animate,
         });
         _ = Web.CoreWebView2.ExecuteScriptAsync($"window.__lookupSeal && window.__lookupSeal({seal})");
+    }
+
+    // ── Ask AI ────────────────────────────────────────────────
+
+    void OnAskClick(object sender, RoutedEventArgs e)
+    {
+        if (_entry == null || _state != State.Showing) return;
+        if (AskPanel.IsOpen)
+        {
+            CloseAskPanel();
+            return;
+        }
+        CloseNotePanel();
+        AskPanel.Open(_entry.Headword, _entry.PartOfSpeech, _entry.Chinese, _entry.Definition);
+    }
+
+    void CloseAskPanel()
+    {
+        AskPanel.Close();
+        if (_state == State.Showing && IsActive) Web.Focus();
     }
 
     static EntrySummary ParseSummary(JsonElement s)

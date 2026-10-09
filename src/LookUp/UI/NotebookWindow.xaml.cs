@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
+using LookUp.Lookup;
 using LookUp.Notebook;
 using Microsoft.Win32;
 
@@ -34,6 +35,20 @@ public partial class NotebookWindow : Window
     /// <summary>Raised with the word and where the popup should open.</summary>
     internal event Action<WordNote, ScreenPlacement.Anchor>? LookupRequested;
 
+    /// <summary>Raised with a saved word a question was sent or copied about.</summary>
+    internal event Action<string>? QuestionAsked;
+
+    /// <summary>Where "Ask AI" opens questions; follows Settings.</summary>
+    internal AiAssistant Assistant
+    {
+        get => AskPanel.Assistant;
+        set
+        {
+            AskPanel.Assistant = value;
+            AskButton.ToolTip = $"Ask {AskAi.Name(value)} how this word differs from another, or how it is used";
+        }
+    }
+
     internal NotebookWindow(NotebookStore store)
     {
         _store = store;
@@ -43,6 +58,9 @@ public partial class NotebookWindow : Window
         _view.Filter = item => Matches((WordNote)item);
         WordList.ItemsSource = _view;
         CategoryEditor.ItemsSource = store.Categories;
+        AskPanel.Finished += () => AskButton.Focus();
+        AskPanel.Asked += word => QuestionAsked?.Invoke(word);
+        Assistant = AiAssistant.ChatGpt;
 
         store.Changed += QueueRefresh;
         Closing += (_, _) => CommitEdits();
@@ -279,6 +297,7 @@ public partial class NotebookWindow : Window
         MultiSelectionText.Text = $"{count} words selected.\nRight-click to move them to a category\nor set their status.";
         DetailPanel.Visibility = _selected != null ? Visibility.Visible : Visibility.Collapsed;
         if (_selected == null) return;
+        if (AskPanel.IsOpen && DetailPanel.DataContext != _selected) AskPanel.Close(); // it was asking about another word
 
         _loadingDetail = true;
         DetailPanel.DataContext = _selected;
@@ -358,6 +377,13 @@ public partial class NotebookWindow : Window
     {
         if (_selected != null && Uri.TryCreate(_selected.SourceUrl, UriKind.Absolute, out var uri) && uri.Scheme == "https")
             Process.Start(new ProcessStartInfo(uri.ToString()) { UseShellExecute = true });
+    }
+
+    void OnAskClick(object sender, RoutedEventArgs e)
+    {
+        if (_selected == null) return;
+        if (AskPanel.IsOpen) AskPanel.Close();
+        else AskPanel.Open(_selected.Word, _selected.PartOfSpeech, _selected.Chinese, _selected.Definition);
     }
 
     void RequestLookup(WordNote word)

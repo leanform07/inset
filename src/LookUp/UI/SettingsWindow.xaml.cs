@@ -1,10 +1,11 @@
 using System.Windows;
 using System.Windows.Controls;
+using LookUp.Lookup;
 using LookUp.Settings;
 
 namespace LookUp.UI;
 
-/// <summary>Shortcuts, theme and startup. Every change applies and saves immediately.</summary>
+/// <summary>Shortcuts, theme, the AI chat and startup. Every change applies and saves immediately.</summary>
 public partial class SettingsWindow : Window
 {
     readonly App _app;
@@ -24,6 +25,8 @@ public partial class SettingsWindow : Window
         ThemeSystem.IsChecked = settings.Theme == AppTheme.System;
         ThemeLight.IsChecked = settings.Theme == AppTheme.Light;
         ThemeDark.IsChecked = settings.Theme == AppTheme.Dark;
+        AssistantChatGpt.IsChecked = settings.AiAssistant == AiAssistant.ChatGpt;
+        AssistantClaude.IsChecked = settings.AiAssistant == AiAssistant.Claude;
         StartupBox.IsChecked = StartupRegistration.IsEnabled;
         _loading = false;
     }
@@ -60,6 +63,12 @@ public partial class SettingsWindow : Window
     {
         if (_loading) return;
         _app.SetTheme(sender == ThemeDark ? AppTheme.Dark : sender == ThemeLight ? AppTheme.Light : AppTheme.System);
+    }
+
+    void OnAssistantChecked(object sender, RoutedEventArgs e)
+    {
+        if (_loading) return;
+        _app.SetAssistant(sender == AssistantClaude ? AiAssistant.Claude : AiAssistant.ChatGpt);
     }
 
     void OnStartupChanged(object sender, RoutedEventArgs e)

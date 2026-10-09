@@ -29,6 +29,8 @@ public partial class App : Application
     NotebookWindow? _notebookWindow;
     SettingsWindow? _settingsWindow;
     bool _readingSelection;
+    AiConclusions? _conclusions;
+    ClipboardWatcher? _clipboard;
 
     protected override async void OnStartup(StartupEventArgs e)
     {
@@ -54,6 +56,10 @@ public partial class App : Application
         _notebook = OpenNotebook(NotebookStore.DefaultPath);
         _popup = new PopupWindow(_notebook);
         _popup.UseSize(_settings.PopupSize);
+        _popup.Assistant = _settings.AiAssistant;
+        _conclusions = new AiConclusions(_notebook);
+        _clipboard = new ClipboardWatcher(OnClipboardText);
+        _popup.QuestionAsked += entry => ExpectConclusion(entry.Headword, entry);
         _popup.SizeChosen += size =>
         {
             _settings.PopupSize = size;
@@ -187,12 +193,27 @@ public partial class App : Application
     {
         if (_notebookWindow == null)
         {
-            _notebookWindow = new NotebookWindow(_notebook!);
+            _notebookWindow = new NotebookWindow(_notebook!) { Assistant = _settings.AiAssistant };
             _notebookWindow.LookupRequested += (word, anchor) =>
                 _popup!.ShowLookup(word.Word, anchor, Uri.TryCreate(word.SourceUrl, UriKind.Absolute, out var url) ? url : null);
+            _notebookWindow.QuestionAsked += word => ExpectConclusion(word, null);
             _notebookWindow.Closed += (_, _) => _notebookWindow = null;
         }
         Bring(_notebookWindow);
+    }
+
+    /// <summary>The clipboard is watched only while a question's conclusion may still be copied.</summary>
+    void ExpectConclusion(string word, EntrySummary? entry)
+    {
+        _conclusions!.Expect(word, entry);
+        _clipboard!.Start();
+    }
+
+    void OnClipboardText(string text)
+    {
+        if (_conclusions!.Accept(text) is { } note)
+            _tray?.ShowMessage("Saved to your notebook", $"The AI’s conclusion is now in the note for “{note.Word}”.");
+        if (!_conclusions.IsExpecting) _clipboard!.Stop();
     }
 
     void ShowSettings()
@@ -288,6 +309,14 @@ public partial class App : Application
         ThemeService.Apply(theme);
     }
 
+    internal void SetAssistant(AiAssistant assistant)
+    {
+        _settings.AiAssistant = assistant;
+        _settings.Save(AppSettings.DefaultPath);
+        _popup!.Assistant = assistant;
+        if (_notebookWindow != null) _notebookWindow.Assistant = assistant;
+    }
+
     void UpdateShortcutHints()
     {
         _tray?.SetShortcuts(_settings.Search.ToString(), _settings.Notebook.ToString());
@@ -298,6 +327,7 @@ public partial class App : Application
     {
         _tray?.Dispose();
         _hotkeys?.Dispose();
+        _clipboard?.Dispose();
         _showSearchSignal?.Dispose();
         _singleInstance?.Dispose();
         base.OnExit(e);
