@@ -192,6 +192,39 @@ html.lu-reader body > :not(#lu-root) { display: none !important; }
   color: var(--muted);
 }
 
+/* "Save this": which sense goes into the notebook. Shown on hover; the saved sense keeps it, in seal ink. */
+#lu-root .def-block { position: relative; }
+#lu-root .def-block > .lu-pick {
+  float: right;
+  margin: 2px 0 4px 12px;
+  padding: 2px 7px;
+  border: 1px solid var(--hairline);
+  border-radius: 0;
+  background: transparent;
+  font: 400 10px/1.4 var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-2);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 120ms ease-out;
+}
+#lu-root .def-block:hover > .lu-pick,
+#lu-root .def-block > .lu-pick:focus-visible { opacity: 1; }
+#lu-root .def-block > .lu-pick:hover { border-color: var(--ink); color: var(--ink); background: var(--press); }
+#lu-root .def-block > .lu-pick:focus-visible { outline: 1px solid var(--ink); outline-offset: 2px; }
+#lu-root .def-block.lu-saved > .lu-pick {
+  opacity: 1;
+  border-color: var(--seal);
+  background: var(--seal);
+  color: var(--seal-ink);
+  cursor: default;
+}
+#lu-root .def-block.lu-saved::before { color: var(--seal-ink); }
+@media (prefers-reduced-motion: reduce) {
+  #lu-root .def-block > .lu-pick { transition: none; }
+}
+
 #lu-root .ddef_h { margin: 0; }
 #lu-root .def {
   display: inline;

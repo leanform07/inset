@@ -301,6 +301,12 @@ public partial class PopupWindow : Window
                 UpdateNotebookButton();
                 UpdateSeal(animate: false);
                 break;
+            case "pick":
+                if (_state != State.Showing) break;
+                var sense = ParseSummary(message.RootElement.GetProperty("summary"));
+                if (sense.Headword.Length == 0) sense = sense with { Headword = _entry?.Headword ?? _query };
+                SaveSense(sense);
+                break;
             case "other":
                 ShowPage();
                 break;
@@ -421,8 +427,23 @@ public partial class PopupWindow : Window
 
         // Saving is immediate; the panel only offers optional details.
         var existing = _notebook.Find(_entry.Headword);
-        _editing = existing ?? _notebook.Add(_entry);
-        if (existing == null) UpdateSeal(animate: true); // the stamp: once, when the word is first saved
+        OpenNotePanel(existing ?? _notebook.Add(_entry), added: existing == null);
+    }
+
+    /// <summary>"Save this" on a sense of the page: saves the word with that sense, or switches to it.</summary>
+    void SaveSense(EntrySummary sense)
+    {
+        if (_editing != null) CloseNotePanel(); // keep what was typed before switching
+        AskPanel.Close();
+        _entry = sense; // the notebook button, the seal and Ask AI now follow this sense
+        var (note, added) = _notebook.SaveSense(sense);
+        OpenNotePanel(note, added);
+    }
+
+    void OpenNotePanel(WordNote note, bool added)
+    {
+        _editing = note;
+        UpdateSeal(animate: added); // the stamp animates once, when the word is first saved
         CategoryBox.Text = _editing.Category;
         StatusNew.IsChecked = _editing.Status == Familiarity.New;
         StatusLearning.IsChecked = _editing.Status == Familiarity.Learning;
@@ -485,6 +506,7 @@ public partial class PopupWindow : Window
             category = note.Category.Length > 0 ? note.Category : "Uncategorized",
             date = note.AddedAt.ToString("yyyy.MM.dd"),
             count = note.LookupCount,
+            definition = note.Definition,
             animate,
         });
         _ = Web.CoreWebView2.ExecuteScriptAsync($"window.__lookupSeal && window.__lookupSeal({seal})");

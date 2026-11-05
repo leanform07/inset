@@ -112,6 +112,16 @@ sealed class NotebookStore
         return note;
     }
 
+    /// <summary>Saves the word with this sense, or switches a saved word to it.</summary>
+    /// <returns>The note, and whether it was newly added.</returns>
+    public (WordNote Note, bool Added) SaveSense(EntrySummary sense)
+    {
+        if (Find(sense.Headword) is not { } existing) return (Add(sense), true);
+        existing.UseSense(sense);
+        Save();
+        return (existing, false);
+    }
+
     public void Remove(WordNote note)
     {
         note.PropertyChanged -= OnWordChanged;

@@ -6,7 +6,7 @@ namespace LookUp.Notebook;
 
 enum Familiarity { New, Learning, Known }
 
-/// <summary>The first sense of an entry, as reader.js reports it.</summary>
+/// <summary>One sense of an entry (the first, unless the user picked another), as reader.js reports it.</summary>
 sealed record EntrySummary(
     string Headword, string PartOfSpeech, string Ipa, string Chinese,
     string Definition, string Example, string ExampleChinese, string SourceUrl);
@@ -24,13 +24,16 @@ sealed class LookupStat
 sealed class WordNote : INotifyPropertyChanged
 {
     public string Word { get; set; } = "";
-    public string PartOfSpeech { get; set; } = "";
     public string Ipa { get; set; } = "";
-    public string Chinese { get; set; } = "";
-    public string Definition { get; set; } = "";
-    public string Example { get; set; } = "";
-    public string ExampleChinese { get; set; } = "";
     public string SourceUrl { get; set; } = "";
+
+    // The sense kept for the word; the user can switch to another sense of the entry.
+    string _partOfSpeech = "", _chinese = "", _definition = "", _example = "", _exampleChinese = "";
+    public string PartOfSpeech { get => _partOfSpeech; set => Set(ref _partOfSpeech, value); }
+    public string Chinese { get => _chinese; set => Set(ref _chinese, value); }
+    public string Definition { get => _definition; set => Set(ref _definition, value); }
+    public string Example { get => _example; set => Set(ref _example, value); }
+    public string ExampleChinese { get => _exampleChinese; set => Set(ref _exampleChinese, value); }
     public DateTime AddedAt { get; set; }
 
     string _category = "";
@@ -69,6 +72,18 @@ sealed class WordNote : INotifyPropertyChanged
         SourceUrl = entry.SourceUrl,
         AddedAt = now,
     };
+
+    /// <summary>Keeps another sense of the same entry; category, status and note stay.</summary>
+    public void UseSense(EntrySummary sense)
+    {
+        PartOfSpeech = sense.PartOfSpeech;
+        Chinese = sense.Chinese;
+        Definition = sense.Definition;
+        Example = sense.Example;
+        ExampleChinese = sense.ExampleChinese;
+        if (sense.Ipa.Length > 0) Ipa = sense.Ipa;
+        if (sense.SourceUrl.Length > 0) SourceUrl = sense.SourceUrl;
+    }
 
     void Set<T>(ref T field, T value, [CallerMemberName] string name = "", string? notifyAlso = null)
     {

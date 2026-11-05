@@ -21,12 +21,14 @@
   }
 
   // The notebook seal, stamped half over the plate's top-right corner. Called by the app:
-  // __lookupSeal({ category, date, count, animate }) to stamp, __lookupSeal(null) to lift it.
+  // __lookupSeal({ category, date, count, definition, animate }) to stamp, __lookupSeal(null) to lift it.
+  // definition picks out the sense the notebook keeps.
   window.__lookupSeal = seal => {
     const root = document.getElementById('lu-root');
     if (!root) return;
     root.querySelector('.lu-seal')?.remove();
     root.classList.toggle('lu-sealed', !!seal);
+    markSaved(seal?.definition);
     if (!seal) return;
 
     const stamp = svg('svg', { class: 'lu-seal', viewBox: '0 0 92 92', role: 'img',
@@ -84,8 +86,39 @@
     if (phrase) phrase.classList.add('lu-match');
     holdScroll(phrase);
 
+    addPickButtons(entry);
     post({ type: 'entry', summary: phrase ? summarizePhrase(entry, phrase) : summarize(entry) });
   }
+
+  // Every sense gets a "Save this" button, so the notebook can keep a sense other than the first.
+  function addPickButtons(entry) {
+    for (const block of entry.querySelectorAll('.def-block')) {
+      if (!block.querySelector('.def')) continue;
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'lu-pick';
+      button.title = 'Save this meaning to the notebook';
+      button.textContent = 'Save this';
+      button.addEventListener('click', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        post({ type: 'pick', summary: summarizeSense(entry, block) });
+      });
+      block.prepend(button);
+    }
+  }
+
+  // Marks the sense the notebook keeps (matched by its definition); called from __lookupSeal.
+  function markSaved(definition) {
+    for (const block of document.querySelectorAll('#lu-root .def-block')) {
+      const saved = !!definition && senseDefinition(block) === definition;
+      block.classList.toggle('lu-saved', saved);
+      const button = block.querySelector(':scope > .lu-pick');
+      if (button) button.textContent = saved ? 'Saved' : 'Save this';
+    }
+  }
+
+  const senseDefinition = block => textOf(block.querySelector('.def.ddef_d')).replace(/:$/, '');
 
   function findPhrase(entry) {
     const query = (new URLSearchParams(location.search).get('q') || '').toLowerCase().trim();
@@ -139,6 +172,25 @@
       partOfSpeech: 'phrase',
       chinese: text('.def-body > .trans'),
       definition: text('.def.ddef_d').replace(/:$/, ''),
+      example: text('.examp .eg'),
+      exampleChinese: text('.examp .trans'),
+    };
+  }
+
+  // One sense, for the notebook: its own definition, Chinese and first example.
+  function summarizeSense(entry, block) {
+    const text = selector => textOf(block.querySelector(selector));
+    const phrase = block.closest('.phrase-block');
+    const part = block.closest('.pv-block, .entry-body__el');
+    return {
+      ...summarize(entry),
+      headword: phrase ? textOf(phrase.querySelector('.phrase-title'))
+              : textOf(part?.querySelector('.headword')) || summarize(entry).headword,
+      partOfSpeech: phrase ? 'phrase'
+                  : textOf(part?.querySelector('.posgram .pos')) || textOf(block.closest('.dsense')?.querySelector('.dsense_pos'))
+                    || summarize(entry).partOfSpeech,
+      chinese: text('.def-body > .trans'),
+      definition: senseDefinition(block),
       example: text('.examp .eg'),
       exampleChinese: text('.examp .trans'),
     };

@@ -124,6 +124,9 @@ public partial class NotebookWindow : Window
             {
                 LookupInfo.Text = DescribeHistory(_selected);
                 UpdateSeal(_selected);
+                // The saved sense may have been switched from the lookup window.
+                ExampleBlock.Visibility = _selected.Example.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
+                PosText.Text = _selected.PartOfSpeech.ToUpperInvariant();
             }
         }, DispatcherPriority.Background);
     }

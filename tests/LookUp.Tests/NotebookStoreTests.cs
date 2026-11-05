@@ -50,6 +50,42 @@ public sealed class NotebookStoreTests : IDisposable
     }
 
     [Fact]
+    public void Saving_a_sense_of_a_new_word_adds_it_with_that_sense()
+    {
+        var store = Open();
+
+        var (note, added) = store.SaveSense(Entry("charge", chinese: "指控") with { Definition = "to accuse" });
+
+        Assert.True(added);
+        Assert.Same(note, store.Find("charge"));
+        Assert.Equal("指控", note.Chinese);
+        Assert.Equal("to accuse", note.Definition);
+    }
+
+    [Fact]
+    public void Saving_another_sense_switches_the_saved_word_and_keeps_its_details()
+    {
+        var store = Open();
+        var first = store.Add(Entry("charge", chinese: "收費"));
+        store.SetCategory(first, "Law");
+        first.Note = "mine";
+
+        var (note, added) = store.SaveSense(new EntrySummary("charge", "verb", "", "指控", "to accuse",
+            "He was charged with murder.", "他被控謀殺。", ""));
+
+        Assert.False(added);
+        Assert.Same(first, note);
+        Assert.Single(store.Words);
+        Assert.Equal(("verb", "指控", "to accuse", "He was charged with murder.", "他被控謀殺。"),
+            (note.PartOfSpeech, note.Chinese, note.Definition, note.Example, note.ExampleChinese));
+        Assert.Equal(("Law", "mine", "ipa"), (note.Category, note.Note, note.Ipa));
+
+        var reopened = Open().Find("charge")!;
+        Assert.Equal("指控", reopened.Chinese);
+        Assert.Equal("Law", reopened.Category);
+    }
+
+    [Fact]
     public void Repeated_lookups_within_30_minutes_count_once()
     {
         var store = Open();

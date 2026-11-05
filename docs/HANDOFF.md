@@ -38,6 +38,15 @@ C# / .NET 10 / WPF（Fluent ThemeMode）+ WebView2。專案在 `D:\Projects\Dict
 - 結論存回筆記本（同一天，使用者追加的需求）：問題最後請 AI 把簡短的結論（不限行數，使用者要讓 AI 自己判斷長度）放進程式碼區塊，第一行 `[Inset] 單字`。AI 在瀏覽器裡，Inset 讀不到回答，所以靠剪貼簿：使用者按程式碼區塊的「複製」（或複製整則回答），`Selection/ClipboardWatcher`（`AddClipboardFormatListener`，message-only 視窗）把文字交給 `Notebook/AiConclusions`，比對 2 小時內問過的字（大小寫不拘；只問了一個字時，AI 把長詞條縮寫也認），加到筆記下一行（同一段不重複加），字還沒存就用問的那個詞條存進去，系統匣跳通知。**只在有待回的問題時才監聽剪貼簿**，過期就停。問題本身沒有任何一行以 `[Inset]` 開頭，所以 COPY QUESTION 不會被當成結論。查字視窗的 NOTE 欄改成自動換行（最高 84px）
 - 等使用者確認：`Ctrl+Q` 在 WebView 有焦點時能不能觸發（跟 `Ctrl+S` 同一條路，應該可以）、ChatGPT 打開後是否真的自動送出、注音輸入問題時按 Enter 會不會誤送、ChatGPT 是否照格式把結論放進 `[Inset] 單字` 開頭的程式碼區塊、複製後筆記有沒有自動填入
 
+## 選擇要記哪一個解釋（2026-11-05，使用者用 `out\test\win-x64\Inset.exe` 試用沒問題後 commit；還沒升版、還沒發佈）
+
+- 使用者反映存字時固定記第一個解釋。`reader.js` 在每個 `.def-block` 前面插一個 `SAVE THIS` 按鈕（滑鼠移上去才出現），按下送出 `{ type: 'pick', summary }`，`summarizeSense` 取那個解釋自己的詞性、中文、英文定義、第一個例句；在 `.phrase-block` 裡的話詞條名用片語標題、詞性 `phrase`
+- `PopupWindow.SaveSense`：`_entry` 換成選的解釋（按鈕、印章、Ask AI 都跟著它），`NotebookStore.SaveSense` 新增或把已存的字換成這個解釋（`WordNote.UseSense`，分類／熟悉度／筆記不動）。`Ctrl+S` 仍存第一個解釋，已存的字不會被蓋掉
+- `__lookupSeal` 多帶 `definition`，`markSaved` 用英文定義比對，把目前記著的解釋標成 `SAVED`（印章色）
+- `WordNote` 的詞義欄位改成會通知，筆記本視窗開著時也會更新
+- 2026-11-05 用 winget 在這台電腦裝了 .NET SDK 10.0.403（原本只有 8.0），`dotnet test` 112 個全過；reader.js 用存下來的 charge.html 在瀏覽器裡驗證過
+- 這台電腦的 8765 port 有別的程式（「聽寫練習」頁面），測試伺服器不要用這個 port
+
 ## 筆記本遺失事件與防護（2026-10-07）
 
 - 使用者 10/6 下午重開機後，`%AppData%\Inset\notebook.json` 變成一本新的空筆記本（`Lookups` 最早是 10/6 14:42），之前存的單字和查字紀錄全部不見。`%AppData%\LookUp` 不存在、沒有 `notebook.unreadable-*`、資源回收筒只有 10/6 02:23 丟掉的 `%LocalAppData%\LookUp`（92 MB 的 WebView2 profile，不含筆記本）、沒有「以前的版本」、沒匯出過 CSV。**單字沒救回來**
