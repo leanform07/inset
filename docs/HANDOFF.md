@@ -20,7 +20,7 @@ C# / .NET 10 / WPF（Fluent ThemeMode）+ WebView2。專案在 `D:\Projects\Dict
 - 打包（2026-10-06）：`tools/publish.ps1` 產生 self-contained 單一檔案 `out/publish/win-x64/Inset.exe`（約 73 MB，不需安裝 .NET）和 `out/Inset-<版本>-win-x64.zip`（exe + README + licenses/Geist-OFL.txt）。版本號在 csproj 的 `<Version>`，目前 0.2.1（2026-11-06 加上選擇要記哪一個解釋；0.2.0 是追問 AI，0.1.1 是筆記本備份）。exe 沒有數位簽章，README 有寫 SmartScreen 怎麼放行。`README.md` 是給使用者看的說明
 - 使用說明（2026-10-06）：`src/LookUp/Web/guide.html`（繁中，跟 App 同一套版面，含查字視窗與筆記本的編號示意圖，支援深色與列印）。嵌入 exe，從系統匣右鍵「How to use」或筆記本左下角「HOW TO USE」打開 `GuideWindow`（App 自己的 WebView2 視窗，頁面和 Geist 字型由 App 從 `https://guide.inset.invalid/` 自己回應，不連網）。原本交給預設瀏覽器開，但使用者的 Brave 視窗全部最小化時什麼都沒出現，所以改成自己的視窗。`publish.ps1` 也把它放進 zip，檔名「使用說明.html」。刻意不放在查字視窗（原則：小、不擋路）。介面文字改了要同步更新說明
 - GitHub：**public** repo https://github.com/leanform07/inset（remote `origin`，`master`）。2026-10-09 公開，授權 MIT（`LICENSE`，版權人 leanform07；`publish.ps1` 會把它放進 zip 的 `LICENSE.txt`）。用 `git filter-branch` 改寫了整段歷史兩次（都在 2026-10-09）：commit 作者信箱從 Gmail 換成 `309329802+leanform07@users.noreply.github.com`、作者名稱從真名換成 `leanform07`、拿掉交接文件裡的 gh 登入名稱，所以更早記下的 commit 編號都已失效（tag 已重新指向，這份文件裡的編號已更新）。這個 repo 的 `git config user.name`／`user.email` 設成 leanform07 和 noreply 信箱，**不要改回真名或 Gmail**；全域設定仍是真名和 Gmail，在別的資料夾新開 repo 時要注意
-- GitHub Release（2026-10-07）：[v0.1.0](https://github.com/leanform07/inset/releases/tag/v0.1.0)，tag 指向 `fda5712`，附 `Inset-0.1.0-win-x64.zip`。[v0.1.1](https://github.com/leanform07/inset/releases/tag/v0.1.1)（2026-10-07）加上筆記本備份與遺失提示，tag 指向 `e9c0676`，附 `Inset-0.1.1-win-x64.zip`。[v0.2.0](https://github.com/leanform07/inset/releases/tag/v0.2.0)（2026-10-09）加上追問 AI，tag 指向 `c60621a`，附 `Inset-0.2.0-win-x64.zip`。repo 是 private，所以只有有權限的人下載得到。之後發新版：改 csproj 的 `<Version>`、跑 `publish.ps1`，再 `gh release create v<版本> out/Inset-<版本>-win-x64.zip --repo leanform07/inset --target master`（`--target` 不接受縮寫的 commit 編號）
+- GitHub Release（2026-10-07）：[v0.1.0](https://github.com/leanform07/inset/releases/tag/v0.1.0)，tag 指向 `fda5712`，附 `Inset-0.1.0-win-x64.zip`。[v0.1.1](https://github.com/leanform07/inset/releases/tag/v0.1.1)（2026-10-07）加上筆記本備份與遺失提示，tag 指向 `e9c0676`，附 `Inset-0.1.1-win-x64.zip`。[v0.2.0](https://github.com/leanform07/inset/releases/tag/v0.2.0)（2026-10-09）加上追問 AI，tag 指向 `c60621a`，附 `Inset-0.2.0-win-x64.zip`。[v0.2.1](https://github.com/leanform07/inset/releases/tag/v0.2.1)（2026-11-06）加上選擇要記哪一個解釋，tag 指向 `24739c8`，附 `Inset-0.2.1-win-x64.zip`。repo 2026-10-09 起是 public，所有人都下載得到。之後發新版：改 csproj 的 `<Version>`、跑 `publish.ps1`，再 `gh release create v<版本> out/Inset-<版本>-win-x64.zip --repo leanform07/inset --target master`（`--target` 不接受縮寫的 commit 編號）
 - 搜尋框選取修正（`fda5712`，2026-10-07）：搜尋框重開時會全選上次的字，原本被不透明的選取色蓋成一塊灰。csproj 設了 `Switch.System.Windows.Controls.Text.UseAdornerForTextboxSelectionRendering=false`，讓選取色畫在文字下面，`BareTextBox` 的 `SelectionTextBrush` 用 InkBrush。測試專案的 csproj 也要有同一個開關，螢幕外截圖才會一樣
 - 舊的 `%LocalAppData%\LookUp`（舊 WebView2 profile）已丟進資源回收筒
 - 測試：`dotnet test tests/LookUp.Tests/LookUp.Tests.csproj`，110 個全部通過
@@ -38,13 +38,14 @@ C# / .NET 10 / WPF（Fluent ThemeMode）+ WebView2。專案在 `D:\Projects\Dict
 - 結論存回筆記本（同一天，使用者追加的需求）：問題最後請 AI 把簡短的結論（不限行數，使用者要讓 AI 自己判斷長度）放進程式碼區塊，第一行 `[Inset] 單字`。AI 在瀏覽器裡，Inset 讀不到回答，所以靠剪貼簿：使用者按程式碼區塊的「複製」（或複製整則回答），`Selection/ClipboardWatcher`（`AddClipboardFormatListener`，message-only 視窗）把文字交給 `Notebook/AiConclusions`，比對 2 小時內問過的字（大小寫不拘；只問了一個字時，AI 把長詞條縮寫也認），加到筆記下一行（同一段不重複加），字還沒存就用問的那個詞條存進去，系統匣跳通知。**只在有待回的問題時才監聽剪貼簿**，過期就停。問題本身沒有任何一行以 `[Inset]` 開頭，所以 COPY QUESTION 不會被當成結論。查字視窗的 NOTE 欄改成自動換行（最高 84px）
 - 等使用者確認：`Ctrl+Q` 在 WebView 有焦點時能不能觸發（跟 `Ctrl+S` 同一條路，應該可以）、ChatGPT 打開後是否真的自動送出、注音輸入問題時按 Enter 會不會誤送、ChatGPT 是否照格式把結論放進 `[Inset] 單字` 開頭的程式碼區塊、複製後筆記有沒有自動填入
 
-## 選擇要記哪一個解釋（2026-11-05，使用者用 `out\test\win-x64\Inset.exe` 試用沒問題後 commit `43ae398`；2026-11-06 打包成 0.2.1，還沒建立 GitHub Release）
+## 選擇要記哪一個解釋（2026-11-05，使用者用 `out\test\win-x64\Inset.exe` 試用沒問題後 commit `43ae398`；2026-11-06 打包成 0.2.1 並發佈 GitHub Release）
 
 - 使用者反映存字時固定記第一個解釋。`reader.js` 在每個 `.def-block` 前面插一個 `SAVE THIS` 按鈕（滑鼠移上去才出現），按下送出 `{ type: 'pick', summary }`，`summarizeSense` 取那個解釋自己的詞性、中文、英文定義、第一個例句；在 `.phrase-block` 裡的話詞條名用片語標題、詞性 `phrase`
 - `PopupWindow.SaveSense`：`_entry` 換成選的解釋（按鈕、印章、Ask AI 都跟著它），`NotebookStore.SaveSense` 新增或把已存的字換成這個解釋（`WordNote.UseSense`，分類／熟悉度／筆記不動）。`Ctrl+S` 仍存第一個解釋，已存的字不會被蓋掉
 - `__lookupSeal` 多帶 `definition`，`markSaved` 用英文定義比對，把目前記著的解釋標成 `SAVED`（印章色）
 - `WordNote` 的詞義欄位改成會通知，筆記本視窗開著時也會更新
 - 2026-11-05 用 winget 在這台電腦裝了 .NET SDK 10.0.403（原本只有 8.0），`dotnet test` 112 個全過；reader.js 用存下來的 charge.html 在瀏覽器裡驗證過
+- 這台電腦（2026-11 起使用的筆電）原本沒有 gh，2026-11-06 用 winget 裝了 GitHub CLI 2.103.3，使用者已用 leanform07 登入。PowerShell 裡用 `& "C:\Program Files\GitHub CLI\gh.exe"`，Bash 工具的 PATH 找不到 gh。git 會報 dubious ownership（資料夾擁有者是另一台電腦的帳號），用 `git -c safe.directory=D:/Projects/Dictionary ...`，沒有改全域設定
 - 這台電腦的 8765 port 有別的程式（「聽寫練習」頁面），測試伺服器不要用這個 port
 
 ## 筆記本遺失事件與防護（2026-10-07）
@@ -67,7 +68,7 @@ C# / .NET 10 / WPF（Fluent ThemeMode）+ WebView2。專案在 `D:\Projects\Dict
 ## 之後可能的工作
 
 - `docs/TESTING.md` 的各 App 相容性表（Chrome、Word、Acrobat、Notion…）等使用者手動測試後填寫
-- 發佈管道：GitHub Releases 已上傳 v0.1.0、v0.1.1、v0.2.0；還沒決定要不要 win-arm64 版（`publish.ps1 -Runtime win-arm64`）、要不要買程式碼簽章
+- 發佈管道：GitHub Releases 已上傳 v0.1.0、v0.1.1、v0.2.0、v0.2.1；還沒決定要不要 win-arm64 版（`publish.ps1 -Runtime win-arm64`）、要不要買程式碼簽章
 
 ## 這台電腦上的注意事項（踩過的坑）
 
